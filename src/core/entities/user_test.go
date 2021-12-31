@@ -20,14 +20,14 @@ func generateUser() *UserEntity {
 	return user
 }
 
-func TestUserEntity_IsIdValid(t *testing.T) {
+func TestUserEntity_isIdValid(t *testing.T) {
 	user := generateUser()
-	err := user.IsValid()
+	err := user.isIdValid()
 
 	assert.Nil(t, err)
 
 	user.Id = "not_an_uuid"
-	err = user.IsValid()
+	err = user.isIdValid()
 
 	assert.Equal(t, "invalid user id, must be an uuid", err.Error())
 }
