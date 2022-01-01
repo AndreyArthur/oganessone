@@ -31,3 +31,25 @@ func TestUserEntity_isIdValid(t *testing.T) {
 
 	assert.Equal(t, "invalid user id, must be an uuid", err.Error())
 }
+
+func TestUserEntity_isUsernameValid(t *testing.T) {
+	user := generateUser()
+	err := user.isUsernameValid()
+
+	assert.Nil(t, err)
+
+	user.Username = "with spaces"
+	err = user.isUsernameValid()
+
+	assert.Equal(t, "invalid username, should have 4-16 characters and no whitespaces", err.Error())
+
+	user.Username = "toooooooooooo_big" // more than 16 chars
+	err = user.isUsernameValid()
+
+	assert.Equal(t, "invalid username, should have 4-16 characters and no whitespaces", err.Error())
+
+	user.Username = "sml" // less than 4 chars
+	err = user.isUsernameValid()
+
+	assert.Equal(t, "invalid username, should have 4-16 characters and no whitespaces", err.Error())
+}

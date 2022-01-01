@@ -3,6 +3,7 @@ package entities
 import (
 	"errors"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -24,8 +25,33 @@ func (user *UserEntity) isIdValid() error {
 	return nil
 }
 
+func (user *UserEntity) isUsernameValid() error {
+	errorToReturn := errors.New("invalid username, should have 4-16 characters and no whitespaces")
+	usernameLength := len(user.Username)
+
+	if usernameLength < 4 || usernameLength > 16 {
+		return errorToReturn
+	}
+
+	regexChars := []string{"^.*\\s.*$"}
+	regex := regexp.MustCompile(strings.Join(regexChars, ""))
+	usernameHasWhitespaces := regex.Match([]byte(user.Username))
+
+	if usernameHasWhitespaces {
+		return errorToReturn
+	}
+
+	return nil
+}
+
 func (user *UserEntity) IsValid() error {
 	err := user.isIdValid()
+
+	if err != nil {
+		return err
+	}
+
+	err = user.isUsernameValid()
 
 	if err != nil {
 		return err
