@@ -44,6 +44,15 @@ func (user *UserEntity) isUsernameValid() error {
 	return nil
 }
 
+func (user *UserEntity) isEmailValid() error {
+	regex := regexp.MustCompile("^[-!#$%&'*+/0-9=?A-Z^_a-z`{|}~](\\.?[-!#$%&'*+/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\\.?[a-zA-Z0-9])*\\.[a-zA-Z](-?[a-zA-Z0-9])+$")
+	if !regex.Match([]byte(user.Email)) {
+		return errors.New("invalid email syntax")
+	}
+
+	return nil
+}
+
 func (user *UserEntity) IsValid() error {
 	err := user.isIdValid()
 
@@ -52,6 +61,12 @@ func (user *UserEntity) IsValid() error {
 	}
 
 	err = user.isUsernameValid()
+
+	if err != nil {
+		return err
+	}
+
+	err = user.isEmailValid()
 
 	if err != nil {
 		return err

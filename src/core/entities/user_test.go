@@ -53,3 +53,15 @@ func TestUserEntity_isUsernameValid(t *testing.T) {
 
 	assert.Equal(t, "invalid username, should have 4-16 characters and no whitespaces", err.Error())
 }
+
+func TestUserEntity_isEmailValid(t *testing.T) {
+	user := generateUser()
+	err := user.isEmailValid()
+
+	assert.Nil(t, err)
+
+	user.Email = "invalid_email"
+	err = user.isEmailValid()
+
+	assert.Equal(t, "invalid email syntax", err.Error())
+}
