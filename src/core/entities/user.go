@@ -53,6 +53,15 @@ func (user *UserEntity) isEmailValid() error {
 	return nil
 }
 
+func (user *UserEntity) isPasswordValid() error {
+	regex := regexp.MustCompile(`^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$`)
+	if !regex.Match([]byte(user.Password)) {
+		return errors.New("user password must be a bcrypt hash")
+	}
+
+	return nil
+}
+
 func (user *UserEntity) IsValid() error {
 	err := user.isIdValid()
 
@@ -67,6 +76,12 @@ func (user *UserEntity) IsValid() error {
 	}
 
 	err = user.isEmailValid()
+
+	if err != nil {
+		return err
+	}
+
+	err = user.isPasswordValid()
 
 	if err != nil {
 		return err

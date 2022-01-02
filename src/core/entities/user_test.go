@@ -65,3 +65,15 @@ func TestUserEntity_isEmailValid(t *testing.T) {
 
 	assert.Equal(t, "invalid email syntax", err.Error())
 }
+
+func TestUserEntity_isPasswordValid(t *testing.T) {
+	user := generateUser()
+	err := user.isPasswordValid()
+
+	assert.Nil(t, err)
+
+	user.Password = "not_a_bcrypt_hash"
+	err = user.isPasswordValid()
+
+	assert.Equal(t, "user password must be a bcrypt hash", err.Error())
+}
