@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"errors"
+
 	"github.com/AndreyArthur/murao-oganessone/src/application/repositories"
 	"github.com/AndreyArthur/murao-oganessone/src/core/entities"
 )
@@ -16,7 +18,7 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 		username, true,
 	)
 	if foundByUsername != nil {
-		return nil, nil
+		return nil, errors.New("username is already in use")
 	}
 
 	return &entities.UserEntity{
