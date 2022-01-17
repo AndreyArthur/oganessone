@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"errors"
 	"testing"
 
 	mock_repositories "github.com/AndreyArthur/oganessone/src/application/repositories/mocks"
@@ -43,11 +44,31 @@ func TestCreateUserUseCase_FoundByUsername(t *testing.T) {
 		Return(&entities.UserEntity{}, nil)
 	repo.EXPECT().
 		FindByEmail(email).
-		Return(&entities.UserEntity{}, nil)
+		Return(nil, nil)
 	// act
 	user, err := createUserUseCase.Execute(username, email, password)
 	// assert
 	assert.Equal(t, err, exceptions.NewUserUsernameAlreadyInUse())
+	assert.Nil(t, user)
+}
+
+func TestCreateUserUseCase_FindByUsernameReturnError(t *testing.T) {
+	// arrange
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repo := mock_repositories.NewMockUsersRepository(ctrl)
+	createUserUseCase, _ := NewCreateUserUseCase(repo)
+	username, email, password := "username", "user@email.com", "p4ssword"
+	repo.EXPECT().
+		FindByUsername(username, true).
+		Return(nil, errors.New(""))
+	repo.EXPECT().
+		FindByEmail(email).
+		Return(&entities.UserEntity{}, nil)
+	// act
+	user, err := createUserUseCase.Execute(username, email, password)
+	// assert
+	assert.Equal(t, err, exceptions.NewInternalServerError())
 	assert.Nil(t, user)
 }
 
@@ -90,4 +111,24 @@ func TestCreateUserUseCase_FoundByEmail(t *testing.T) {
 	// assert
 	assert.Nil(t, user)
 	assert.Equal(t, err, exceptions.NewUserEmailAlreadyInUse())
+}
+
+func TestCreateUserUseCase_FindByEmailReturnError(t *testing.T) {
+	// arrange
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	repo := mock_repositories.NewMockUsersRepository(ctrl)
+	createUserUseCase, _ := NewCreateUserUseCase(repo)
+	username, email, password := "username", "user@email.com", "p4ssword"
+	repo.EXPECT().
+		FindByUsername(username, true).
+		Return(nil, nil)
+	repo.EXPECT().
+		FindByEmail(email).
+		Return(nil, errors.New(""))
+	// act
+	user, err := createUserUseCase.Execute(username, email, password)
+	// assert
+	assert.Equal(t, err, exceptions.NewInternalServerError())
+	assert.Nil(t, user)
 }
