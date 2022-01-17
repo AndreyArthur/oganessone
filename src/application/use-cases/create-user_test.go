@@ -3,9 +3,9 @@ package usecases
 import (
 	"testing"
 
-	mock_repositories "github.com/AndreyArthur/murao-oganessone/src/application/repositories/mocks"
-	"github.com/AndreyArthur/murao-oganessone/src/core/entities"
-	"github.com/AndreyArthur/murao-oganessone/src/core/exceptions"
+	mock_repositories "github.com/AndreyArthur/oganessone/src/application/repositories/mocks"
+	"github.com/AndreyArthur/oganessone/src/core/entities"
+	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )

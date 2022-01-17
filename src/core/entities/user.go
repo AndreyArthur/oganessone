@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AndreyArthur/murao-oganessone/src/core/exceptions"
-	"github.com/AndreyArthur/murao-oganessone/src/core/shared"
+	"github.com/AndreyArthur/oganessone/src/core/exceptions"
+	"github.com/AndreyArthur/oganessone/src/core/shared"
 )
 
 type UserEntity struct {

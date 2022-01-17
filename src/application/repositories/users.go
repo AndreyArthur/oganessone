@@ -1,6 +1,6 @@
 package repositories
 
-import "github.com/AndreyArthur/murao-oganessone/src/core/entities"
+import "github.com/AndreyArthur/oganessone/src/core/entities"
 
 type UsersRepository interface {
 	FindByUsername(username string, caseSensitive bool) (*entities.UserEntity, error)

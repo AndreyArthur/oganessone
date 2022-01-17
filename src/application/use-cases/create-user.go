@@ -1,10 +1,10 @@
 package usecases
 
 import (
-	"github.com/AndreyArthur/murao-oganessone/src/application/repositories"
-	"github.com/AndreyArthur/murao-oganessone/src/core/entities"
-	"github.com/AndreyArthur/murao-oganessone/src/core/exceptions"
-	"github.com/AndreyArthur/murao-oganessone/src/core/shared"
+	"github.com/AndreyArthur/oganessone/src/application/repositories"
+	"github.com/AndreyArthur/oganessone/src/core/entities"
+	"github.com/AndreyArthur/oganessone/src/core/exceptions"
+	"github.com/AndreyArthur/oganessone/src/core/shared"
 )
 
 type CreateUserUseCase struct {

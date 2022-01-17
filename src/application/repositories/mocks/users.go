@@ -7,7 +7,7 @@ package mock_repositories
 import (
         reflect "reflect"
 
-        entities "github.com/AndreyArthur/murao-oganessone/src/core/entities"
+        entities "github.com/AndreyArthur/oganessone/src/core/entities"
         gomock "github.com/golang/mock/gomock"
 )
 

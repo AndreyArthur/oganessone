@@ -1,7 +1,7 @@
 package entities
 
 import (
-	"github.com/AndreyArthur/murao-oganessone/src/core/exceptions"
+	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/stretchr/testify/assert"
 
 	"testing"

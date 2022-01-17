@@ -1,4 +1,4 @@
-module github.com/AndreyArthur/murao-oganessone
+module github.com/AndreyArthur/oganessone
 
 go 1.17
 

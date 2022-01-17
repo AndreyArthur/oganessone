@@ -1,6 +1,6 @@
 package exceptions
 
-import "github.com/AndreyArthur/murao-oganessone/src/core/shared"
+import "github.com/AndreyArthur/oganessone/src/core/shared"
 
 const validation = "validation"
 const conflict = "conflict"
