@@ -39,8 +39,7 @@ func TestCreateUserUseCase_NotFoundByUsername(t *testing.T) {
 	user, err := useCase.Execute(username, email, password)
 	// assert
 	assert.Nil(t, err)
-	assert.Equal(t, user.Username, username)
-	assert.Equal(t, user.Email, email)
+	assert.Nil(t, user.IsValid())
 }
 
 func TestCreateUserUseCase_FoundByUsername(t *testing.T) {
@@ -97,8 +96,7 @@ func TestCreateUserUseCase_NotFoundByEmail(t *testing.T) {
 	user, err := useCase.Execute(username, email, password)
 	// assert
 	assert.Nil(t, err)
-	assert.Equal(t, user.Username, username)
-	assert.Equal(t, user.Email, email)
+	assert.Nil(t, user.IsValid())
 }
 
 func TestCreateUserUseCase_FoundByEmail(t *testing.T) {
