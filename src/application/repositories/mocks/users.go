@@ -35,18 +35,18 @@ func (m *MockUsersRepository) EXPECT() *MockUsersRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockUsersRepository) Create(username, email string) (*entities.UserEntity, error) {
+func (m *MockUsersRepository) Create(username, email, password string) (*entities.UserEntity, error) {
         m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Create", username, email)
+        ret := m.ctrl.Call(m, "Create", username, email, password)
         ret0, _ := ret[0].(*entities.UserEntity)
         ret1, _ := ret[1].(error)
         return ret0, ret1
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockUsersRepositoryMockRecorder) Create(username, email interface{}) *gomock.Call {
+func (mr *MockUsersRepositoryMockRecorder) Create(username, email, password interface{}) *gomock.Call {
         mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUsersRepository)(nil).Create), username, email)
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUsersRepository)(nil).Create), username, email, password)
 }
 
 // FindByEmail mocks base method.
