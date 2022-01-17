@@ -23,26 +23,21 @@ func (user *UserEntity) isIdValid() *shared.Error {
 	if !regex.Match([]byte(user.Id)) {
 		return exceptions.NewInvalidUserId()
 	}
-
 	return nil
 }
 
 func (user *UserEntity) isUsernameValid() *shared.Error {
 	errorToReturn := exceptions.NewInvalidUserUsername()
 	usernameLength := len(user.Username)
-
 	if usernameLength < 4 || usernameLength > 16 {
 		return errorToReturn
 	}
-
 	regexChars := []string{"^.*\\s.*$"}
 	regex := regexp.MustCompile(strings.Join(regexChars, ""))
 	usernameHasWhitespaces := regex.Match([]byte(user.Username))
-
 	if usernameHasWhitespaces {
 		return errorToReturn
 	}
-
 	return nil
 }
 
@@ -51,7 +46,6 @@ func (user *UserEntity) isEmailValid() *shared.Error {
 	if !regex.Match([]byte(user.Email)) {
 		return exceptions.NewInvalidUserEmail()
 	}
-
 	return nil
 }
 
@@ -60,35 +54,26 @@ func (user *UserEntity) isPasswordValid() *shared.Error {
 	if !regex.Match([]byte(user.Password)) {
 		return exceptions.NewInvalidUserPassword()
 	}
-
 	return nil
 }
 
 func (user *UserEntity) IsValid() *shared.Error {
 	err := user.isIdValid()
-
 	if err != nil {
 		return err
 	}
-
 	err = user.isUsernameValid()
-
 	if err != nil {
 		return err
 	}
-
 	err = user.isEmailValid()
-
 	if err != nil {
 		return err
 	}
-
 	err = user.isPasswordValid()
-
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -109,10 +94,8 @@ func NewUserEntity(
 		UpdatedAt: updatedAt,
 	}
 	err := user.IsValid()
-
 	if err != nil {
 		return nil, err
 	}
-
 	return user, nil
 }
