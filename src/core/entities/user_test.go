@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func generateUser() *UserEntity {
+func setup() *UserEntity {
 	user, _ := NewUserEntity(
 		"cc58997a-2403-af1e-7836-f0b338edcd60",
 		"username",
@@ -22,7 +22,7 @@ func generateUser() *UserEntity {
 }
 
 func TestUserEntity_isIdValid(t *testing.T) {
-	user := generateUser()
+	user := setup()
 	err := user.isIdValid()
 
 	assert.Nil(t, err)
@@ -34,7 +34,7 @@ func TestUserEntity_isIdValid(t *testing.T) {
 }
 
 func TestUserEntity_isUsernameValid(t *testing.T) {
-	user := generateUser()
+	user := setup()
 	err := user.isUsernameValid()
 
 	assert.Nil(t, err)
@@ -56,7 +56,7 @@ func TestUserEntity_isUsernameValid(t *testing.T) {
 }
 
 func TestUserEntity_isEmailValid(t *testing.T) {
-	user := generateUser()
+	user := setup()
 	err := user.isEmailValid()
 
 	assert.Nil(t, err)
@@ -68,7 +68,7 @@ func TestUserEntity_isEmailValid(t *testing.T) {
 }
 
 func TestUserEntity_isPasswordValid(t *testing.T) {
-	user := generateUser()
+	user := setup()
 	err := user.isPasswordValid()
 
 	assert.Nil(t, err)
