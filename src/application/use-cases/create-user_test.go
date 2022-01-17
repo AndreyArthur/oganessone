@@ -11,6 +11,7 @@ import (
 )
 
 func TestCreateUserUseCase_NotFoundByUsername(t *testing.T) {
+	// arrange
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	repo := mock_repositories.NewMockUsersRepository(ctrl)
@@ -19,15 +20,16 @@ func TestCreateUserUseCase_NotFoundByUsername(t *testing.T) {
 	repo.EXPECT().
 		FindByUsername(username, true).
 		Return(nil, nil)
-
+	// act
 	user, err := createUserUseCase.Execute(username, email, password)
-
+	// assert
 	assert.Nil(t, err)
 	assert.Equal(t, user.Username, username)
 	assert.Equal(t, user.Email, email)
 }
 
 func TestCreateUserUseCase_FoundByUsername(t *testing.T) {
+	// arrange
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	repo := mock_repositories.NewMockUsersRepository(ctrl)
@@ -36,9 +38,9 @@ func TestCreateUserUseCase_FoundByUsername(t *testing.T) {
 	repo.EXPECT().
 		FindByUsername(username, true).
 		Return(&entities.UserEntity{}, nil)
-
+	// act
 	user, err := createUserUseCase.Execute(username, email, password)
-
+	// assert
 	assert.Equal(t, err, exceptions.NewUserUsernameAlreadyInUse())
 	assert.Nil(t, user)
 }
