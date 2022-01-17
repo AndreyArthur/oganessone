@@ -22,7 +22,7 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	}
 	foundByEmail, _ := createUserUseCase.repository.FindByEmail(email)
 	if foundByEmail != nil {
-		return nil, nil
+		return nil, exceptions.NewUserEmailAlreadyInUse()
 	}
 	return &entities.UserEntity{
 		Username: username,

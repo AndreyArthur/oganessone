@@ -44,3 +44,11 @@ func NewUserUsernameAlreadyInUse() *shared.Error {
 		"User username is already in use.",
 	)
 }
+
+func NewUserEmailAlreadyInUse() *shared.Error {
+	return shared.NewError(
+		conflict,
+		"UserEmailAlreadyInUse",
+		"User email is already in use.",
+	)
+}
