@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"github.com/AndreyArthur/murao-oganessone/src/core/exceptions"
 	"github.com/stretchr/testify/assert"
 
 	"testing"
@@ -29,7 +30,7 @@ func TestUserEntity_isIdValid(t *testing.T) {
 	user.Id = "not_an_uuid"
 	err = user.isIdValid()
 
-	assert.Equal(t, "invalid user id, must be an uuid", err.Error())
+	assert.Equal(t, err, exceptions.NewInvalidUserId())
 }
 
 func TestUserEntity_isUsernameValid(t *testing.T) {
@@ -41,17 +42,17 @@ func TestUserEntity_isUsernameValid(t *testing.T) {
 	user.Username = "with spaces"
 	err = user.isUsernameValid()
 
-	assert.Equal(t, "invalid username, should have 4-16 characters and no whitespaces", err.Error())
+	assert.Equal(t, err, exceptions.NewInvalidUserUsername())
 
 	user.Username = "toooooooooooo_big" // more than 16 chars
 	err = user.isUsernameValid()
 
-	assert.Equal(t, "invalid username, should have 4-16 characters and no whitespaces", err.Error())
+	assert.Equal(t, err, exceptions.NewInvalidUserUsername())
 
 	user.Username = "sml" // less than 4 chars
 	err = user.isUsernameValid()
 
-	assert.Equal(t, "invalid username, should have 4-16 characters and no whitespaces", err.Error())
+	assert.Equal(t, err, exceptions.NewInvalidUserUsername())
 }
 
 func TestUserEntity_isEmailValid(t *testing.T) {
@@ -63,7 +64,7 @@ func TestUserEntity_isEmailValid(t *testing.T) {
 	user.Email = "invalid_email"
 	err = user.isEmailValid()
 
-	assert.Equal(t, "invalid email syntax", err.Error())
+	assert.Equal(t, err, exceptions.NewInvalidUserEmail())
 }
 
 func TestUserEntity_isPasswordValid(t *testing.T) {
@@ -75,5 +76,5 @@ func TestUserEntity_isPasswordValid(t *testing.T) {
 	user.Password = "not_a_bcrypt_hash"
 	err = user.isPasswordValid()
 
-	assert.Equal(t, "user password must be a bcrypt hash", err.Error())
+	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
 }
