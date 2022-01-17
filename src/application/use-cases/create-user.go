@@ -14,13 +14,22 @@ type CreateUserUseCase struct {
 func (createUserUseCase *CreateUserUseCase) Execute(
 	username string, email string, password string,
 ) (*entities.UserEntity, *shared.Error) {
-	foundByUsername, _ := createUserUseCase.repository.FindByUsername(
-		username, true,
-	)
+	foundByUsernameChannel := make(chan *entities.UserEntity)
+	foundByEmailChannel := make(chan *entities.UserEntity)
+	go func() {
+		foundByUsername, _ := createUserUseCase.repository.FindByUsername(
+			username, true,
+		)
+		foundByUsernameChannel <- foundByUsername
+	}()
+	go func() {
+		foundByEmail, _ := createUserUseCase.repository.FindByEmail(email)
+		foundByEmailChannel <- foundByEmail
+	}()
+	foundByUsername, foundByEmail := <-foundByUsernameChannel, <-foundByEmailChannel
 	if foundByUsername != nil {
 		return nil, exceptions.NewUserUsernameAlreadyInUse()
 	}
-	foundByEmail, _ := createUserUseCase.repository.FindByEmail(email)
 	if foundByEmail != nil {
 		return nil, exceptions.NewUserEmailAlreadyInUse()
 	}

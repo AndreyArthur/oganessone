@@ -41,6 +41,9 @@ func TestCreateUserUseCase_FoundByUsername(t *testing.T) {
 	repo.EXPECT().
 		FindByUsername(username, true).
 		Return(&entities.UserEntity{}, nil)
+	repo.EXPECT().
+		FindByEmail(email).
+		Return(&entities.UserEntity{}, nil)
 	// act
 	user, err := createUserUseCase.Execute(username, email, password)
 	// assert
