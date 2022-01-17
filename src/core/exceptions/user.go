@@ -3,6 +3,7 @@ package exceptions
 import "github.com/AndreyArthur/murao-oganessone/src/core/shared"
 
 const validation = "validation"
+const conflict = "conflict"
 
 func NewInvalidUserId() *shared.Error {
 	return shared.NewError(
@@ -33,5 +34,13 @@ func NewInvalidUserPassword() *shared.Error {
 		validation,
 		"InvalidUserPassword",
 		"Invalid user password, must be a bcrypt hash.",
+	)
+}
+
+func NewUserUsernameAlreadyInUse() *shared.Error {
+	return shared.NewError(
+		conflict,
+		"UserUsernameAlreadyInUse",
+		"User username is already in use.",
 	)
 }

@@ -1,10 +1,10 @@
 package usecases
 
 import (
-	"errors"
-
 	"github.com/AndreyArthur/murao-oganessone/src/application/repositories"
 	"github.com/AndreyArthur/murao-oganessone/src/core/entities"
+	"github.com/AndreyArthur/murao-oganessone/src/core/exceptions"
+	"github.com/AndreyArthur/murao-oganessone/src/core/shared"
 )
 
 type CreateUserUseCase struct {
@@ -13,12 +13,12 @@ type CreateUserUseCase struct {
 
 func (createUserUseCase *CreateUserUseCase) Execute(
 	username string, email string, password string,
-) (*entities.UserEntity, error) {
+) (*entities.UserEntity, *shared.Error) {
 	foundByUsername, _ := createUserUseCase.repository.FindByUsername(
 		username, true,
 	)
 	if foundByUsername != nil {
-		return nil, errors.New("username is already in use")
+		return nil, exceptions.NewUserUsernameAlreadyInUse()
 	}
 
 	return &entities.UserEntity{

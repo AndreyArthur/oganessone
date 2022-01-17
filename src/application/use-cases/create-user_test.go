@@ -5,6 +5,7 @@ import (
 
 	mock_repositories "github.com/AndreyArthur/murao-oganessone/src/application/repositories/mocks"
 	"github.com/AndreyArthur/murao-oganessone/src/core/entities"
+	"github.com/AndreyArthur/murao-oganessone/src/core/exceptions"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -38,6 +39,6 @@ func TestCreateUserUseCase_FoundByUsername(t *testing.T) {
 
 	user, err := createUserUseCase.Execute(username, email, password)
 
-	assert.Equal(t, err.Error(), "username is already in use")
+	assert.Equal(t, err, exceptions.NewUserUsernameAlreadyInUse())
 	assert.Nil(t, user)
 }
