@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"github.com/AndreyArthur/oganessone/src/application/providers"
 	"github.com/AndreyArthur/oganessone/src/application/repositories"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
@@ -9,6 +10,7 @@ import (
 
 type CreateUserUseCase struct {
 	repository repositories.UsersRepository
+	encrypter  providers.EncrypterProvider
 }
 
 func (createUserUseCase *CreateUserUseCase) Execute(
@@ -30,7 +32,7 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	}()
 	foundByUsername, foundByEmail := <-foundByUsernameChannel, <-foundByEmailChannel
 	findByUsernameError, findByEmailError := <-findByUsernameErrorChannel, <-findByEmailErrorChannel
-	if findByEmailError != nil || findByUsernameError != nil {
+	if findByUsernameError != nil || findByEmailError != nil {
 		return nil, exceptions.NewInternalServerError()
 	}
 	if foundByUsername != nil {
@@ -39,17 +41,24 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	if foundByEmail != nil {
 		return nil, exceptions.NewUserEmailAlreadyInUse()
 	}
+	hashedPassword, err := createUserUseCase.encrypter.Hash(password)
+	if err != nil {
+		return nil, exceptions.NewInternalServerError()
+	}
 	return &entities.UserEntity{
 		Username: username,
 		Email:    email,
+		Password: hashedPassword,
 	}, nil
 }
 
 func NewCreateUserUseCase(
 	repository repositories.UsersRepository,
+	encrypter providers.EncrypterProvider,
 ) (*CreateUserUseCase, error) {
 	createUserUseCase := &CreateUserUseCase{
 		repository: repository,
+		encrypter:  encrypter,
 	}
 	return createUserUseCase, nil
 }
