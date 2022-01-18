@@ -48,12 +48,15 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	if err != nil {
 		return nil, exceptions.NewInternalServerError()
 	}
-	return &entities.UserEntity{
-		Id:       "72376053-d29b-8b0a-60c4-5ff586c035c3",
-		Username: username,
-		Email:    email,
-		Password: hashedPassword,
-	}, nil
+	user, userError := createUserUseCase.repository.Create(
+		username,
+		email,
+		hashedPassword,
+	)
+	if userError != nil {
+		return nil, userError
+	}
+	return user, nil
 }
 
 func NewCreateUserUseCase(
