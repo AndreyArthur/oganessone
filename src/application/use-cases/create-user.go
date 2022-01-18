@@ -56,6 +56,10 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	if userError != nil {
 		return nil, userError
 	}
+	saveError := createUserUseCase.repository.Save(user)
+	if saveError != nil {
+		return nil, saveError
+	}
 	return user, nil
 }
 
