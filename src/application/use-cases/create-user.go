@@ -16,8 +16,8 @@ type CreateUserUseCase struct {
 func (createUserUseCase *CreateUserUseCase) Execute(
 	username string, email string, password string,
 ) (*entities.UserEntity, *shared.Error) {
-	foundByUsernameChannel, findByUsernameErrorChannel := make(chan *entities.UserEntity), make(chan error)
-	foundByEmailChannel, findByEmailErrorChannel := make(chan *entities.UserEntity), make(chan error)
+	foundByUsernameChannel, findByUsernameErrorChannel := make(chan *entities.UserEntity), make(chan *shared.Error)
+	foundByEmailChannel, findByEmailErrorChannel := make(chan *entities.UserEntity), make(chan *shared.Error)
 	go func() {
 		foundByUsername, err := createUserUseCase.repository.FindByUsername(
 			username, true,
@@ -32,8 +32,11 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	}()
 	foundByUsername, foundByEmail := <-foundByUsernameChannel, <-foundByEmailChannel
 	findByUsernameError, findByEmailError := <-findByUsernameErrorChannel, <-findByEmailErrorChannel
-	if findByUsernameError != nil || findByEmailError != nil {
-		return nil, exceptions.NewInternalServerError()
+	if findByUsernameError != nil {
+		return nil, findByUsernameError
+	}
+	if findByEmailError != nil {
+		return nil, findByEmailError
 	}
 	if foundByUsername != nil {
 		return nil, exceptions.NewUserUsernameAlreadyInUse()
@@ -46,6 +49,7 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 		return nil, exceptions.NewInternalServerError()
 	}
 	return &entities.UserEntity{
+		Id:       "72376053-d29b-8b0a-60c4-5ff586c035c3",
 		Username: username,
 		Email:    email,
 		Password: hashedPassword,

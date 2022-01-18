@@ -8,6 +8,7 @@ import (
         reflect "reflect"
 
         entities "github.com/AndreyArthur/oganessone/src/core/entities"
+        shared "github.com/AndreyArthur/oganessone/src/core/shared"
         gomock "github.com/golang/mock/gomock"
 )
 
@@ -35,11 +36,11 @@ func (m *MockUsersRepository) EXPECT() *MockUsersRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockUsersRepository) Create(username, email, password string) (*entities.UserEntity, error) {
+func (m *MockUsersRepository) Create(username, email, password string) (*entities.UserEntity, *shared.Error) {
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "Create", username, email, password)
         ret0, _ := ret[0].(*entities.UserEntity)
-        ret1, _ := ret[1].(error)
+        ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }
 
@@ -50,11 +51,11 @@ func (mr *MockUsersRepositoryMockRecorder) Create(username, email, password inte
 }
 
 // FindByEmail mocks base method.
-func (m *MockUsersRepository) FindByEmail(email string) (*entities.UserEntity, error) {
+func (m *MockUsersRepository) FindByEmail(email string) (*entities.UserEntity, *shared.Error) {
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "FindByEmail", email)
         ret0, _ := ret[0].(*entities.UserEntity)
-        ret1, _ := ret[1].(error)
+        ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }
 
@@ -65,11 +66,11 @@ func (mr *MockUsersRepositoryMockRecorder) FindByEmail(email interface{}) *gomoc
 }
 
 // FindByUsername mocks base method.
-func (m *MockUsersRepository) FindByUsername(username string, caseSensitive bool) (*entities.UserEntity, error) {
+func (m *MockUsersRepository) FindByUsername(username string, caseSensitive bool) (*entities.UserEntity, *shared.Error) {
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "FindByUsername", username, caseSensitive)
         ret0, _ := ret[0].(*entities.UserEntity)
-        ret1, _ := ret[1].(error)
+        ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }
 
@@ -80,10 +81,10 @@ func (mr *MockUsersRepositoryMockRecorder) FindByUsername(username, caseSensitiv
 }
 
 // Save mocks base method.
-func (m *MockUsersRepository) Save(arg0 *entities.UserEntity) error {
+func (m *MockUsersRepository) Save(arg0 *entities.UserEntity) *shared.Error {
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "Save", arg0)
-        ret0, _ := ret[0].(error)
+        ret0, _ := ret[0].(*shared.Error)
         return ret0
 }
 

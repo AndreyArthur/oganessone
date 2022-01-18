@@ -8,6 +8,7 @@ import (
 	mock_repositories "github.com/AndreyArthur/oganessone/src/application/repositories/mocks"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
+	"github.com/AndreyArthur/oganessone/src/core/shared"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -67,14 +68,14 @@ func TestCreateUserUseCase_FindByUsernameReturnError(t *testing.T) {
 	username, email, password := "username", "user@email.com", "p4ssword"
 	repo.EXPECT().
 		FindByUsername(username, true).
-		Return(nil, errors.New(""))
+		Return(nil, &shared.Error{})
 	repo.EXPECT().
 		FindByEmail(email).
 		Return(&entities.UserEntity{}, nil)
 	// act
 	user, err := useCase.Execute(username, email, password)
 	// assert
-	assert.Equal(t, err, exceptions.NewInternalServerError())
+	assert.Equal(t, err, &shared.Error{})
 	assert.Nil(t, user)
 }
 
@@ -127,7 +128,28 @@ func TestCreateUserUseCase_FindByEmailReturnError(t *testing.T) {
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByEmail(email).
-		Return(nil, errors.New(""))
+		Return(nil, &shared.Error{})
+	// act
+	user, err := useCase.Execute(username, email, password)
+	// assert
+	assert.Equal(t, err, &shared.Error{})
+	assert.Nil(t, user)
+}
+
+func TestCreateUserUseCase_EncrypterHashReturnError(t *testing.T) {
+	// arrange
+	useCase, repo, encrypter, ctrl := setup(t)
+	defer ctrl.Finish()
+	username, email, password := "username", "user@email.com", "p4ssword"
+	repo.EXPECT().
+		FindByUsername(username, true).
+		Return(nil, nil)
+	repo.EXPECT().
+		FindByEmail(email).
+		Return(nil, nil)
+	encrypter.EXPECT().
+		Hash(password).
+		Return("", errors.New(""))
 	// act
 	user, err := useCase.Execute(username, email, password)
 	// assert
