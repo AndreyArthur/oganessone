@@ -9,19 +9,11 @@ import (
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/shared"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
+	"github.com/AndreyArthur/oganessone/src/infrastructure/models"
 )
 
 type UsersRepositoryPostgres struct {
 	db *sql.DB
-}
-
-type UserModel struct {
-	Id        string
-	Username  string
-	Email     string
-	Password  string
-	CreatedAt time.Time
-	UpdatedAt time.Time
 }
 
 func (usersRepository *UsersRepositoryPostgres) Create(
@@ -74,35 +66,19 @@ func (usersRepository *UsersRepositoryPostgres) FindByUsername(
 		log.Fatal(goerr)
 		return nil, nil
 	}
-	var userModel UserModel
 	var queryUsername string
 	if !caseSensitive {
 		queryUsername = strings.ToLower(username)
 	} else {
 		queryUsername = username
 	}
-	stmt.QueryRow(queryUsername).Scan(
-		&userModel.Id,
-		&userModel.Username,
-		&userModel.Email,
-		&userModel.Password,
-		&userModel.CreatedAt,
-		&userModel.UpdatedAt,
-	)
-	if userModel.Id == "" {
+	userModel, goerr := models.NewUserModel()
+	if goerr != nil {
+		log.Fatal(goerr)
 		return nil, nil
 	}
-	user, err := entities.NewUserEntity(
-		userModel.Id,
-		userModel.Username,
-		userModel.Email,
-		userModel.Password,
-		userModel.CreatedAt,
-		userModel.UpdatedAt,
-	)
-	if err != nil {
-		return nil, err
-	}
+	rows := stmt.QueryRow(queryUsername)
+	user := userModel.Scan(rows)
 	return user, nil
 }
 
