@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/AndreyArthur/oganessone/src/core/shared"
 	_ "github.com/lib/pq"
 )
 
@@ -16,14 +17,14 @@ func (database *Database) Connect() *sql.DB {
 		return nil
 	}
 	info := postgres.GenerateConnectionString()
-	connection, err := sql.Open("postgres", info)
-	if err != nil {
-		log.Fatal(err)
+	connection, goerr := sql.Open("postgres", info)
+	if goerr != nil {
+		log.Fatal(goerr)
 		return nil
 	}
 	return connection
 }
 
-func NewDatabase() (*Database, error) {
+func NewDatabase() (*Database, *shared.Error) {
 	return &Database{}, nil
 }

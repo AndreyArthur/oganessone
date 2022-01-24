@@ -3,6 +3,8 @@ package database
 import (
 	"fmt"
 	"os"
+
+	"github.com/AndreyArthur/oganessone/src/core/shared"
 )
 
 type Postgres struct{}
@@ -21,6 +23,6 @@ func (postgres *Postgres) GenerateConnectionString() string {
 	return info
 }
 
-func NewPostgres() (*Postgres, error) {
+func NewPostgres() (*Postgres, *shared.Error) {
 	return &Postgres{}, nil
 }

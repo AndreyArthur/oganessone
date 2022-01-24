@@ -72,10 +72,9 @@ func (usersRepository *UsersRepositoryPostgres) FindByUsername(
 	} else {
 		queryUsername = username
 	}
-	userModel, goerr := models.NewUserModel()
-	if goerr != nil {
-		log.Fatal(goerr)
-		return nil, nil
+	userModel, err := models.NewUserModel()
+	if err != nil {
+		return nil, err
 	}
 	rows := stmt.QueryRow(queryUsername)
 	user := userModel.Scan(rows)

@@ -13,16 +13,16 @@ func main() {
 	flag.StringVar(&environment, "e", "test", "Specify an environment. Default is test.")
 	flag.Parse()
 	if environment == "test" {
-		err := godotenv.Load(".env.test")
-		if err != nil {
-			log.Fatal(err)
+		goerr := godotenv.Load(".env.test")
+		if goerr != nil {
+			log.Fatal(goerr)
 			return
 		}
 	}
 	if environment == "production" {
-		err := godotenv.Load(".env")
-		if err != nil {
-			log.Fatal(err)
+		goerr := godotenv.Load(".env")
+		if goerr != nil {
+			log.Fatal(goerr)
 			return
 		}
 	}

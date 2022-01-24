@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/AndreyArthur/oganessone/src/core/entities"
+	"github.com/AndreyArthur/oganessone/src/core/shared"
 )
 
 type UserModel struct{}
@@ -38,6 +39,6 @@ func (userModel *UserModel) Scan(rows *sql.Row) *entities.UserEntity {
 	return user
 }
 
-func NewUserModel() (*UserModel, error) {
+func NewUserModel() (*UserModel, *shared.Error) {
 	return &UserModel{}, nil
 }

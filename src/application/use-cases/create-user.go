@@ -66,7 +66,7 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 func NewCreateUserUseCase(
 	repository repositories.UsersRepository,
 	encrypter providers.EncrypterProvider,
-) (*CreateUserUseCase, error) {
+) (*CreateUserUseCase, *shared.Error) {
 	createUserUseCase := &CreateUserUseCase{
 		repository: repository,
 		encrypter:  encrypter,

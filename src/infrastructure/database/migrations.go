@@ -3,6 +3,8 @@ package database
 import (
 	"database/sql"
 	"log"
+
+	"github.com/AndreyArthur/oganessone/src/core/shared"
 )
 
 type Migrator struct {
@@ -48,7 +50,7 @@ func (migrator *Migrator) Down() {
 	}
 }
 
-func NewMigrator(db *sql.DB) (*Migrator, error) {
+func NewMigrator(db *sql.DB) (*Migrator, *shared.Error) {
 	return &Migrator{
 		db: db,
 	}, nil
