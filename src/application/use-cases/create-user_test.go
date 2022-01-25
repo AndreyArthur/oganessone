@@ -38,7 +38,7 @@ func TestCreateUserUseCase_SuccessCase(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 	repo.EXPECT().
-		FindByUsername(username, true).
+		FindByUsername(username, false).
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByEmail(email).
@@ -65,7 +65,7 @@ func TestCreateUserUseCase_FoundByUsername(t *testing.T) {
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	repo.EXPECT().
-		FindByUsername(username, true).
+		FindByUsername(username, false).
 		Return(&entities.UserEntity{}, nil)
 	repo.EXPECT().
 		FindByEmail(email).
@@ -83,7 +83,7 @@ func TestCreateUserUseCase_FindByUsernameReturnError(t *testing.T) {
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	repo.EXPECT().
-		FindByUsername(username, true).
+		FindByUsername(username, false).
 		Return(nil, &shared.Error{})
 	repo.EXPECT().
 		FindByEmail(email).
@@ -101,7 +101,7 @@ func TestCreateUserUseCase_FoundByEmail(t *testing.T) {
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	repo.EXPECT().
-		FindByUsername(username, true).
+		FindByUsername(username, false).
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByEmail(email).
@@ -119,7 +119,7 @@ func TestCreateUserUseCase_FindByEmailReturnError(t *testing.T) {
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	repo.EXPECT().
-		FindByUsername(username, true).
+		FindByUsername(username, false).
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByEmail(email).
@@ -137,7 +137,7 @@ func TestCreateUserUseCase_EncrypterHashReturnError(t *testing.T) {
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	repo.EXPECT().
-		FindByUsername(username, true).
+		FindByUsername(username, false).
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByEmail(email).
@@ -159,7 +159,7 @@ func TestCreateUserUseCase_CreateReturnError(t *testing.T) {
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	repo.EXPECT().
-		FindByUsername(username, true).
+		FindByUsername(username, false).
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByEmail(email).
@@ -192,7 +192,7 @@ func TestCreateUserUseCase_SaveReturnError(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 	repo.EXPECT().
-		FindByUsername(username, true).
+		FindByUsername(username, false).
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByEmail(email).

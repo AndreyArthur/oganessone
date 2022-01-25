@@ -20,7 +20,7 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	foundByEmailChannel, findByEmailErrorChannel := make(chan *entities.UserEntity), make(chan *shared.Error)
 	go func() {
 		foundByUsername, err := createUserUseCase.repository.FindByUsername(
-			username, true,
+			username, false,
 		)
 		foundByUsernameChannel <- foundByUsername
 		findByUsernameErrorChannel <- err
