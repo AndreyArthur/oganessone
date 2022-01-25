@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/AndreyArthur/oganessone/src/core/entities"
+	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/AndreyArthur/oganessone/src/core/shared"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/models"
@@ -19,10 +20,9 @@ type UsersRepositoryPostgres struct {
 func (usersRepository *UsersRepositoryPostgres) Create(
 	username string, email string, password string,
 ) (*entities.UserEntity, *shared.Error) {
-	uuid, goerr := helpers.NewUuid()
-	if goerr != nil {
-		log.Fatal(goerr)
-		return nil, nil
+	uuid, err := helpers.NewUuid()
+	if err != nil {
+		return nil, err
 	}
 	user, err := entities.NewUserEntity(
 		uuid.Generate(),
@@ -63,8 +63,8 @@ func (usersRepository *UsersRepositoryPostgres) FindByUsername(
 		`)
 	}
 	if goerr != nil {
-		log.Fatal(goerr)
-		return nil, nil
+		log.Println(goerr)
+		return nil, exceptions.NewInternalServerError()
 	}
 	var queryUsername string
 	if !caseSensitive {

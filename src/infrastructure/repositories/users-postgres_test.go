@@ -21,7 +21,7 @@ func setup() (*UsersRepositoryPostgres, *sql.DB) {
 		log.Fatal(goerr)
 	}
 	db, _ := database.NewDatabase()
-	sql := db.Connect()
+	sql, _ := db.Connect()
 	repo, _ := NewUsersRepositoryPostgres(sql)
 	return repo, sql
 }

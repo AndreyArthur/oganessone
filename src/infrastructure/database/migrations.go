@@ -14,12 +14,12 @@ type Migrator struct {
 func (migrator *Migrator) Up() {
 	db := migrator.db
 	defer db.Close()
-	_, err := db.Query("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
-	if err != nil {
-		log.Fatal(err)
+	_, goerr := db.Query("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
+	if goerr != nil {
+		log.Fatal(goerr)
 		return
 	}
-	_, err = db.Query(`
+	_, goerr = db.Query(`
 		CREATE TABLE IF NOT EXISTS users (
 			id UUID UNIQUE NOT NULL DEFAULT uuid_generate_v4(),
 			username VARCHAR(16) UNIQUE NOT NULL,
@@ -29,8 +29,8 @@ func (migrator *Migrator) Up() {
 			updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 		);
 	`)
-	if err != nil {
-		log.Fatal(err)
+	if goerr != nil {
+		log.Fatal(goerr)
 		return
 	}
 }
@@ -38,14 +38,14 @@ func (migrator *Migrator) Up() {
 func (migrator *Migrator) Down() {
 	db := migrator.db
 	defer db.Close()
-	_, err := db.Query("DROP TABLE IF EXISTS users;")
-	if err != nil {
-		log.Fatal(err)
+	_, goerr := db.Query("DROP TABLE IF EXISTS users;")
+	if goerr != nil {
+		log.Fatal(goerr)
 		return
 	}
-	_, err = db.Query("DROP EXTENSION IF EXISTS \"uuid-ossp\";")
-	if err != nil {
-		log.Fatal(err)
+	_, goerr = db.Query("DROP EXTENSION IF EXISTS \"uuid-ossp\";")
+	if goerr != nil {
+		log.Fatal(goerr)
 		return
 	}
 }

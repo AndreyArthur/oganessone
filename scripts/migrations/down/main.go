@@ -31,7 +31,12 @@ func main() {
 		log.Fatal(err)
 		return
 	}
-	migrator, err := database.NewMigrator(db.Connect())
+	sql, err := db.Connect()
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	migrator, err := database.NewMigrator(sql)
 	if err != nil {
 		log.Fatal(err)
 		return

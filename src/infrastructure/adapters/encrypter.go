@@ -14,7 +14,7 @@ func (encrypterAdapter *EncrypterAdapter) Hash(text string) (string, *shared.Err
 	const BCRYPT_COST = 10
 	hash, goerr := bcrypt.GenerateFromPassword([]byte(text), BCRYPT_COST)
 	if goerr != nil {
-		log.Fatal(goerr)
+		log.Println(goerr)
 		return "", exceptions.NewInternalServerError()
 	}
 	return string(hash), nil
