@@ -111,3 +111,46 @@ func TestUsersRepositoryPostgres_FindByUsernameReturnNil(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Nil(t, user)
 }
+
+func TestUsersRepositoryPostgres_FindByEmail(t *testing.T) {
+	// arrange
+	repo, sql := setup()
+	uuid, _ := helpers.NewUuid()
+	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	stmt, goerr := sql.Prepare(`
+		INSERT INTO users (
+			id,
+			username,
+			email,
+			password,
+			created_at,
+			updated_at	
+		) VALUES ( $1, $2, $3, $4, $5, $6 );
+	`)
+	defer sql.Query("DELETE FROM users;")
+	if goerr != nil {
+		log.Fatal(goerr)
+		return
+	}
+	_, goerr = stmt.Exec(id, username, email, password, time.Now(), time.Now())
+	if goerr != nil {
+		log.Fatal(goerr)
+		return
+	}
+	// act
+	user, err := repo.FindByEmail(email)
+	// assert
+	assert.Nil(t, err)
+	assert.Nil(t, user.IsValid())
+}
+
+func TestUsersRepositoryPostgres_FindByEmailReturnNil(t *testing.T) {
+	// arrange
+	repo, _ := setup()
+	email := "user@email.com"
+	// act
+	user, err := repo.FindByEmail(email)
+	// assert
+	assert.Nil(t, err)
+	assert.Nil(t, user)
+}

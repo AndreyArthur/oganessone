@@ -80,6 +80,28 @@ func (usersRepository *UsersRepositoryPostgres) FindByUsername(
 	return user, nil
 }
 
+func (usersRepository *UsersRepositoryPostgres) FindByEmail(email string) (*entities.UserEntity, *shared.Error) {
+	stmt, goerr := usersRepository.db.Prepare(`
+		SELECT 
+			id, username, email, password, created_at, updated_at
+		FROM
+			users
+		WHERE 
+			email = $1
+	`)
+	if goerr != nil {
+		log.Println(goerr)
+		return nil, exceptions.NewInternalServerError()
+	}
+	userModel, err := models.NewUserModel()
+	if err != nil {
+		return nil, err
+	}
+	rows := stmt.QueryRow(email)
+	user := userModel.Scan(rows)
+	return user, nil
+}
+
 func NewUsersRepositoryPostgres(db *sql.DB) (*UsersRepositoryPostgres, error) {
 	return &UsersRepositoryPostgres{
 		db: db,
