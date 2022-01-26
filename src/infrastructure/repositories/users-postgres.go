@@ -41,27 +41,26 @@ func (usersRepository *UsersRepositoryPostgres) Create(
 func (usersRepository *UsersRepositoryPostgres) FindByUsername(
 	username string, caseSensitive bool,
 ) (*entities.UserEntity, *shared.Error) {
-	var stmt *sql.Stmt
-	var goerr error
-	if !caseSensitive {
-		stmt, goerr = usersRepository.db.Prepare(`
-			SELECT
+	generateQuery := func(caseSensitive bool) string {
+		var field string
+		if caseSensitive {
+			field = "username"
+		} else {
+			field = "LOWER(username)"
+		}
+		query := strings.Join([]string{
+			`SELECT 
 				id, username, email, password, created_at, updated_at
-			FROM 
+			FROM
 				users
-			WHERE
-				LOWER(username) = $1;
-		`)
-	} else {
-		stmt, goerr = usersRepository.db.Prepare(`
-			SELECT
-				id, username, email, password, created_at, updated_at
-			FROM 
-				users
-			WHERE
-				username = $1;
-		`)
+			WHERE `,
+			field,
+			" = $1",
+		}, "")
+		return query
 	}
+	query := generateQuery(caseSensitive)
+	stmt, goerr := usersRepository.db.Prepare(query)
 	if goerr != nil {
 		log.Println(goerr)
 		return nil, exceptions.NewInternalServerError()
