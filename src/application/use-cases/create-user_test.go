@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"errors"
 	"testing"
 	"time"
 
@@ -144,7 +143,7 @@ func TestCreateUserUseCase_EncrypterHashReturnError(t *testing.T) {
 		Return(nil, nil)
 	encrypter.EXPECT().
 		Hash(password).
-		Return("", errors.New(""))
+		Return("", &shared.Error{})
 	// act
 	user, err := useCase.Execute(username, email, password)
 	// assert

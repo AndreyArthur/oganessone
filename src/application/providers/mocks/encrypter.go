@@ -7,6 +7,7 @@ package mock_providers
 import (
         reflect "reflect"
 
+        shared "github.com/AndreyArthur/oganessone/src/core/shared"
         gomock "github.com/golang/mock/gomock"
 )
 
@@ -34,11 +35,11 @@ func (m *MockEncrypterProvider) EXPECT() *MockEncrypterProviderMockRecorder {
 }
 
 // Compare mocks base method.
-func (m *MockEncrypterProvider) Compare(text, hash string) (bool, error) {
+func (m *MockEncrypterProvider) Compare(text, hash string) (bool, *shared.Error) {
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "Compare", text, hash)
         ret0, _ := ret[0].(bool)
-        ret1, _ := ret[1].(error)
+        ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }
 
@@ -49,11 +50,11 @@ func (mr *MockEncrypterProviderMockRecorder) Compare(text, hash interface{}) *go
 }
 
 // Hash mocks base method.
-func (m *MockEncrypterProvider) Hash(text string) (string, error) {
+func (m *MockEncrypterProvider) Hash(text string) (string, *shared.Error) {
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "Hash", text)
         ret0, _ := ret[0].(string)
-        ret1, _ := ret[1].(error)
+        ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }
 
