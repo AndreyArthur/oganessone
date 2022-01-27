@@ -29,11 +29,19 @@ func NewInvalidUserEmail() *shared.Error {
 	)
 }
 
+func NewInvalidUserPasswordHash() *shared.Error {
+	return shared.NewError(
+		validation,
+		"InvalidUserPasswordHash",
+		"Invalid user password hash, must be a bcrypt.",
+	)
+}
+
 func NewInvalidUserPassword() *shared.Error {
 	return shared.NewError(
 		validation,
 		"InvalidUserPassword",
-		"Invalid user password, must be a bcrypt hash.",
+		"Invalid user password, must have ascii characters, numbers and 8-32 characters.",
 	)
 }
 

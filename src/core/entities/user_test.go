@@ -82,18 +82,60 @@ func TestUserEntity_isEmailValid(t *testing.T) {
 	assert.Equal(t, err, exceptions.NewInvalidUserEmail())
 }
 
-func TestUserEntity_isPasswordValid(t *testing.T) {
+func TestUserEntity_isPasswordHashValid(t *testing.T) {
 	// arrange
 	user := setup()
 	// act
-	err := user.isPasswordValid()
+	err := user.isPasswordHashValid()
 	// assert
 	assert.Nil(t, err)
 
 	// arrange
 	user.Password = "not_a_bcrypt_hash"
 	// act
-	err = user.isPasswordValid()
+	err = user.isPasswordHashValid()
+	// assert
+	assert.Equal(t, err, exceptions.NewInvalidUserPasswordHash())
+}
+
+func TestUserEntity_IsPasswordValid(t *testing.T) {
+	// arrange
+	user := setup()
+	password := "p4ssword"
+	// act
+	err := user.IsPasswordValid(password)
+	// assert
+	assert.Nil(t, err)
+
+	// arrange
+	user = setup()
+	password = "password"
+	// act
+	err = user.IsPasswordValid(password)
+	// assert
+	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
+
+	// arrange
+	user = setup()
+	password = "12345678"
+	// act
+	err = user.IsPasswordValid(password)
+	// assert
+	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
+
+	// arrange
+	user = setup()
+	password = "to0_sml" // less than 8 characters
+	// act
+	err = user.IsPasswordValid(password)
+	// assert
+	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
+
+	// arrange
+	user = setup()
+	password = "toooooooooooooooooooooooooooo_big" // more than 32 characters
+	// act
+	err = user.IsPasswordValid(password)
 	// assert
 	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
 }

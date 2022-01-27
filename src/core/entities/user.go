@@ -49,10 +49,10 @@ func (user *UserEntity) isEmailValid() *shared.Error {
 	return nil
 }
 
-func (user *UserEntity) isPasswordValid() *shared.Error {
+func (user *UserEntity) isPasswordHashValid() *shared.Error {
 	regex := regexp.MustCompile(`^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$`)
 	if !regex.Match([]byte(user.Password)) {
-		return exceptions.NewInvalidUserPassword()
+		return exceptions.NewInvalidUserPasswordHash()
 	}
 	return nil
 }
@@ -70,9 +70,32 @@ func (user *UserEntity) IsValid() *shared.Error {
 	if err != nil {
 		return err
 	}
-	err = user.isPasswordValid()
+	err = user.isPasswordHashValid()
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+func (user *UserEntity) IsPasswordValid(password string) *shared.Error {
+	if strings.TrimSpace(password) != password {
+		return exceptions.NewInvalidUserPassword()
+	}
+	if len(password) < 8 || len(password) > 32 {
+		return exceptions.NewInvalidUserPassword()
+	}
+	hasLetter := func(text string) bool {
+		regex := regexp.MustCompile("^.*[a-zA-Z].*$")
+		result := regex.Match([]byte(text))
+		return result
+	}
+	hasDigit := func(text string) bool {
+		regex := regexp.MustCompile(`^.*\d.*$`)
+		result := regex.Match([]byte(text))
+		return result
+	}
+	if !hasLetter(password) || !hasDigit(password) {
+		return exceptions.NewInvalidUserPassword()
 	}
 	return nil
 }
