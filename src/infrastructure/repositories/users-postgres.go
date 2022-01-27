@@ -29,8 +29,8 @@ func (usersRepository *UsersRepositoryPostgres) Create(
 		username,
 		email,
 		password,
-		time.Now(),
-		time.Now(),
+		time.Now().UTC(),
+		time.Now().UTC(),
 	)
 	if err != nil {
 		return nil, err
