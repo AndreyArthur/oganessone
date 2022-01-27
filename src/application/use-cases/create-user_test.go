@@ -176,6 +176,39 @@ func TestCreateUserUseCase_CreateReturnError(t *testing.T) {
 	assert.Nil(t, user)
 }
 
+func TestCreateUserUseCase_PasswordValidationReturnError(t *testing.T) {
+	// arrange
+	useCase, repo, encrypter, ctrl := setup(t)
+	defer ctrl.Finish()
+	username, email, invalidPassword := "username", "user@email.com", "invalid password"
+	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	repoUser := &entities.UserEntity{
+		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
+		Username:  username,
+		Email:     email,
+		Password:  fakeBcryptHash,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	repo.EXPECT().
+		FindByUsername(username, false).
+		Return(nil, nil)
+	repo.EXPECT().
+		FindByEmail(email).
+		Return(nil, nil)
+	encrypter.EXPECT().
+		Hash(invalidPassword).
+		Return(fakeBcryptHash, nil)
+	repo.EXPECT().
+		Create(username, email, fakeBcryptHash).
+		Return(repoUser, nil)
+	// act
+	user, err := useCase.Execute(username, email, invalidPassword)
+	// assert
+	assert.Nil(t, user)
+	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
+}
+
 func TestCreateUserUseCase_SaveReturnError(t *testing.T) {
 	// arrange
 	useCase, repo, encrypter, ctrl := setup(t)

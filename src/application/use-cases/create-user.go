@@ -56,6 +56,10 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	if err != nil {
 		return nil, err
 	}
+	err = user.IsPasswordValid(password)
+	if err != nil {
+		return nil, err
+	}
 	err = createUserUseCase.repository.Save(user)
 	if err != nil {
 		return nil, err
