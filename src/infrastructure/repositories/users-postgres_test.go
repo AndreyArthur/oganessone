@@ -160,14 +160,20 @@ func TestUsersRepositoryPostgres_Save(t *testing.T) {
 	// arrange
 	repo, sql := setup()
 	uuid, _ := helpers.NewUuid()
-	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	id, username, email, password, createdAt, updatedAt :=
+		uuid.Generate(),
+		"username",
+		"user@email.com",
+		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
+		time.Now().UTC(),
+		time.Now().UTC()
 	user, _ := entities.NewUserEntity(
 		id,
 		username,
 		email,
 		password,
-		time.Now(),
-		time.Now(),
+		createdAt,
+		updatedAt,
 	)
 	data := struct {
 		id        string
@@ -200,10 +206,13 @@ func TestUsersRepositoryPostgres_Save(t *testing.T) {
 		&data.updatedAt,
 	)
 	defer sql.Query("DELETE FROM users;")
+	//log.Fatal("\n", data.createdAt, "\n", user.CreatedAt)
 	// assert
 	assert.Nil(t, err)
 	assert.Equal(t, user.Id, data.id)
 	assert.Equal(t, user.Username, data.username)
 	assert.Equal(t, user.Email, data.email)
 	assert.Equal(t, user.Password, data.password)
+	assert.Equal(t, user.CreatedAt.Format(time.RFC3339), data.createdAt.Format(time.RFC3339))
+	assert.Equal(t, user.UpdatedAt.Format(time.RFC3339), data.updatedAt.Format(time.RFC3339))
 }
