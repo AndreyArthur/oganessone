@@ -48,17 +48,17 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	if err != nil {
 		return nil, exceptions.NewInternalServerError()
 	}
-	user, userError := createUserUseCase.repository.Create(
+	user, err := createUserUseCase.repository.Create(
 		username,
 		email,
 		hashedPassword,
 	)
-	if userError != nil {
-		return nil, userError
+	if err != nil {
+		return nil, err
 	}
-	saveError := createUserUseCase.repository.Save(user)
-	if saveError != nil {
-		return nil, saveError
+	err = createUserUseCase.repository.Save(user)
+	if err != nil {
+		return nil, err
 	}
 	return user, nil
 }
