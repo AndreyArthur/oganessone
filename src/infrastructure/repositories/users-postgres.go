@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AndreyArthur/oganessone/src/core/dtos"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/AndreyArthur/oganessone/src/core/shared"
@@ -24,14 +25,14 @@ func (usersRepository *UsersRepositoryPostgres) Create(
 	if err != nil {
 		return nil, err
 	}
-	user, err := entities.NewUserEntity(
-		uuid.Generate(),
-		username,
-		email,
-		password,
-		time.Now().UTC(),
-		time.Now().UTC(),
-	)
+	user, err := entities.NewUserEntity(&dtos.UserDTO{
+		Id:        uuid.Generate(),
+		Username:  username,
+		Email:     email,
+		Password:  password,
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+	})
 	if err != nil {
 		return nil, err
 	}

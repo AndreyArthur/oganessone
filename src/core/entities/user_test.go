@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"github.com/AndreyArthur/oganessone/src/core/dtos"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/stretchr/testify/assert"
 
@@ -9,14 +10,14 @@ import (
 )
 
 func setup() *UserEntity {
-	user, _ := NewUserEntity(
-		"cc58997a-2403-af1e-7836-f0b338edcd60",
-		"username",
-		"user@email.com",
-		"$2y$10$hRAVNUr.t6UpY1J0bQKmhO5x/K9rZPOGAPdx3HICkCrOUHR/3eyxW",
-		time.Now(),
-		time.Now(),
-	)
+	user, _ := NewUserEntity(&dtos.UserDTO{
+		Id:        "cc58997a-2403-af1e-7836-f0b338edcd60",
+		Username:  "username",
+		Email:     "user@email.com",
+		Password:  "$2y$10$hRAVNUr.t6UpY1J0bQKmhO5x/K9rZPOGAPdx3HICkCrOUHR/3eyxW",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	})
 	return user
 }
 

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/AndreyArthur/oganessone/src/core/dtos"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/shared"
 )
@@ -25,14 +26,14 @@ func (userModel *UserModel) Scan(rows *sql.Row) *entities.UserEntity {
 		&createdAt,
 		&updatedAt,
 	)
-	user, err := entities.NewUserEntity(
-		id,
-		username,
-		email,
-		password,
-		createdAt,
-		updatedAt,
-	)
+	user, err := entities.NewUserEntity(&dtos.UserDTO{
+		Id:        id,
+		Username:  username,
+		Email:     email,
+		Password:  password,
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	})
 	if err != nil {
 		return nil
 	}

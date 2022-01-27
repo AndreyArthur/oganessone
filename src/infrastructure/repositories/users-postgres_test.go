@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AndreyArthur/oganessone/src/core/dtos"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/database"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
@@ -167,14 +168,14 @@ func TestUsersRepositoryPostgres_Save(t *testing.T) {
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
 		time.Now().UTC(),
 		time.Now().UTC()
-	user, _ := entities.NewUserEntity(
-		id,
-		username,
-		email,
-		password,
-		createdAt,
-		updatedAt,
-	)
+	user, _ := entities.NewUserEntity(&dtos.UserDTO{
+		Id:        id,
+		Username:  username,
+		Email:     email,
+		Password:  password,
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	})
 	data := struct {
 		id        string
 		username  string

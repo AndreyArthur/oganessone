@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AndreyArthur/oganessone/src/core/dtos"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/AndreyArthur/oganessone/src/core/shared"
 )
@@ -100,21 +101,14 @@ func (user *UserEntity) IsPasswordValid(password string) *shared.Error {
 	return nil
 }
 
-func NewUserEntity(
-	id string,
-	username string,
-	email string,
-	password string,
-	createdAt time.Time,
-	updatedAt time.Time,
-) (*UserEntity, *shared.Error) {
+func NewUserEntity(data *dtos.UserDTO) (*UserEntity, *shared.Error) {
 	user := &UserEntity{
-		Id:        id,
-		Username:  username,
-		Email:     email,
-		Password:  password,
-		CreatedAt: createdAt,
-		UpdatedAt: updatedAt,
+		Id:        data.Id,
+		Username:  data.Username,
+		Email:     data.Email,
+		Password:  data.Password,
+		CreatedAt: data.CreatedAt,
+		UpdatedAt: data.UpdatedAt,
 	}
 	err := user.IsValid()
 	if err != nil {
