@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/database"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
 	"github.com/joho/godotenv"
@@ -153,4 +154,56 @@ func TestUsersRepositoryPostgres_FindByEmailReturnNil(t *testing.T) {
 	// assert
 	assert.Nil(t, err)
 	assert.Nil(t, user)
+}
+
+func TestUsersRepositoryPostgres_Save(t *testing.T) {
+	// arrange
+	repo, sql := setup()
+	uuid, _ := helpers.NewUuid()
+	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	user, _ := entities.NewUserEntity(
+		id,
+		username,
+		email,
+		password,
+		time.Now(),
+		time.Now(),
+	)
+	data := struct {
+		id        string
+		username  string
+		email     string
+		password  string
+		createdAt time.Time
+		updatedAt time.Time
+	}{}
+	// act
+	err := repo.Save(user)
+	stmt, goerr := sql.Prepare(`
+		SELECT 
+			id, username, email, password, created_at, updated_at
+		FROM
+			users
+		WHERE
+			id = $1;
+	`)
+	if goerr != nil {
+		log.Fatal(goerr)
+		return
+	}
+	stmt.QueryRow(user.Id).Scan(
+		&data.id,
+		&data.username,
+		&data.email,
+		&data.password,
+		&data.createdAt,
+		&data.updatedAt,
+	)
+	defer sql.Query("DELETE FROM users;")
+	// assert
+	assert.Nil(t, err)
+	assert.Equal(t, user.Id, data.id)
+	assert.Equal(t, user.Username, data.username)
+	assert.Equal(t, user.Email, data.email)
+	assert.Equal(t, user.Password, data.password)
 }

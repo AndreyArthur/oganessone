@@ -102,6 +102,31 @@ func (usersRepository *UsersRepositoryPostgres) FindByEmail(email string) (*enti
 	return user, nil
 }
 
+func (usersRepository *UsersRepositoryPostgres) Save(user *entities.UserEntity) *shared.Error {
+	stmt, goerr := usersRepository.db.Prepare(`
+		INSERT INTO users	
+			( id, username, email, password, created_at, updated_at )
+		VALUES ( $1, $2, $3, $4, $5, $6 )
+	`)
+	if goerr != nil {
+		log.Println(goerr)
+		return exceptions.NewInternalServerError()
+	}
+	_, goerr = stmt.Exec(
+		user.Id,
+		user.Username,
+		user.Email,
+		user.Password,
+		user.CreatedAt,
+		user.UpdatedAt,
+	)
+	if goerr != nil {
+		log.Println(goerr)
+		return exceptions.NewInternalServerError()
+	}
+	return nil
+}
+
 func NewUsersRepositoryPostgres(db *sql.DB) (*UsersRepositoryPostgres, error) {
 	return &UsersRepositoryPostgres{
 		db: db,
