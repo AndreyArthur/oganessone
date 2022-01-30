@@ -163,7 +163,7 @@ func (usersRepository *UsersRepositoryPostgres) Save(user *entities.UserEntity) 
 	return nil
 }
 
-func NewUsersRepositoryPostgres(db *sql.DB) (*UsersRepositoryPostgres, error) {
+func NewUsersRepositoryPostgres(db *sql.DB) (*UsersRepositoryPostgres, *shared.Error) {
 	return &UsersRepositoryPostgres{
 		db: db,
 	}, nil
