@@ -10,6 +10,7 @@ import (
 
 	"github.com/AndreyArthur/oganessone/src/core/dtos"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
+	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/database"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
 	"github.com/joho/godotenv"
@@ -28,15 +29,73 @@ func setup() (*UsersRepositoryPostgres, *sql.DB) {
 	return repo, sql
 }
 
-func TestUsersRepositoryPostgres_Create(t *testing.T) {
+func TestUsersRepositoryPostgres_CreateWithNeededValues(t *testing.T) {
 	// arrange
 	repo, _ := setup()
 	username, email, password := "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	// act
-	user, err := repo.Create(username, email, password)
+	user, err := repo.Create(&dtos.UserDTO{
+		Username: username,
+		Email:    email,
+		Password: password,
+	})
 	// assert
 	assert.Nil(t, err)
 	assert.Nil(t, user.IsValid())
+}
+
+func TestUsersRepositoryPostgres_CreateWithoutNeededValues(t *testing.T) {
+	// arrange
+	repo, _ := setup()
+	username, email, password := "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	// act
+	first, firstErr := repo.Create(&dtos.UserDTO{
+		Email:    email,
+		Password: password,
+	})
+	second, secondErr := repo.Create(&dtos.UserDTO{
+		Username: username,
+		Password: password,
+	})
+	third, thirdErr := repo.Create(&dtos.UserDTO{
+		Username: username,
+		Email:    email,
+	})
+	// assert
+	assert.Nil(t, first)
+	assert.Nil(t, second)
+	assert.Nil(t, third)
+	assert.Equal(t, firstErr, exceptions.NewInternalServerError())
+	assert.Equal(t, secondErr, exceptions.NewInternalServerError())
+	assert.Equal(t, thirdErr, exceptions.NewInternalServerError())
+}
+
+func TestUsersRepositoryPostgres_CreateWithCustomValues(t *testing.T) {
+	// arrange
+	repo, _ := setup()
+	uuid, _ := helpers.NewUuid()
+	now := time.Now().UTC()
+	id, username, email, password, createdAt, updatedAt :=
+		uuid.Generate(),
+		"username",
+		"user@email.com",
+		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
+		now,
+		now
+	// act
+	user, err := repo.Create(&dtos.UserDTO{
+		Id:        id,
+		Username:  username,
+		Email:     email,
+		Password:  password,
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	})
+	// assert
+	assert.Nil(t, err)
+	assert.Equal(t, user.Id, id)
+	assert.Equal(t, user.CreatedAt, createdAt)
+	assert.Equal(t, user.UpdatedAt, updatedAt)
 }
 
 func TestUsersRepositoryPostgres_FindByUsernameCaseSensitive(t *testing.T) {

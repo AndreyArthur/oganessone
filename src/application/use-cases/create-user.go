@@ -5,6 +5,7 @@ import (
 
 	"github.com/AndreyArthur/oganessone/src/application/providers"
 	"github.com/AndreyArthur/oganessone/src/application/repositories"
+	"github.com/AndreyArthur/oganessone/src/core/dtos"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/AndreyArthur/oganessone/src/core/shared"
@@ -59,11 +60,11 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	if err != nil {
 		return nil, exceptions.NewInternalServerError()
 	}
-	user, err := createUserUseCase.repository.Create(
-		username,
-		email,
-		hashedPassword,
-	)
+	user, err := createUserUseCase.repository.Create(&dtos.UserDTO{
+		Username: username,
+		Email:    email,
+		Password: hashedPassword,
+	})
 	if err != nil {
 		return nil, err
 	}

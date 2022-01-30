@@ -7,6 +7,7 @@ package mock_repositories
 import (
         reflect "reflect"
 
+        dtos "github.com/AndreyArthur/oganessone/src/core/dtos"
         entities "github.com/AndreyArthur/oganessone/src/core/entities"
         shared "github.com/AndreyArthur/oganessone/src/core/shared"
         gomock "github.com/golang/mock/gomock"
@@ -36,18 +37,18 @@ func (m *MockUsersRepository) EXPECT() *MockUsersRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockUsersRepository) Create(username, email, password string) (*entities.UserEntity, *shared.Error) {
+func (m *MockUsersRepository) Create(data *dtos.UserDTO) (*entities.UserEntity, *shared.Error) {
         m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Create", username, email, password)
+        ret := m.ctrl.Call(m, "Create", data)
         ret0, _ := ret[0].(*entities.UserEntity)
         ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockUsersRepositoryMockRecorder) Create(username, email, password interface{}) *gomock.Call {
+func (mr *MockUsersRepositoryMockRecorder) Create(data interface{}) *gomock.Call {
         mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUsersRepository)(nil).Create), username, email, password)
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUsersRepository)(nil).Create), data)
 }
 
 // FindByEmail mocks base method.

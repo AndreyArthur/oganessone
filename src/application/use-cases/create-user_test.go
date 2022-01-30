@@ -7,6 +7,7 @@ import (
 
 	mock_providers "github.com/AndreyArthur/oganessone/src/application/providers/mocks"
 	mock_repositories "github.com/AndreyArthur/oganessone/src/application/repositories/mocks"
+	"github.com/AndreyArthur/oganessone/src/core/dtos"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/AndreyArthur/oganessone/src/core/shared"
@@ -47,7 +48,7 @@ func TestCreateUserUseCase_SuccessCase(t *testing.T) {
 		Hash(password).
 		Return(fakeBcryptHash, nil)
 	repo.EXPECT().
-		Create(username, email, fakeBcryptHash).
+		Create(&dtos.UserDTO{Username: username, Email: email, Password: fakeBcryptHash}).
 		Return(repoUser, nil)
 	repo.EXPECT().
 		Save(repoUser).
@@ -83,7 +84,11 @@ func TestCreateUserUseCase_SanitizeValues(t *testing.T) {
 		Hash(strings.TrimSpace(password)).
 		Return(fakeBcryptHash, nil)
 	repo.EXPECT().
-		Create(strings.TrimSpace(username), strings.TrimSpace(email), fakeBcryptHash).
+		Create(&dtos.UserDTO{
+			Username: strings.TrimSpace(username),
+			Email:    strings.TrimSpace(email),
+			Password: fakeBcryptHash,
+		}).
 		Return(repoUser, nil)
 	repo.EXPECT().
 		Save(repoUser).
@@ -207,7 +212,7 @@ func TestCreateUserUseCase_CreateReturnError(t *testing.T) {
 		Hash(password).
 		Return(fakeBcryptHash, nil)
 	repo.EXPECT().
-		Create(username, email, fakeBcryptHash).
+		Create(&dtos.UserDTO{Username: username, Email: email, Password: fakeBcryptHash}).
 		Return(nil, &shared.Error{})
 	// act
 	user, err := useCase.Execute(username, email, password)
@@ -240,7 +245,7 @@ func TestCreateUserUseCase_PasswordValidationReturnError(t *testing.T) {
 		Hash(invalidPassword).
 		Return(fakeBcryptHash, nil)
 	repo.EXPECT().
-		Create(username, email, fakeBcryptHash).
+		Create(&dtos.UserDTO{Username: username, Email: email, Password: fakeBcryptHash}).
 		Return(repoUser, nil)
 	// act
 	user, err := useCase.Execute(username, email, invalidPassword)
@@ -273,7 +278,7 @@ func TestCreateUserUseCase_SaveReturnError(t *testing.T) {
 		Hash(password).
 		Return(fakeBcryptHash, nil)
 	repo.EXPECT().
-		Create(username, email, fakeBcryptHash).
+		Create(&dtos.UserDTO{Username: username, Email: email, Password: fakeBcryptHash}).
 		Return(repoUser, nil)
 	repo.EXPECT().
 		Save(repoUser).

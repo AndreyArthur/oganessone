@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 	"strings"
 	"time"
@@ -19,20 +20,54 @@ type UsersRepositoryPostgres struct {
 }
 
 func (usersRepository *UsersRepositoryPostgres) Create(
-	username string, email string, password string,
+	data *dtos.UserDTO,
 ) (*entities.UserEntity, *shared.Error) {
-	uuid, err := helpers.NewUuid()
+	generateNeededValues := func(
+		values *dtos.UserDTO,
+	) (*dtos.UserDTO, *shared.Error) {
+		if values.Username == "" || values.Email == "" || values.Password == "" {
+			log.Println(errors.New("username email and password fields are required"))
+			return nil, exceptions.NewInternalServerError()
+		}
+		var id, username, email, password string
+		var createdAt, updatedAt time.Time
+		uuid, err := helpers.NewUuid()
+		if err != nil {
+			return nil, err
+		}
+		if values.Id == "" {
+			id = uuid.Generate()
+		} else {
+			id = values.Id
+		}
+		username = values.Username
+		email = values.Email
+		password = values.Password
+		now := time.Now().UTC()
+		if values.CreatedAt == (time.Time{}) {
+			createdAt = now
+		} else {
+			createdAt = values.CreatedAt
+		}
+		if values.UpdatedAt == (time.Time{}) {
+			updatedAt = now
+		} else {
+			updatedAt = values.UpdatedAt
+		}
+		return &dtos.UserDTO{
+			Id:        id,
+			Username:  username,
+			Email:     email,
+			Password:  password,
+			CreatedAt: createdAt,
+			UpdatedAt: updatedAt,
+		}, nil
+	}
+	dto, err := generateNeededValues(data)
 	if err != nil {
 		return nil, err
 	}
-	user, err := entities.NewUserEntity(&dtos.UserDTO{
-		Id:        uuid.Generate(),
-		Username:  username,
-		Email:     email,
-		Password:  password,
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
-	})
+	user, err := entities.NewUserEntity(dto)
 	if err != nil {
 		return nil, err
 	}
