@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -56,6 +57,45 @@ func TestCreateUserUseCase_SuccessCase(t *testing.T) {
 	// assert
 	assert.Nil(t, err)
 	assert.Nil(t, user.IsValid())
+}
+
+func TestCreateUserUseCase_SanitizeValues(t *testing.T) {
+	// arrange
+	useCase, repo, encrypter, ctrl := setup(t)
+	defer ctrl.Finish()
+	username, email, password := "  username ", "  user@email.com ", " p4ssword  "
+	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	repoUser := &entities.UserEntity{
+		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
+		Username:  strings.TrimSpace(username),
+		Email:     strings.TrimSpace(email),
+		Password:  fakeBcryptHash,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	repo.EXPECT().
+		FindByUsername(strings.TrimSpace(username), false).
+		Return(nil, nil)
+	repo.EXPECT().
+		FindByEmail(strings.TrimSpace(email)).
+		Return(nil, nil)
+	encrypter.EXPECT().
+		Hash(strings.TrimSpace(password)).
+		Return(fakeBcryptHash, nil)
+	repo.EXPECT().
+		Create(strings.TrimSpace(username), strings.TrimSpace(email), fakeBcryptHash).
+		Return(repoUser, nil)
+	repo.EXPECT().
+		Save(repoUser).
+		Return(nil)
+	// act
+	user, err := useCase.Execute(username, email, password)
+	// assert
+	assert.Nil(t, err)
+	assert.NotEqual(t, user.Username, username)
+	assert.Equal(t, user.Username, strings.TrimSpace(username))
+	assert.NotEqual(t, user.Email, email)
+	assert.Equal(t, user.Email, strings.TrimSpace(email))
 }
 
 func TestCreateUserUseCase_FoundByUsername(t *testing.T) {

@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"strings"
+
 	"github.com/AndreyArthur/oganessone/src/application/providers"
 	"github.com/AndreyArthur/oganessone/src/application/repositories"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
@@ -13,9 +15,18 @@ type CreateUserUseCase struct {
 	encrypter  providers.EncrypterProvider
 }
 
+func (createUserUseCase *CreateUserUseCase) sanitize(
+	username *string, email *string, password *string,
+) {
+	*username = strings.TrimSpace(*username)
+	*email = strings.TrimSpace(*email)
+	*password = strings.TrimSpace(*password)
+}
+
 func (createUserUseCase *CreateUserUseCase) Execute(
 	username string, email string, password string,
 ) (*entities.UserEntity, *shared.Error) {
+	createUserUseCase.sanitize(&username, &email, &password)
 	foundByUsernameChannel, findByUsernameErrorChannel := make(chan *entities.UserEntity), make(chan *shared.Error)
 	foundByEmailChannel, findByEmailErrorChannel := make(chan *entities.UserEntity), make(chan *shared.Error)
 	go func() {
