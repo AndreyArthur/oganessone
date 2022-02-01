@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option go_package = "github.com/AndreyArthur/oganessone/src/infrastructure/grpc/protobuf";
+
+package protobuf;
+
+service UsersService {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {};
+}
+
+message Error {
+  string type = 1;
+  string name = 2;
+  string message = 3;
+}
+
+message User {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+}
+
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message CreateUserResponse {
+  User data = 1;
+  Error error = 2;
+}
