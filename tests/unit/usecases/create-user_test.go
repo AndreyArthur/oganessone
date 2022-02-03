@@ -1,4 +1,4 @@
-package usecases
+package test_usecases
 
 import (
 	"strings"
@@ -7,6 +7,7 @@ import (
 
 	mock_providers "github.com/AndreyArthur/oganessone/src/application/providers/mocks"
 	mock_repositories "github.com/AndreyArthur/oganessone/src/application/repositories/mocks"
+	usecases "github.com/AndreyArthur/oganessone/src/application/use-cases"
 	"github.com/AndreyArthur/oganessone/src/core/dtos"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
@@ -15,11 +16,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func setup(t *testing.T) (*CreateUserUseCase, *mock_repositories.MockUsersRepository, *mock_providers.MockEncrypterProvider, *gomock.Controller) {
+func setup(t *testing.T) (*usecases.CreateUserUseCase, *mock_repositories.MockUsersRepository, *mock_providers.MockEncrypterProvider, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
 	repo := mock_repositories.NewMockUsersRepository(ctrl)
 	encrypter := mock_providers.NewMockEncrypterProvider(ctrl)
-	createUserUseCase, _ := NewCreateUserUseCase(repo, encrypter)
+	createUserUseCase, _ := usecases.NewCreateUserUseCase(repo, encrypter)
 
 	return createUserUseCase, repo, encrypter, ctrl
 }

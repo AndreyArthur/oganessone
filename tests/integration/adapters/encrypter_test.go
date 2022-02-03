@@ -1,15 +1,16 @@
-package adapters
+package test_adapters
 
 import (
 	"regexp"
 	"testing"
 
+	"github.com/AndreyArthur/oganessone/src/infrastructure/adapters"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestEncrypterAdapter_Hash(t *testing.T) {
 	// arrange
-	encrypter, _ := NewEncrypterAdapter()
+	encrypter, _ := adapters.NewEncrypterAdapter()
 	text := "any_text"
 	regex := regexp.MustCompile(`^\$2[aby]?\$\d{1,2}\$[.\/A-Za-z0-9]{53}$`)
 	// act
@@ -20,7 +21,7 @@ func TestEncrypterAdapter_Hash(t *testing.T) {
 
 func TestEncrypterAdapter_SuccessCompare(t *testing.T) {
 	// arrange
-	encrypter, _ := NewEncrypterAdapter()
+	encrypter, _ := adapters.NewEncrypterAdapter()
 	text := "any_text"
 	hash, _ := encrypter.Hash(text)
 	// act
@@ -31,7 +32,7 @@ func TestEncrypterAdapter_SuccessCompare(t *testing.T) {
 
 func TestEncrypterAdapter_FailCompare(t *testing.T) {
 	// arrange
-	encrypter, _ := NewEncrypterAdapter()
+	encrypter, _ := adapters.NewEncrypterAdapter()
 	text := "any_text"
 	hash, _ := encrypter.Hash("other_text")
 	// act

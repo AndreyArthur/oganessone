@@ -1,4 +1,4 @@
-package presenters
+package test_presenters
 
 import (
 	"regexp"
@@ -11,14 +11,15 @@ import (
 	"github.com/AndreyArthur/oganessone/src/core/shared"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
 	"github.com/AndreyArthur/oganessone/src/presentation/contracts"
+	"github.com/AndreyArthur/oganessone/src/presentation/presenters"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
-func setup(t *testing.T) (*CreateUserPresenter, *mock_definitions.MockCreateUser, *gomock.Controller) {
+func setup(t *testing.T) (*presenters.CreateUserPresenter, *mock_definitions.MockCreateUser, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
 	useCase := mock_definitions.NewMockCreateUser(ctrl)
-	presenter, _ := NewCreateUserPresenter(useCase)
+	presenter, _ := presenters.NewCreateUserPresenter(useCase)
 	return presenter, useCase, ctrl
 }
 

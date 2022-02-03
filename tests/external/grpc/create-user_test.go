@@ -1,4 +1,4 @@
-package grpc_tests
+package test_grpc
 
 import (
 	"context"
@@ -18,7 +18,7 @@ import (
 )
 
 func setup() (protobuf.UsersServiceClient, func(), *sql.DB) {
-	abs, _ := filepath.Abs("../../../../.env.test")
+	abs, _ := filepath.Abs("../../../.env.test")
 	goerr := godotenv.Load(abs)
 	db, _ := database.NewDatabase()
 	sql, _ := db.Connect()

@@ -1,4 +1,4 @@
-package repositories
+package test_repositories
 
 import (
 	"database/sql"
@@ -13,11 +13,12 @@ import (
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/database"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
+	"github.com/AndreyArthur/oganessone/src/infrastructure/repositories"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
-func setup() (*UsersRepositoryPostgres, *sql.DB) {
+func setup() (*repositories.UsersRepositoryPostgres, *sql.DB) {
 	abs, _ := filepath.Abs("../../../.env.test")
 	goerr := godotenv.Load(abs)
 	if goerr != nil {
@@ -25,7 +26,7 @@ func setup() (*UsersRepositoryPostgres, *sql.DB) {
 	}
 	db, _ := database.NewDatabase()
 	sql, _ := db.Connect()
-	repo, _ := NewUsersRepositoryPostgres(sql)
+	repo, _ := repositories.NewUsersRepositoryPostgres(sql)
 	return repo, sql
 }
 

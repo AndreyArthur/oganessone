@@ -1,7 +1,8 @@
-package entities
+package test_entities
 
 import (
 	"github.com/AndreyArthur/oganessone/src/core/dtos"
+	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/stretchr/testify/assert"
 
@@ -9,8 +10,8 @@ import (
 	"time"
 )
 
-func setup() *UserEntity {
-	user, _ := NewUserEntity(&dtos.UserDTO{
+func setup() *entities.UserEntity {
+	user, _ := entities.NewUserEntity(&dtos.UserDTO{
 		Id:        "cc58997a-2403-af1e-7836-f0b338edcd60",
 		Username:  "username",
 		Email:     "user@email.com",
