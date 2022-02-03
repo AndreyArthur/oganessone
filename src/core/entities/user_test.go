@@ -25,14 +25,14 @@ func TestUserEntity_isIdValid(t *testing.T) {
 	// arrange
 	user := setup()
 	// act
-	err := user.isIdValid()
+	err := user.IsValid()
 	// assert
 	assert.Nil(t, err)
 
 	// arrange
 	user.Id = "not_an_uuid"
 	// act
-	err = user.isIdValid()
+	err = user.IsValid()
 	// assert
 	assert.Equal(t, err, exceptions.NewInvalidUserId())
 }
@@ -41,28 +41,28 @@ func TestUserEntity_isUsernameValid(t *testing.T) {
 	// arrange
 	user := setup()
 	// act
-	err := user.isUsernameValid()
+	err := user.IsValid()
 	// assert
 	assert.Nil(t, err)
 
 	// arrange
 	user.Username = "with spaces"
 	// act
-	err = user.isUsernameValid()
+	err = user.IsValid()
 	// assert
 	assert.Equal(t, err, exceptions.NewInvalidUserUsername())
 
 	// arrange
 	user.Username = "toooooooooooo_big" // more than 16 chars
 	// act
-	err = user.isUsernameValid()
+	err = user.IsValid()
 	// assert
 	assert.Equal(t, err, exceptions.NewInvalidUserUsername())
 
 	// arrange
 	user.Username = "sml" // less than 4 chars
 	// act
-	err = user.isUsernameValid()
+	err = user.IsValid()
 	// assert
 	assert.Equal(t, err, exceptions.NewInvalidUserUsername())
 }
@@ -71,14 +71,14 @@ func TestUserEntity_isEmailValid(t *testing.T) {
 	// arrange
 	user := setup()
 	// act
-	err := user.isEmailValid()
+	err := user.IsValid()
 	// assert
 	assert.Nil(t, err)
 
 	// arrange
 	user.Email = "invalid_email"
 	// act
-	err = user.isEmailValid()
+	err = user.IsValid()
 	// assert
 	assert.Equal(t, err, exceptions.NewInvalidUserEmail())
 }
@@ -87,14 +87,14 @@ func TestUserEntity_isPasswordHashValid(t *testing.T) {
 	// arrange
 	user := setup()
 	// act
-	err := user.isPasswordHashValid()
+	err := user.IsValid()
 	// assert
 	assert.Nil(t, err)
 
 	// arrange
 	user.Password = "not_a_bcrypt_hash"
 	// act
-	err = user.isPasswordHashValid()
+	err = user.IsValid()
 	// assert
 	assert.Equal(t, err, exceptions.NewInvalidUserPasswordHash())
 }
