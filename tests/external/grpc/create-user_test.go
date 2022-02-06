@@ -11,6 +11,7 @@ import (
 	"github.com/AndreyArthur/oganessone/src/infrastructure/database"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/grpc"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/grpc/protobuf"
+	"github.com/AndreyArthur/oganessone/tests/helpers/verifier"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	google_grpc "google.golang.org/grpc"
@@ -70,8 +71,11 @@ func TestGrpcCreateUser_Success(t *testing.T) {
 	// assert
 	assert.Nil(t, goerr)
 	assert.Nil(t, response.Error)
-	assert.Equal(t, response.Data.Username, username)
-	assert.Equal(t, response.Data.Email, email)
+	assert.True(t, verifier.IsUuid(response.Data.Id))
+	assert.True(t, verifier.IsUserUsername(response.Data.Username))
+	assert.True(t, verifier.IsEmail(response.Data.Email))
+	assert.True(t, verifier.IsISO8601(response.Data.CreatedAt))
+	assert.True(t, verifier.IsISO8601(response.Data.UpdatedAt))
 }
 
 func TestGrpcCreateUser_UsernameAlreadyInUse(t *testing.T) {

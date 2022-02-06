@@ -1,7 +1,6 @@
 package test_presenters
 
 import (
-	"regexp"
 	"testing"
 	"time"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
 	"github.com/AndreyArthur/oganessone/src/presentation/contracts"
 	"github.com/AndreyArthur/oganessone/src/presentation/presenters"
+	"github.com/AndreyArthur/oganessone/tests/helpers/verifier"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -47,7 +47,6 @@ func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 	useCase.EXPECT().
 		Execute(username, email, password).
 		Return(entity, nil)
-	iso8601Regex := regexp.MustCompile(`^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(\.\d+)?(([+-]\d\d:\d\d)|Z)?$`)
 	// act
 	result, err := presenter.Handle(&contracts.CreateUserPresenterRequest{
 		Body: &contracts.CreateUserPresenterRequestBody{
@@ -58,11 +57,11 @@ func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 	})
 	// assert
 	assert.Nil(t, err)
-	assert.Equal(t, result.Body.Id, id)
-	assert.Equal(t, result.Body.Username, username)
-	assert.Equal(t, result.Body.Email, email)
-	assert.True(t, iso8601Regex.Match([]byte(result.Body.CreatedAt)))
-	assert.True(t, iso8601Regex.Match([]byte(result.Body.UpdatedAt)))
+	assert.True(t, verifier.IsUuid(result.Body.Id))
+	assert.True(t, verifier.IsUserUsername(result.Body.Username))
+	assert.True(t, verifier.IsEmail(result.Body.Email))
+	assert.True(t, verifier.IsISO8601(result.Body.CreatedAt))
+	assert.True(t, verifier.IsISO8601(result.Body.UpdatedAt))
 }
 
 func TestCreateUserPresenter_FailCase(t *testing.T) {
