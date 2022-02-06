@@ -5,12 +5,13 @@ import (
 	"database/sql"
 	"log"
 	"net"
-	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/AndreyArthur/oganessone/src/infrastructure/database"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/grpc"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/grpc/protobuf"
+	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
 	"github.com/AndreyArthur/oganessone/tests/helpers/verifier"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
@@ -19,8 +20,23 @@ import (
 )
 
 func setup() (protobuf.UsersServiceClient, func(), *sql.DB) {
-	abs, _ := filepath.Abs("../../../.env.test")
-	goerr := godotenv.Load(abs)
+	path, err := helpers.NewPath()
+	if err != nil {
+		log.Fatal(err)
+	}
+	filename, err := path.File()
+	if err != nil {
+		log.Fatal(err)
+	}
+	dirname, err := path.Dir(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	envFile := strings.Join([]string{dirname, "/../../../.env.test"}, "")
+	goerr := godotenv.Load(envFile)
+	if goerr != nil {
+		log.Fatal(goerr)
+	}
 	db, _ := database.NewDatabase()
 	sql, _ := db.Connect()
 	if goerr != nil {

@@ -3,7 +3,6 @@ package test_repositories
 import (
 	"database/sql"
 	"log"
-	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -19,8 +18,20 @@ import (
 )
 
 func setup() (*repositories.UsersRepositoryPostgres, *sql.DB) {
-	abs, _ := filepath.Abs("../../../.env.test")
-	goerr := godotenv.Load(abs)
+	path, err := helpers.NewPath()
+	if err != nil {
+		log.Fatal(err)
+	}
+	filename, err := path.File()
+	if err != nil {
+		log.Fatal(err)
+	}
+	dirname, err := path.Dir(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	envFile := strings.Join([]string{dirname, "/../../../.env.test"}, "")
+	goerr := godotenv.Load(envFile)
 	if goerr != nil {
 		log.Fatal(goerr)
 	}
