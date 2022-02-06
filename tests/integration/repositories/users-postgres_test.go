@@ -13,27 +13,17 @@ import (
 	"github.com/AndreyArthur/oganessone/src/infrastructure/database"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/repositories"
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func setup() (*repositories.UsersRepositoryPostgres, *sql.DB) {
-	path, err := helpers.NewPath()
+	env, err := helpers.NewEnv()
 	if err != nil {
 		log.Fatal(err)
 	}
-	filename, err := path.File()
+	err = env.Load("test")
 	if err != nil {
 		log.Fatal(err)
-	}
-	dirname, err := path.Dir(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-	envFile := strings.Join([]string{dirname, "/../../../.env.test"}, "")
-	goerr := godotenv.Load(envFile)
-	if goerr != nil {
-		log.Fatal(goerr)
 	}
 	db, _ := database.NewDatabase()
 	sql, _ := db.Connect()
