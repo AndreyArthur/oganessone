@@ -17,7 +17,9 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func setup() (protobuf.UsersServiceClient, func(), *sql.DB) {
+type CreateUserGrpcTest struct{}
+
+func (*CreateUserGrpcTest) setup() (protobuf.UsersServiceClient, func(), *sql.DB) {
 	env, err := helpers.NewEnv()
 	if err != nil {
 		log.Fatal(err)
@@ -60,7 +62,7 @@ func setup() (protobuf.UsersServiceClient, func(), *sql.DB) {
 
 func TestGrpcCreateUser_Success(t *testing.T) {
 	// arrange
-	client, closeConnections, sql := setup()
+	client, closeConnections, sql := (&CreateUserGrpcTest{}).setup()
 	defer closeConnections()
 	defer sql.Query("DELETE FROM users;")
 	username, email, password := "username", "user@email.com", "p4ssword"
@@ -82,7 +84,7 @@ func TestGrpcCreateUser_Success(t *testing.T) {
 
 func TestGrpcCreateUser_UsernameAlreadyInUse(t *testing.T) {
 	// arrange
-	client, closeConnections, sql := setup()
+	client, closeConnections, sql := (&CreateUserGrpcTest{}).setup()
 	defer closeConnections()
 	defer sql.Query("DELETE FROM users;")
 	username, email, password := "username", "user@email.com", "p4ssword"
@@ -105,7 +107,7 @@ func TestGrpcCreateUser_UsernameAlreadyInUse(t *testing.T) {
 
 func TestGrpcCreateUser_EmailAlreadyInUse(t *testing.T) {
 	// arrange
-	client, closeConnections, sql := setup()
+	client, closeConnections, sql := (&CreateUserGrpcTest{}).setup()
 	defer closeConnections()
 	defer sql.Query("DELETE FROM users;")
 	username, email, password := "username", "user@email.com", "p4ssword"

@@ -17,7 +17,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func setup(t *testing.T) (*presenters.CreateUserPresenter, *mock_definitions.MockCreateUser, *gomock.Controller) {
+type CreateUserPresenterTest struct{}
+
+func (*CreateUserPresenterTest) setup(t *testing.T) (*presenters.CreateUserPresenter, *mock_definitions.MockCreateUser, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
 	useCase := mock_definitions.NewMockCreateUser(ctrl)
 	presenter, _ := presenters.NewCreateUserPresenter(useCase)
@@ -26,7 +28,7 @@ func setup(t *testing.T) (*presenters.CreateUserPresenter, *mock_definitions.Moc
 
 func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 	// arrange
-	presenter, useCase, ctrl := setup(t)
+	presenter, useCase, ctrl := (&CreateUserPresenterTest{}).setup(t)
 	defer ctrl.Finish()
 	uuid, _ := helpers.NewUuid()
 	now := time.Now().UTC()
@@ -70,7 +72,7 @@ func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 }
 
 func TestCreateUserPresenter_FailureCase(t *testing.T) {
-	presenter, useCase, ctrl := setup(t)
+	presenter, useCase, ctrl := (&CreateUserPresenterTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password :=
 		"username",

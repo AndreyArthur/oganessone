@@ -17,7 +17,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func setup(t *testing.T) (*usecases.CreateUserUseCase, *mock_repositories.MockUsersRepository, *mock_providers.MockEncrypterProvider, *gomock.Controller) {
+type CreateUserUseCaseTest struct{}
+
+func (*CreateUserUseCaseTest) setup(t *testing.T) (*usecases.CreateUserUseCase, *mock_repositories.MockUsersRepository, *mock_providers.MockEncrypterProvider, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
 	repo := mock_repositories.NewMockUsersRepository(ctrl)
 	encrypter := mock_providers.NewMockEncrypterProvider(ctrl)
@@ -28,7 +30,7 @@ func setup(t *testing.T) (*usecases.CreateUserUseCase, *mock_repositories.MockUs
 
 func TestCreateUserUseCase_SuccessCase(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
@@ -68,7 +70,7 @@ func TestCreateUserUseCase_SuccessCase(t *testing.T) {
 
 func TestCreateUserUseCase_SanitizeValues(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "  username ", "  user@email.com ", " p4ssword  "
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
@@ -115,7 +117,7 @@ func TestCreateUserUseCase_SanitizeValues(t *testing.T) {
 
 func TestCreateUserUseCase_FoundByUsername(t *testing.T) {
 	// arrange
-	useCase, repo, _, ctrl := setup(t)
+	useCase, repo, _, ctrl := (&CreateUserUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	repo.EXPECT().
@@ -137,7 +139,7 @@ func TestCreateUserUseCase_FoundByUsername(t *testing.T) {
 
 func TestCreateUserUseCase_FindByUsernameReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, _, ctrl := setup(t)
+	useCase, repo, _, ctrl := (&CreateUserUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	repo.EXPECT().
@@ -159,7 +161,7 @@ func TestCreateUserUseCase_FindByUsernameReturnError(t *testing.T) {
 
 func TestCreateUserUseCase_FoundByEmail(t *testing.T) {
 	// arrange
-	useCase, repo, _, ctrl := setup(t)
+	useCase, repo, _, ctrl := (&CreateUserUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	repo.EXPECT().
@@ -181,7 +183,7 @@ func TestCreateUserUseCase_FoundByEmail(t *testing.T) {
 
 func TestCreateUserUseCase_FindByEmailReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, _, ctrl := setup(t)
+	useCase, repo, _, ctrl := (&CreateUserUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	repo.EXPECT().
@@ -203,7 +205,7 @@ func TestCreateUserUseCase_FindByEmailReturnError(t *testing.T) {
 
 func TestCreateUserUseCase_EncrypterHashReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	repo.EXPECT().
@@ -228,7 +230,7 @@ func TestCreateUserUseCase_EncrypterHashReturnError(t *testing.T) {
 
 func TestCreateUserUseCase_CreateReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
@@ -257,7 +259,7 @@ func TestCreateUserUseCase_CreateReturnError(t *testing.T) {
 
 func TestCreateUserUseCase_PasswordValidationReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, invalidPassword := "username", "user@email.com", "invalid password"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
@@ -294,7 +296,7 @@ func TestCreateUserUseCase_PasswordValidationReturnError(t *testing.T) {
 
 func TestCreateUserUseCase_SaveReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"

@@ -16,7 +16,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func setup() (*repositories.UsersRepositoryPostgres, *sql.DB) {
+type UsersRepositoryPostgresTest struct{}
+
+func (*UsersRepositoryPostgresTest) setup() (*repositories.UsersRepositoryPostgres, *sql.DB) {
 	env, err := helpers.NewEnv()
 	if err != nil {
 		log.Fatal(err)
@@ -33,7 +35,7 @@ func setup() (*repositories.UsersRepositoryPostgres, *sql.DB) {
 
 func TestUsersRepositoryPostgres_CreateWithNeededValues(t *testing.T) {
 	// arrange
-	repo, _ := setup()
+	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
 	username, email, password := "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	// act
 	user, err := repo.Create(&dtos.UserDTO{
@@ -48,7 +50,7 @@ func TestUsersRepositoryPostgres_CreateWithNeededValues(t *testing.T) {
 
 func TestUsersRepositoryPostgres_CreateWithoutNeededValues(t *testing.T) {
 	// arrange
-	repo, _ := setup()
+	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
 	username, email, password := "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	// act
 	first, firstErr := repo.Create(&dtos.UserDTO{
@@ -74,7 +76,7 @@ func TestUsersRepositoryPostgres_CreateWithoutNeededValues(t *testing.T) {
 
 func TestUsersRepositoryPostgres_CreateWithCustomValues(t *testing.T) {
 	// arrange
-	repo, _ := setup()
+	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
 	uuid, _ := helpers.NewUuid()
 	now := time.Now().UTC()
 	id, username, email, password, createdAt, updatedAt :=
@@ -102,7 +104,7 @@ func TestUsersRepositoryPostgres_CreateWithCustomValues(t *testing.T) {
 
 func TestUsersRepositoryPostgres_FindByUsernameCaseSensitive(t *testing.T) {
 	// arrange
-	repo, sql := setup()
+	repo, sql := (&UsersRepositoryPostgresTest{}).setup()
 	uuid, _ := helpers.NewUuid()
 	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	stmt, goerr := sql.Prepare(`
@@ -134,7 +136,7 @@ func TestUsersRepositoryPostgres_FindByUsernameCaseSensitive(t *testing.T) {
 
 func TestUsersRepositoryPostgres_FindByUsernameCaseInsensitive(t *testing.T) {
 	// arrange
-	repo, sql := setup()
+	repo, sql := (&UsersRepositoryPostgresTest{}).setup()
 	uuid, _ := helpers.NewUuid()
 	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	stmt, goerr := sql.Prepare(`
@@ -166,7 +168,7 @@ func TestUsersRepositoryPostgres_FindByUsernameCaseInsensitive(t *testing.T) {
 
 func TestUsersRepositoryPostgres_FindByUsernameReturnNil(t *testing.T) {
 	// arrange
-	repo, _ := setup()
+	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
 	username := "username"
 	// act
 	user, err := repo.FindByUsername(username, true)
@@ -177,7 +179,7 @@ func TestUsersRepositoryPostgres_FindByUsernameReturnNil(t *testing.T) {
 
 func TestUsersRepositoryPostgres_FindByEmail(t *testing.T) {
 	// arrange
-	repo, sql := setup()
+	repo, sql := (&UsersRepositoryPostgresTest{}).setup()
 	uuid, _ := helpers.NewUuid()
 	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	stmt, goerr := sql.Prepare(`
@@ -209,7 +211,7 @@ func TestUsersRepositoryPostgres_FindByEmail(t *testing.T) {
 
 func TestUsersRepositoryPostgres_FindByEmailReturnNil(t *testing.T) {
 	// arrange
-	repo, _ := setup()
+	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
 	email := "user@email.com"
 	// act
 	user, err := repo.FindByEmail(email)
@@ -220,7 +222,7 @@ func TestUsersRepositoryPostgres_FindByEmailReturnNil(t *testing.T) {
 
 func TestUsersRepositoryPostgres_Save(t *testing.T) {
 	// arrange
-	repo, sql := setup()
+	repo, sql := (&UsersRepositoryPostgresTest{}).setup()
 	uuid, _ := helpers.NewUuid()
 	id, username, email, password, createdAt, updatedAt :=
 		uuid.Generate(),

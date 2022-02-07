@@ -10,7 +10,9 @@ import (
 	"time"
 )
 
-func setup() *entities.UserEntity {
+type UserEntityTest struct{}
+
+func (*UserEntityTest) setup() *entities.UserEntity {
 	user, _ := entities.NewUserEntity(&dtos.UserDTO{
 		Id:        "cc58997a-2403-af1e-7836-f0b338edcd60",
 		Username:  "username",
@@ -24,7 +26,7 @@ func setup() *entities.UserEntity {
 
 func TestUserEntity_isIdValid(t *testing.T) {
 	// arrange
-	user := setup()
+	user := (&UserEntityTest{}).setup()
 	// act
 	err := user.IsValid()
 	// assert
@@ -40,7 +42,7 @@ func TestUserEntity_isIdValid(t *testing.T) {
 
 func TestUserEntity_isUsernameValid(t *testing.T) {
 	// arrange
-	user := setup()
+	user := (&UserEntityTest{}).setup()
 	// act
 	err := user.IsValid()
 	// assert
@@ -70,7 +72,7 @@ func TestUserEntity_isUsernameValid(t *testing.T) {
 
 func TestUserEntity_isEmailValid(t *testing.T) {
 	// arrange
-	user := setup()
+	user := (&UserEntityTest{}).setup()
 	// act
 	err := user.IsValid()
 	// assert
@@ -86,7 +88,7 @@ func TestUserEntity_isEmailValid(t *testing.T) {
 
 func TestUserEntity_isPasswordHashValid(t *testing.T) {
 	// arrange
-	user := setup()
+	user := (&UserEntityTest{}).setup()
 	// act
 	err := user.IsValid()
 	// assert
@@ -102,7 +104,7 @@ func TestUserEntity_isPasswordHashValid(t *testing.T) {
 
 func TestUserEntity_IsPasswordValid(t *testing.T) {
 	// arrange
-	user := setup()
+	user := (&UserEntityTest{}).setup()
 	password := "p4ssword"
 	// act
 	err := user.IsPasswordValid(password)
@@ -110,7 +112,7 @@ func TestUserEntity_IsPasswordValid(t *testing.T) {
 	assert.Nil(t, err)
 
 	// arrange
-	user = setup()
+	user = (&UserEntityTest{}).setup()
 	password = "password"
 	// act
 	err = user.IsPasswordValid(password)
@@ -118,7 +120,7 @@ func TestUserEntity_IsPasswordValid(t *testing.T) {
 	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
 
 	// arrange
-	user = setup()
+	user = (&UserEntityTest{}).setup()
 	password = "12345678"
 	// act
 	err = user.IsPasswordValid(password)
@@ -126,7 +128,7 @@ func TestUserEntity_IsPasswordValid(t *testing.T) {
 	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
 
 	// arrange
-	user = setup()
+	user = (&UserEntityTest{}).setup()
 	password = "to0_sml" // less than 8 characters
 	// act
 	err = user.IsPasswordValid(password)
@@ -134,7 +136,7 @@ func TestUserEntity_IsPasswordValid(t *testing.T) {
 	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
 
 	// arrange
-	user = setup()
+	user = (&UserEntityTest{}).setup()
 	password = "toooooooooooooooooooooooooooo_big" // more than 32 characters
 	// act
 	err = user.IsPasswordValid(password)
