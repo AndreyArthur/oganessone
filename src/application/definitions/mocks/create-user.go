@@ -7,7 +7,7 @@ package mock_definitions
 import (
         reflect "reflect"
 
-        entities "github.com/AndreyArthur/oganessone/src/core/entities"
+        definitions "github.com/AndreyArthur/oganessone/src/application/definitions"
         shared "github.com/AndreyArthur/oganessone/src/core/shared"
         gomock "github.com/golang/mock/gomock"
 )
@@ -36,16 +36,16 @@ func (m *MockCreateUser) EXPECT() *MockCreateUserMockRecorder {
 }
 
 // Execute mocks base method.
-func (m *MockCreateUser) Execute(username, email, password string) (*entities.UserEntity, *shared.Error) {
+func (m *MockCreateUser) Execute(data *definitions.CreateUserDTO) (*definitions.CreateUserResult, *shared.Error) {
         m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Execute", username, email, password)
-        ret0, _ := ret[0].(*entities.UserEntity)
+        ret := m.ctrl.Call(m, "Execute", data)
+        ret0, _ := ret[0].(*definitions.CreateUserResult)
         ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }
 
 // Execute indicates an expected call of Execute.
-func (mr *MockCreateUserMockRecorder) Execute(username, email, password interface{}) *gomock.Call {
+func (mr *MockCreateUserMockRecorder) Execute(data interface{}) *gomock.Call {
         mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockCreateUser)(nil).Execute), username, email, password)
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockCreateUser)(nil).Execute), data)
 }

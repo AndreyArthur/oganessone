@@ -16,11 +16,12 @@ type CreateUserPresenter struct {
 func (createUserPresenter *CreateUserPresenter) Handle(
 	request *contracts.CreateUserPresenterRequest,
 ) (*contracts.CreateUserPresenterResponse, *shared.Error) {
-	user, err := createUserPresenter.createUser.Execute(
-		request.Body.Username,
-		request.Body.Email,
-		request.Body.Password,
-	)
+	user, err := createUserPresenter.createUser.
+		Execute(&definitions.CreateUserDTO{
+			Username: request.Body.Username,
+			Email:    request.Body.Email,
+			Password: request.Body.Password,
+		})
 	if err != nil {
 		return nil, err
 	}

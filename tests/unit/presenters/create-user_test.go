@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AndreyArthur/oganessone/src/application/definitions"
 	mock_definitions "github.com/AndreyArthur/oganessone/src/application/definitions/mocks"
 	"github.com/AndreyArthur/oganessone/src/core/dtos"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
@@ -45,7 +46,11 @@ func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 		UpdatedAt: updatedAt,
 	})
 	useCase.EXPECT().
-		Execute(username, email, password).
+		Execute(&definitions.CreateUserDTO{
+			Username: username,
+			Email:    email,
+			Password: password,
+		}).
 		Return(entity, nil)
 	// act
 	result, err := presenter.Handle(&contracts.CreateUserPresenterRequest{
@@ -64,7 +69,7 @@ func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 	assert.True(t, verifier.IsISO8601(result.Body.UpdatedAt))
 }
 
-func TestCreateUserPresenter_FailCase(t *testing.T) {
+func TestCreateUserPresenter_FailureCase(t *testing.T) {
 	presenter, useCase, ctrl := setup(t)
 	defer ctrl.Finish()
 	username, email, password :=
@@ -72,7 +77,11 @@ func TestCreateUserPresenter_FailCase(t *testing.T) {
 		"user@email.com",
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	useCase.EXPECT().
-		Execute(username, email, password).
+		Execute(&definitions.CreateUserDTO{
+			Username: username,
+			Email:    email,
+			Password: password,
+		}).
 		Return(nil, &shared.Error{})
 	// act
 	result, err := presenter.Handle(&contracts.CreateUserPresenterRequest{

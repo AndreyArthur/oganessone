@@ -3,6 +3,7 @@ package usecases
 import (
 	"strings"
 
+	"github.com/AndreyArthur/oganessone/src/application/definitions"
 	"github.com/AndreyArthur/oganessone/src/application/providers"
 	"github.com/AndreyArthur/oganessone/src/application/repositories"
 	"github.com/AndreyArthur/oganessone/src/core/dtos"
@@ -53,10 +54,11 @@ func (createUserUseCase *CreateUserUseCase) findUser(
 }
 
 func (createUserUseCase *CreateUserUseCase) Execute(
-	username string, email string, password string,
-) (*entities.UserEntity, *shared.Error) {
-	createUserUseCase.sanitize(&username, &email, &password)
-	foundByUsername, foundByEmail, err := createUserUseCase.findUser(username, email)
+	data *definitions.CreateUserDTO,
+) (*definitions.CreateUserResult, *shared.Error) {
+	createUserUseCase.sanitize(&data.Username, &data.Email, &data.Password)
+	foundByUsername, foundByEmail, err := createUserUseCase.
+		findUser(data.Username, data.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -66,19 +68,19 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	if foundByEmail != nil {
 		return nil, exceptions.NewUserEmailAlreadyInUse()
 	}
-	hashedPassword, err := createUserUseCase.encrypter.Hash(password)
+	hashedPassword, err := createUserUseCase.encrypter.Hash(data.Password)
 	if err != nil {
 		return nil, exceptions.NewInternalServerError()
 	}
 	user, err := createUserUseCase.repository.Create(&dtos.UserDTO{
-		Username: username,
-		Email:    email,
+		Username: data.Username,
+		Email:    data.Email,
 		Password: hashedPassword,
 	})
 	if err != nil {
 		return nil, err
 	}
-	err = user.IsPasswordValid(password)
+	err = user.IsPasswordValid(data.Password)
 	if err != nil {
 		return nil, err
 	}

@@ -5,6 +5,14 @@ import (
 	"github.com/AndreyArthur/oganessone/src/core/shared"
 )
 
+type CreateUserDTO struct {
+	Username string
+	Email    string
+	Password string
+}
+
+type CreateUserResult = entities.UserEntity
+
 type CreateUser interface {
-	Execute(username string, email string, password string) (*entities.UserEntity, *shared.Error)
+	Execute(data *CreateUserDTO) (*CreateUserResult, *shared.Error)
 }

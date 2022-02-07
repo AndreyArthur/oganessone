@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AndreyArthur/oganessone/src/application/definitions"
 	mock_providers "github.com/AndreyArthur/oganessone/src/application/providers/mocks"
 	mock_repositories "github.com/AndreyArthur/oganessone/src/application/repositories/mocks"
 	usecases "github.com/AndreyArthur/oganessone/src/application/usecases"
@@ -55,7 +56,11 @@ func TestCreateUserUseCase_SuccessCase(t *testing.T) {
 		Save(repoUser).
 		Return(nil)
 	// act
-	user, err := useCase.Execute(username, email, password)
+	user, err := useCase.Execute(&definitions.CreateUserDTO{
+		Username: username,
+		Email:    email,
+		Password: password,
+	})
 	// assert
 	assert.Nil(t, err)
 	assert.Nil(t, user.IsValid())
@@ -95,7 +100,11 @@ func TestCreateUserUseCase_SanitizeValues(t *testing.T) {
 		Save(repoUser).
 		Return(nil)
 	// act
-	user, err := useCase.Execute(username, email, password)
+	user, err := useCase.Execute(&definitions.CreateUserDTO{
+		Username: username,
+		Email:    email,
+		Password: password,
+	})
 	// assert
 	assert.Nil(t, err)
 	assert.NotEqual(t, user.Username, username)
@@ -116,7 +125,11 @@ func TestCreateUserUseCase_FoundByUsername(t *testing.T) {
 		FindByEmail(email).
 		Return(nil, nil)
 	// act
-	user, err := useCase.Execute(username, email, password)
+	user, err := useCase.Execute(&definitions.CreateUserDTO{
+		Username: username,
+		Email:    email,
+		Password: password,
+	})
 	// assert
 	assert.Equal(t, err, exceptions.NewUserUsernameAlreadyInUse())
 	assert.Nil(t, user)
@@ -134,7 +147,11 @@ func TestCreateUserUseCase_FindByUsernameReturnError(t *testing.T) {
 		FindByEmail(email).
 		Return(&entities.UserEntity{}, nil)
 	// act
-	user, err := useCase.Execute(username, email, password)
+	user, err := useCase.Execute(&definitions.CreateUserDTO{
+		Username: username,
+		Email:    email,
+		Password: password,
+	})
 	// assert
 	assert.Equal(t, err, &shared.Error{})
 	assert.Nil(t, user)
@@ -152,7 +169,11 @@ func TestCreateUserUseCase_FoundByEmail(t *testing.T) {
 		FindByEmail(email).
 		Return(&entities.UserEntity{}, nil)
 	// act
-	user, err := useCase.Execute(username, email, password)
+	user, err := useCase.Execute(&definitions.CreateUserDTO{
+		Username: username,
+		Email:    email,
+		Password: password,
+	})
 	// assert
 	assert.Nil(t, user)
 	assert.Equal(t, err, exceptions.NewUserEmailAlreadyInUse())
@@ -170,7 +191,11 @@ func TestCreateUserUseCase_FindByEmailReturnError(t *testing.T) {
 		FindByEmail(email).
 		Return(nil, &shared.Error{})
 	// act
-	user, err := useCase.Execute(username, email, password)
+	user, err := useCase.Execute(&definitions.CreateUserDTO{
+		Username: username,
+		Email:    email,
+		Password: password,
+	})
 	// assert
 	assert.Equal(t, err, &shared.Error{})
 	assert.Nil(t, user)
@@ -191,7 +216,11 @@ func TestCreateUserUseCase_EncrypterHashReturnError(t *testing.T) {
 		Hash(password).
 		Return("", &shared.Error{})
 	// act
-	user, err := useCase.Execute(username, email, password)
+	user, err := useCase.Execute(&definitions.CreateUserDTO{
+		Username: username,
+		Email:    email,
+		Password: password,
+	})
 	// assert
 	assert.Equal(t, err, exceptions.NewInternalServerError())
 	assert.Nil(t, user)
@@ -216,7 +245,11 @@ func TestCreateUserUseCase_CreateReturnError(t *testing.T) {
 		Create(&dtos.UserDTO{Username: username, Email: email, Password: fakeBcryptHash}).
 		Return(nil, &shared.Error{})
 	// act
-	user, err := useCase.Execute(username, email, password)
+	user, err := useCase.Execute(&definitions.CreateUserDTO{
+		Username: username,
+		Email:    email,
+		Password: password,
+	})
 	// assert
 	assert.Equal(t, err, &shared.Error{})
 	assert.Nil(t, user)
@@ -249,7 +282,11 @@ func TestCreateUserUseCase_PasswordValidationReturnError(t *testing.T) {
 		Create(&dtos.UserDTO{Username: username, Email: email, Password: fakeBcryptHash}).
 		Return(repoUser, nil)
 	// act
-	user, err := useCase.Execute(username, email, invalidPassword)
+	user, err := useCase.Execute(&definitions.CreateUserDTO{
+		Username: username,
+		Email:    email,
+		Password: invalidPassword,
+	})
 	// assert
 	assert.Nil(t, user)
 	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
@@ -285,7 +322,11 @@ func TestCreateUserUseCase_SaveReturnError(t *testing.T) {
 		Save(repoUser).
 		Return(&shared.Error{})
 	// act
-	user, err := useCase.Execute(username, email, password)
+	user, err := useCase.Execute(&definitions.CreateUserDTO{
+		Username: username,
+		Email:    email,
+		Password: password,
+	})
 	// assert
 	assert.Nil(t, user)
 	assert.Equal(t, err, &shared.Error{})
