@@ -24,7 +24,6 @@ func (*CreateUserUseCaseTest) setup(t *testing.T) (*usecases.CreateUserUseCase, 
 	repo := mock_repositories.NewMockUsersRepository(ctrl)
 	encrypter := mock_providers.NewMockEncrypterProvider(ctrl)
 	createUserUseCase, _ := usecases.NewCreateUserUseCase(repo, encrypter)
-
 	return createUserUseCase, repo, encrypter, ctrl
 }
 
