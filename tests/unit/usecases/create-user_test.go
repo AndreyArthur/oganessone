@@ -7,7 +7,7 @@ import (
 
 	mock_providers "github.com/AndreyArthur/oganessone/src/application/providers/mocks"
 	mock_repositories "github.com/AndreyArthur/oganessone/src/application/repositories/mocks"
-	usecases "github.com/AndreyArthur/oganessone/src/application/use-cases"
+	usecases "github.com/AndreyArthur/oganessone/src/application/usecases"
 	"github.com/AndreyArthur/oganessone/src/core/dtos"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"

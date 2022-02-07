@@ -1,7 +1,7 @@
 package factories
 
 import (
-	usecases "github.com/AndreyArthur/oganessone/src/application/use-cases"
+	usecases "github.com/AndreyArthur/oganessone/src/application/usecases"
 	"github.com/AndreyArthur/oganessone/src/core/shared"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/adapters"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/database"
