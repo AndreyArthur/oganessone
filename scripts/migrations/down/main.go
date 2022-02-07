@@ -9,7 +9,7 @@ import (
 
 func main() {
 	var environment string
-	flag.StringVar(&environment, "e", "test", "Specify an environment. Default is test.")
+	flag.StringVar(&environment, "env", "test", "Specify an environment. Default is test.")
 	flag.Parse()
 	migrator, err := factories.MakeMigrator(environment)
 	if err != nil {
