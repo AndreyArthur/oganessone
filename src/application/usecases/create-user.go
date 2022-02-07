@@ -24,10 +24,9 @@ func (createUserUseCase *CreateUserUseCase) sanitize(
 	*password = strings.TrimSpace(*password)
 }
 
-func (createUserUseCase *CreateUserUseCase) Execute(
-	username string, email string, password string,
-) (*entities.UserEntity, *shared.Error) {
-	createUserUseCase.sanitize(&username, &email, &password)
+func (createUserUseCase *CreateUserUseCase) findUser(
+	username string, email string,
+) (*entities.UserEntity, *entities.UserEntity, *shared.Error) {
 	foundByUsernameChannel, findByUsernameErrorChannel := make(chan *entities.UserEntity), make(chan *shared.Error)
 	foundByEmailChannel, findByEmailErrorChannel := make(chan *entities.UserEntity), make(chan *shared.Error)
 	go func() {
@@ -45,10 +44,21 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	foundByUsername, foundByEmail := <-foundByUsernameChannel, <-foundByEmailChannel
 	findByUsernameError, findByEmailError := <-findByUsernameErrorChannel, <-findByEmailErrorChannel
 	if findByUsernameError != nil {
-		return nil, findByUsernameError
+		return nil, nil, findByUsernameError
 	}
 	if findByEmailError != nil {
-		return nil, findByEmailError
+		return nil, nil, findByEmailError
+	}
+	return foundByUsername, foundByEmail, nil
+}
+
+func (createUserUseCase *CreateUserUseCase) Execute(
+	username string, email string, password string,
+) (*entities.UserEntity, *shared.Error) {
+	createUserUseCase.sanitize(&username, &email, &password)
+	foundByUsername, foundByEmail, err := createUserUseCase.findUser(username, email)
+	if err != nil {
+		return nil, err
 	}
 	if foundByUsername != nil {
 		return nil, exceptions.NewUserUsernameAlreadyInUse()
