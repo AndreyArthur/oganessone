@@ -13,6 +13,7 @@ type CreateSessionUseCase struct {
 	repository repositories.UsersRepository
 	encrypter  providers.EncrypterProvider
 	session    providers.SessionProvider
+	cache      providers.CacheProvider
 }
 
 func (createSessionUseCase *CreateSessionUseCase) findUser(
@@ -72,6 +73,10 @@ func (createSessionUseCase *CreateSessionUseCase) Execute(
 	if err != nil {
 		return nil, err
 	}
+	err = createSessionUseCase.cache.Set(sessionKey, user.Id)
+	if err != nil {
+		return nil, err
+	}
 	return &definitions.CreateSessionResult{
 		User:       user,
 		SessionKey: sessionKey,
@@ -82,10 +87,12 @@ func NewCreateSessionUseCase(
 	repository repositories.UsersRepository,
 	encrypter providers.EncrypterProvider,
 	session providers.SessionProvider,
+	cache providers.CacheProvider,
 ) (*CreateSessionUseCase, *shared.Error) {
 	return &CreateSessionUseCase{
 		repository: repository,
 		encrypter:  encrypter,
 		session:    session,
+		cache:      cache,
 	}, nil
 }

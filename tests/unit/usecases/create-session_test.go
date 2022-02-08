@@ -17,18 +17,19 @@ import (
 
 type CreateSessionUseCaseTest struct{}
 
-func (*CreateSessionUseCaseTest) setup(t *testing.T) (*usecases.CreateSessionUseCase, *mock_repositories.MockUsersRepository, *mock_providers.MockEncrypterProvider, *mock_providers.MockSessionProvider, *gomock.Controller) {
+func (*CreateSessionUseCaseTest) setup(t *testing.T) (*usecases.CreateSessionUseCase, *mock_repositories.MockUsersRepository, *mock_providers.MockEncrypterProvider, *mock_providers.MockSessionProvider, *mock_providers.MockCacheProvider, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
 	repo := mock_repositories.NewMockUsersRepository(ctrl)
 	encrypter := mock_providers.NewMockEncrypterProvider(ctrl)
 	session := mock_providers.NewMockSessionProvider(ctrl)
-	createSessionUseCase, _ := usecases.NewCreateSessionUseCase(repo, encrypter, session)
-	return createSessionUseCase, repo, encrypter, session, ctrl
+	cache := mock_providers.NewMockCacheProvider(ctrl)
+	createSessionUseCase, _ := usecases.NewCreateSessionUseCase(repo, encrypter, session, cache)
+	return createSessionUseCase, repo, encrypter, session, cache, ctrl
 }
 
 func TestCreateSessionUseCase_SuccessCaseByUsername(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, session, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	useCase, repo, encrypter, session, cache, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
@@ -53,6 +54,9 @@ func TestCreateSessionUseCase_SuccessCaseByUsername(t *testing.T) {
 	session.EXPECT().
 		GenerateKey().
 		Return(sessionKey, nil)
+	cache.EXPECT().
+		Set(sessionKey, repoUser.Id).
+		Return(nil)
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
 		Login:    username,
@@ -66,7 +70,7 @@ func TestCreateSessionUseCase_SuccessCaseByUsername(t *testing.T) {
 
 func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, session, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	useCase, repo, encrypter, session, cache, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
@@ -91,6 +95,9 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 	session.EXPECT().
 		GenerateKey().
 		Return(sessionKey, nil)
+	cache.EXPECT().
+		Set(sessionKey, repoUser.Id).
+		Return(nil)
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
 		Login:    email,
@@ -104,7 +111,7 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 
 func TestCreateSessionUseCase_FindByUsernameReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	useCase, repo, _, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	login, password := "username", "p4ssword"
 	repo.EXPECT().
@@ -125,7 +132,7 @@ func TestCreateSessionUseCase_FindByUsernameReturnError(t *testing.T) {
 
 func TestCreateSessionUseCase_FindByEmailReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	useCase, repo, _, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	login, password := "username", "p4ssword"
 	repo.EXPECT().
@@ -146,7 +153,7 @@ func TestCreateSessionUseCase_FindByEmailReturnError(t *testing.T) {
 
 func TestCreateSessionUseCase_UserNotFound(t *testing.T) {
 	// arrange
-	useCase, repo, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	useCase, repo, _, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	login, password := "username", "p4ssword"
 	repo.EXPECT().
@@ -167,7 +174,7 @@ func TestCreateSessionUseCase_UserNotFound(t *testing.T) {
 
 func TestCreateSessionUseCase_EncrypterCompareReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	useCase, repo, encrypter, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
@@ -200,7 +207,7 @@ func TestCreateSessionUseCase_EncrypterCompareReturnError(t *testing.T) {
 
 func TestCreateSessionUseCase_UserPasswordDoesNotMatch(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	useCase, repo, encrypter, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
@@ -233,7 +240,7 @@ func TestCreateSessionUseCase_UserPasswordDoesNotMatch(t *testing.T) {
 
 func TestCreateSessionUseCase_SessionGenerateKeyReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, session, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	useCase, repo, encrypter, session, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
@@ -257,6 +264,46 @@ func TestCreateSessionUseCase_SessionGenerateKeyReturnError(t *testing.T) {
 	session.EXPECT().
 		GenerateKey().
 		Return("", &shared.Error{})
+	// act
+	result, err := useCase.Execute(&definitions.CreateSessionDTO{
+		Login:    username,
+		Password: password,
+	})
+	// assert
+	assert.Nil(t, result)
+	assert.Equal(t, err, &shared.Error{})
+}
+
+func TestCreateSessionUseCase_CacheSetReturnError(t *testing.T) {
+	// arrange
+	useCase, repo, encrypter, session, cache, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	defer ctrl.Finish()
+	username, email, password := "username", "user@email.com", "p4ssword"
+	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	repoUser := &entities.UserEntity{
+		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
+		Username:  username,
+		Email:     email,
+		Password:  fakeBcryptHash,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	sessionKey := "session_key_example"
+	repo.EXPECT().
+		FindByEmail(username).
+		Return(nil, nil)
+	repo.EXPECT().
+		FindByUsername(username, true).
+		Return(repoUser, nil)
+	encrypter.EXPECT().
+		Compare(password, fakeBcryptHash).
+		Return(true, nil)
+	session.EXPECT().
+		GenerateKey().
+		Return(sessionKey, nil)
+	cache.EXPECT().
+		Set(sessionKey, repoUser.Id).
+		Return(&shared.Error{})
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
 		Login:    username,
