@@ -165,6 +165,39 @@ func TestCreateSessionUseCase_UserNotFound(t *testing.T) {
 	assert.Equal(t, err, exceptions.NewUserLoginFailed())
 }
 
+func TestCreateSessionUseCase_EncrypterCompareReturnError(t *testing.T) {
+	// arrange
+	useCase, repo, encrypter, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	defer ctrl.Finish()
+	username, email, password := "username", "user@email.com", "p4ssword"
+	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	repoUser := &entities.UserEntity{
+		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
+		Username:  username,
+		Email:     email,
+		Password:  fakeBcryptHash,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	repo.EXPECT().
+		FindByEmail(username).
+		Return(nil, nil)
+	repo.EXPECT().
+		FindByUsername(username, true).
+		Return(repoUser, nil)
+	encrypter.EXPECT().
+		Compare(password, fakeBcryptHash).
+		Return(true, &shared.Error{})
+	// act
+	result, err := useCase.Execute(&definitions.CreateSessionDTO{
+		Login:    username,
+		Password: password,
+	})
+	// assert
+	assert.Nil(t, result)
+	assert.Equal(t, err, &shared.Error{})
+}
+
 func TestCreateSessionUseCase_UserPasswordDoesNotMatch(t *testing.T) {
 	// arrange
 	useCase, repo, encrypter, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
