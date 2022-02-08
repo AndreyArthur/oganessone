@@ -4,6 +4,7 @@ import "github.com/AndreyArthur/oganessone/src/core/shared"
 
 const validation = "validation"
 const conflict = "conflict"
+const authentication = "authentication"
 
 func NewInvalidUserId() *shared.Error {
 	return shared.NewError(
@@ -58,5 +59,13 @@ func NewUserEmailAlreadyInUse() *shared.Error {
 		conflict,
 		"UserEmailAlreadyInUse",
 		"User email is already in use.",
+	)
+}
+
+func NewUserLoginFailed() *shared.Error {
+	return shared.NewError(
+		authentication,
+		"UserLoginFailed",
+		"Login failed, invalid login/password combination.",
 	)
 }
