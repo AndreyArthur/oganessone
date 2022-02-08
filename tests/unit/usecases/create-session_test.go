@@ -123,6 +123,27 @@ func TestCreateSessionUseCase_FindByUsernameReturnError(t *testing.T) {
 	assert.Equal(t, err, &shared.Error{})
 }
 
+func TestCreateSessionUseCase_FindByEmailReturnError(t *testing.T) {
+	// arrange
+	useCase, repo, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	defer ctrl.Finish()
+	login, password := "username", "p4ssword"
+	repo.EXPECT().
+		FindByEmail(login).
+		Return(nil, &shared.Error{})
+	repo.EXPECT().
+		FindByUsername(login, true).
+		Return(nil, nil)
+	// act
+	result, err := useCase.Execute(&definitions.CreateSessionDTO{
+		Login:    login,
+		Password: password,
+	})
+	// assert
+	assert.Nil(t, result)
+	assert.Equal(t, err, &shared.Error{})
+}
+
 func TestCreateSessionUseCase_UserNotFound(t *testing.T) {
 	// arrange
 	useCase, repo, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
