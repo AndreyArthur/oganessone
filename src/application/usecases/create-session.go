@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"github.com/AndreyArthur/oganessone/src/application/definitions"
+	"github.com/AndreyArthur/oganessone/src/application/providers"
 	"github.com/AndreyArthur/oganessone/src/application/repositories"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
@@ -10,6 +11,8 @@ import (
 
 type CreateSessionUseCase struct {
 	repository repositories.UsersRepository
+	encrypter  providers.EncrypterProvider
+	session    providers.SessionProvider
 }
 
 func (createSessionUseCase *CreateSessionUseCase) findUser(
@@ -50,9 +53,39 @@ func (createSessionUseCase *CreateSessionUseCase) Execute(
 	if foundByUsername == nil && foundByEmail == nil {
 		return nil, exceptions.NewUserLoginFailed()
 	}
-	return nil, nil
+	var user *entities.UserEntity
+	if foundByEmail != nil {
+		user = foundByEmail
+	}
+	if foundByUsername != nil {
+		user = foundByUsername
+	}
+	passwordMatches, err := createSessionUseCase.encrypter.
+		Compare(data.Password, user.Password)
+	if err != nil {
+		return nil, err
+	}
+	if !passwordMatches {
+		return nil, exceptions.NewUserLoginFailed()
+	}
+	sessionKey, err := createSessionUseCase.session.GenerateKey()
+	if err != nil {
+		return nil, err
+	}
+	return &definitions.CreateSessionResult{
+		User:       user,
+		SessionKey: sessionKey,
+	}, nil
 }
 
-func NewCreateSessionUseCase(repository repositories.UsersRepository) (*CreateSessionUseCase, *shared.Error) {
-	return &CreateSessionUseCase{repository: repository}, nil
+func NewCreateSessionUseCase(
+	repository repositories.UsersRepository,
+	encrypter providers.EncrypterProvider,
+	session providers.SessionProvider,
+) (*CreateSessionUseCase, *shared.Error) {
+	return &CreateSessionUseCase{
+		repository: repository,
+		encrypter:  encrypter,
+		session:    session,
+	}, nil
 }
