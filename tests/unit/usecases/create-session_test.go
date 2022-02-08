@@ -10,6 +10,7 @@ import (
 	"github.com/AndreyArthur/oganessone/src/application/usecases"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
+	"github.com/AndreyArthur/oganessone/src/core/shared"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -99,6 +100,27 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Nil(t, result.User.IsValid())
 	assert.Equal(t, result.SessionKey, sessionKey)
+}
+
+func TestCreateSessionUseCase_FindByUsernameReturnError(t *testing.T) {
+	// arrange
+	useCase, repo, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	defer ctrl.Finish()
+	login, password := "username", "p4ssword"
+	repo.EXPECT().
+		FindByEmail(login).
+		Return(nil, nil)
+	repo.EXPECT().
+		FindByUsername(login, true).
+		Return(nil, &shared.Error{})
+	// act
+	result, err := useCase.Execute(&definitions.CreateSessionDTO{
+		Login:    login,
+		Password: password,
+	})
+	// assert
+	assert.Nil(t, result)
+	assert.Equal(t, err, &shared.Error{})
 }
 
 func TestCreateSessionUseCase_UserNotFound(t *testing.T) {
