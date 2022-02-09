@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"strings"
+
 	"github.com/AndreyArthur/oganessone/src/application/definitions"
 	"github.com/AndreyArthur/oganessone/src/application/providers"
 	"github.com/AndreyArthur/oganessone/src/application/repositories"
@@ -69,17 +71,25 @@ func (createSessionUseCase *CreateSessionUseCase) Execute(
 	if !passwordMatches {
 		return nil, exceptions.NewUserLoginFailed()
 	}
-	sessionKey, err := createSessionUseCase.session.GenerateKey()
+	sessionData, err := createSessionUseCase.session.Generate(user.Id)
 	if err != nil {
 		return nil, err
 	}
-	err = createSessionUseCase.cache.Set(sessionKey, user.Id)
+	err = createSessionUseCase.cache.Set(sessionData.Key, sessionData.UserId)
+	if err != nil {
+		return nil, err
+	}
+	err = createSessionUseCase.cache.
+		Set(
+			strings.Join([]string{sessionData.Key, "@", sessionData.UserId}, ""),
+			sessionData.ExpirationDate,
+		)
 	if err != nil {
 		return nil, err
 	}
 	return &definitions.CreateSessionResult{
 		User:       user,
-		SessionKey: sessionKey,
+		SessionKey: sessionData.Key,
 	}, nil
 }
 

@@ -1,10 +1,12 @@
 package test_usecases
 
 import (
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/AndreyArthur/oganessone/src/application/definitions"
+	"github.com/AndreyArthur/oganessone/src/application/providers"
 	mock_providers "github.com/AndreyArthur/oganessone/src/application/providers/mocks"
 	mock_repositories "github.com/AndreyArthur/oganessone/src/application/repositories/mocks"
 	"github.com/AndreyArthur/oganessone/src/application/usecases"
@@ -42,6 +44,9 @@ func TestCreateSessionUseCase_SuccessCaseByUsername(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 	sessionKey := "session_key_example"
+	ONE_DAY := time.Hour * 24
+	tomorrow := time.Now().UTC().Add(ONE_DAY)
+	expiresIn := tomorrow.Format(time.RFC3339)
 	repo.EXPECT().
 		FindByEmail(username).
 		Return(nil, nil)
@@ -52,11 +57,18 @@ func TestCreateSessionUseCase_SuccessCaseByUsername(t *testing.T) {
 		Compare(password, fakeBcryptHash).
 		Return(true, nil)
 	session.EXPECT().
-		GenerateKey().
-		Return(sessionKey, nil)
+		Generate(repoUser.Id).
+		Return(&providers.SessionData{
+			Key:            sessionKey,
+			UserId:         repoUser.Id,
+			ExpirationDate: expiresIn,
+		}, nil)
 	cache.EXPECT().
 		Set(sessionKey, repoUser.Id).
-		Return(nil)
+		Return(nil).Times(1)
+	cache.EXPECT().
+		Set(strings.Join([]string{sessionKey, "@", repoUser.Id}, ""), expiresIn).
+		Return(nil).Times(1)
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
 		Login:    username,
@@ -83,6 +95,9 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 	sessionKey := "session_key_example"
+	ONE_DAY := time.Hour * 24
+	tomorrow := time.Now().UTC().Add(ONE_DAY)
+	expiresIn := tomorrow.Format(time.RFC3339)
 	repo.EXPECT().
 		FindByEmail(email).
 		Return(repoUser, nil)
@@ -93,11 +108,18 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 		Compare(password, fakeBcryptHash).
 		Return(true, nil)
 	session.EXPECT().
-		GenerateKey().
-		Return(sessionKey, nil)
+		Generate(repoUser.Id).
+		Return(&providers.SessionData{
+			Key:            sessionKey,
+			UserId:         repoUser.Id,
+			ExpirationDate: expiresIn,
+		}, nil)
 	cache.EXPECT().
 		Set(sessionKey, repoUser.Id).
-		Return(nil)
+		Return(nil).Times(1)
+	cache.EXPECT().
+		Set(strings.Join([]string{sessionKey, "@", repoUser.Id}, ""), expiresIn).
+		Return(nil).Times(1)
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
 		Login:    email,
@@ -252,8 +274,7 @@ func TestCreateSessionUseCase_SessionGenerateKeyReturnError(t *testing.T) {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	repo.EXPECT().
-		FindByEmail(username).
+	repo.EXPECT().FindByEmail(username).
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByUsername(username, true).
@@ -262,8 +283,8 @@ func TestCreateSessionUseCase_SessionGenerateKeyReturnError(t *testing.T) {
 		Compare(password, fakeBcryptHash).
 		Return(true, nil)
 	session.EXPECT().
-		GenerateKey().
-		Return("", &shared.Error{})
+		Generate(repoUser.Id).
+		Return(nil, &shared.Error{})
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
 		Login:    username,
@@ -289,6 +310,9 @@ func TestCreateSessionUseCase_CacheSetReturnError(t *testing.T) {
 		UpdatedAt: time.Now(),
 	}
 	sessionKey := "session_key_example"
+	ONE_DAY := time.Hour * 24
+	tomorrow := time.Now().UTC().Add(ONE_DAY)
+	expiresIn := tomorrow.Format(time.RFC3339)
 	repo.EXPECT().
 		FindByEmail(username).
 		Return(nil, nil)
@@ -299,8 +323,12 @@ func TestCreateSessionUseCase_CacheSetReturnError(t *testing.T) {
 		Compare(password, fakeBcryptHash).
 		Return(true, nil)
 	session.EXPECT().
-		GenerateKey().
-		Return(sessionKey, nil)
+		Generate(repoUser.Id).
+		Return(&providers.SessionData{
+			Key:            sessionKey,
+			UserId:         repoUser.Id,
+			ExpirationDate: expiresIn,
+		}, nil)
 	cache.EXPECT().
 		Set(sessionKey, repoUser.Id).
 		Return(&shared.Error{})

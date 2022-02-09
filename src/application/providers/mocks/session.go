@@ -7,6 +7,7 @@ package mock_providers
 import (
         reflect "reflect"
 
+        providers "github.com/AndreyArthur/oganessone/src/application/providers"
         shared "github.com/AndreyArthur/oganessone/src/core/shared"
         gomock "github.com/golang/mock/gomock"
 )
@@ -34,17 +35,17 @@ func (m *MockSessionProvider) EXPECT() *MockSessionProviderMockRecorder {
         return m.recorder
 }
 
-// GenerateKey mocks base method.
-func (m *MockSessionProvider) GenerateKey() (string, *shared.Error) {
+// Generate mocks base method.
+func (m *MockSessionProvider) Generate(userId string) (*providers.SessionData, *shared.Error) {
         m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "GenerateKey")
-        ret0, _ := ret[0].(string)
+        ret := m.ctrl.Call(m, "Generate", userId)
+        ret0, _ := ret[0].(*providers.SessionData)
         ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }
 
-// GenerateKey indicates an expected call of GenerateKey.
-func (mr *MockSessionProviderMockRecorder) GenerateKey() *gomock.Call {
+// Generate indicates an expected call of Generate.
+func (mr *MockSessionProviderMockRecorder) Generate(userId interface{}) *gomock.Call {
         mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateKey", reflect.TypeOf((*MockSessionProvider)(nil).GenerateKey))
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Generate", reflect.TypeOf((*MockSessionProvider)(nil).Generate), userId)
 }
