@@ -65,10 +65,10 @@ func TestCreateSessionUseCase_SuccessCaseByUsername(t *testing.T) {
 		}, nil)
 	cache.EXPECT().
 		Set(sessionKey, repoUser.Id).
-		Return(nil).Times(1)
+		Return(nil)
 	cache.EXPECT().
 		Set(strings.Join([]string{sessionKey, "@", repoUser.Id}, ""), expiresIn).
-		Return(nil).Times(1)
+		Return(nil)
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
 		Login:    username,
@@ -116,10 +116,10 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 		}, nil)
 	cache.EXPECT().
 		Set(sessionKey, repoUser.Id).
-		Return(nil).Times(1)
+		Return(nil)
 	cache.EXPECT().
 		Set(strings.Join([]string{sessionKey, "@", repoUser.Id}, ""), expiresIn).
-		Return(nil).Times(1)
+		Return(nil)
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
 		Login:    email,
@@ -295,7 +295,7 @@ func TestCreateSessionUseCase_SessionGenerateKeyReturnError(t *testing.T) {
 	assert.Equal(t, err, &shared.Error{})
 }
 
-func TestCreateSessionUseCase_CacheSetReturnError(t *testing.T) {
+func TestCreateSessionUseCase_FirstCacheSetReturnError(t *testing.T) {
 	// arrange
 	useCase, repo, encrypter, session, cache, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
@@ -331,6 +331,56 @@ func TestCreateSessionUseCase_CacheSetReturnError(t *testing.T) {
 		}, nil)
 	cache.EXPECT().
 		Set(sessionKey, repoUser.Id).
+		Return(&shared.Error{})
+	// act
+	result, err := useCase.Execute(&definitions.CreateSessionDTO{
+		Login:    username,
+		Password: password,
+	})
+	// assert
+	assert.Nil(t, result)
+	assert.Equal(t, err, &shared.Error{})
+}
+
+func TestCreateSessionUseCase_SecondCacheSetReturnError(t *testing.T) {
+	// arrange
+	useCase, repo, encrypter, session, cache, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
+	defer ctrl.Finish()
+	username, email, password := "username", "user@email.com", "p4ssword"
+	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	repoUser := &entities.UserEntity{
+		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
+		Username:  username,
+		Email:     email,
+		Password:  fakeBcryptHash,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	sessionKey := "session_key_example"
+	ONE_DAY := time.Hour * 24
+	tomorrow := time.Now().UTC().Add(ONE_DAY)
+	expiresIn := tomorrow.Format(time.RFC3339)
+	repo.EXPECT().
+		FindByEmail(username).
+		Return(nil, nil)
+	repo.EXPECT().
+		FindByUsername(username, true).
+		Return(repoUser, nil)
+	encrypter.EXPECT().
+		Compare(password, fakeBcryptHash).
+		Return(true, nil)
+	session.EXPECT().
+		Generate(repoUser.Id).
+		Return(&providers.SessionData{
+			Key:            sessionKey,
+			UserId:         repoUser.Id,
+			ExpirationDate: expiresIn,
+		}, nil)
+	cache.EXPECT().
+		Set(sessionKey, repoUser.Id).
+		Return(nil)
+	cache.EXPECT().
+		Set(strings.Join([]string{sessionKey, "@", repoUser.Id}, ""), expiresIn).
 		Return(&shared.Error{})
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
