@@ -64,15 +64,15 @@ func (mr *MockCacheProviderMockRecorder) Get(key interface{}) *gomock.Call {
 }
 
 // Set mocks base method.
-func (m *MockCacheProvider) Set(key, value string) *shared.Error {
+func (m *MockCacheProvider) Set(key, value string, expirationTimeInSeconds int) *shared.Error {
         m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Set", key, value)
+        ret := m.ctrl.Call(m, "Set", key, value, expirationTimeInSeconds)
         ret0, _ := ret[0].(*shared.Error)
         return ret0
 }
 
 // Set indicates an expected call of Set.
-func (mr *MockCacheProviderMockRecorder) Set(key, value interface{}) *gomock.Call {
+func (mr *MockCacheProviderMockRecorder) Set(key, value, expirationTimeInSeconds interface{}) *gomock.Call {
         mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockCacheProvider)(nil).Set), key, value)
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockCacheProvider)(nil).Set), key, value, expirationTimeInSeconds)
 }

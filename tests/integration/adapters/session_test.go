@@ -2,12 +2,12 @@ package test_adapters
 
 import (
 	"math/rand"
+	"reflect"
 	"testing"
 	"time"
 
 	"github.com/AndreyArthur/oganessone/src/infrastructure/adapters"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
-	"github.com/AndreyArthur/oganessone/tests/helpers/verifier"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,5 +23,5 @@ func TestSessionAdapter_Genarate(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, sessionData.UserId, id)
 	assert.Equal(t, len(sessionData.Key), 32)
-	assert.True(t, verifier.IsISO8601(sessionData.ExpirationDate))
+	assert.Equal(t, reflect.TypeOf(sessionData.ExpirationTimeInSeconds).String(), "int")
 }

@@ -3,9 +3,9 @@ package providers
 import "github.com/AndreyArthur/oganessone/src/core/shared"
 
 type SessionData struct {
-	Key            string
-	UserId         string
-	ExpirationDate string
+	Key                     string
+	UserId                  string
+	ExpirationTimeInSeconds int
 }
 
 type SessionProvider interface {
