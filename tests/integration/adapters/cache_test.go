@@ -68,3 +68,16 @@ func TestCacheAdapter_SetWithExpiration(t *testing.T) {
 	result, _ = connection.Do("GET", "foo")
 	assert.Nil(t, result)
 }
+
+func TestCacheAdapter_Get(t *testing.T) {
+	// arrange
+	cache, connection := (&CacheAdapterTest{}).setup()
+	defer connection.Close()
+	defer connection.Do("FLUSHALL")
+	connection.Do("SET", "foo", "bar")
+	// act
+	value, err := cache.Get("foo")
+	// assert
+	assert.Nil(t, err)
+	assert.Equal(t, value, "bar")
+}
