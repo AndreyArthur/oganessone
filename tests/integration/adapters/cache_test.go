@@ -81,3 +81,19 @@ func TestCacheAdapter_Get(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, value, "bar")
 }
+
+func TestCacheAdapter_Delete(t *testing.T) {
+	// arrange
+	cache, connection := (&CacheAdapterTest{}).setup()
+	defer connection.Close()
+	defer connection.Do("FLUSHALL")
+	connection.Do("SET", "foo", "bar")
+	// act && assert
+	result, _ := connection.Do("GET", "foo")
+	value := fmt.Sprintf("%s", result)
+	assert.Equal(t, value, "bar")
+	err := cache.Delete("foo")
+	assert.Nil(t, err)
+	result, _ = connection.Do("GET", "foo")
+	assert.Nil(t, result)
+}

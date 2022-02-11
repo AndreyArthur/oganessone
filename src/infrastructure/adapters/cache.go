@@ -38,6 +38,14 @@ func (cache *CacheAdapter) Get(key string) (string, *shared.Error) {
 	return text, nil
 }
 
+func (cache *CacheAdapter) Delete(key string) *shared.Error {
+	_, err := cache.connection.Do("DEL", key)
+	if err != nil {
+		return exceptions.NewInternalServerError()
+	}
+	return nil
+}
+
 func NewCacheAdapter(connection redis.Conn) (*CacheAdapter, *shared.Error) {
 	return &CacheAdapter{
 		connection: connection,
