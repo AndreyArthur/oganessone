@@ -68,9 +68,11 @@ func TestGrpcCreateUser_Success(t *testing.T) {
 	username, email, password := "username", "user@email.com", "p4ssword"
 	// act
 	response, goerr := client.CreateUser(context.Background(), &protobuf.CreateUserRequest{
-		Username: username,
-		Email:    email,
-		Password: password,
+		Data: &protobuf.CreateUserData{
+			Username: username,
+			Email:    email,
+			Password: password,
+		},
 	})
 	// assert
 	assert.Nil(t, goerr)
@@ -95,9 +97,11 @@ func TestGrpcCreateUser_UsernameAlreadyInUse(t *testing.T) {
 	`, username, "other@email.com", "$2y$10$hRAVNUr.t6UpY1J0bQKmhO5x/K9rZPOGAPdx3HICkCrOUHR/3eyxW")
 	// act
 	response, goerr := client.CreateUser(context.Background(), &protobuf.CreateUserRequest{
-		Username: username,
-		Email:    email,
-		Password: password,
+		Data: &protobuf.CreateUserData{
+			Username: username,
+			Email:    email,
+			Password: password,
+		},
 	})
 	// assert
 	assert.Nil(t, goerr)
@@ -118,9 +122,11 @@ func TestGrpcCreateUser_EmailAlreadyInUse(t *testing.T) {
 	`, "other_username", email, "$2y$10$hRAVNUr.t6UpY1J0bQKmhO5x/K9rZPOGAPdx3HICkCrOUHR/3eyxW")
 	// act
 	response, goerr := client.CreateUser(context.Background(), &protobuf.CreateUserRequest{
-		Username: username,
-		Email:    email,
-		Password: password,
+		Data: &protobuf.CreateUserData{
+			Username: username,
+			Email:    email,
+			Password: password,
+		},
 	})
 	// assert
 	assert.Nil(t, goerr)

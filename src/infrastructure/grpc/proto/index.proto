@@ -22,10 +22,14 @@ message User {
   string updatedAt = 5;
 }
 
-message CreateUserRequest {
+message CreateUserData {
   string username = 1;
   string email = 2;
   string password = 3;
+}
+
+message CreateUserRequest {
+  CreateUserData data = 1;
 }
 
 message CreateUserResponse {

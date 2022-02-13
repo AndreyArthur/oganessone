@@ -19,10 +19,11 @@ type server struct {
 func (*server) CreateUser(
 	ctx context.Context, request *protobuf.CreateUserRequest,
 ) (*protobuf.CreateUserResponse, error) {
+	data := request.GetData()
 	username, email, password :=
-		request.GetUsername(),
-		request.GetEmail(),
-		request.GetPassword()
+		data.GetUsername(),
+		data.GetEmail(),
+		data.GetPassword()
 	createUserPresenter, err := factories.MakeCreateUserPresenter()
 	if err != nil {
 		return &protobuf.CreateUserResponse{

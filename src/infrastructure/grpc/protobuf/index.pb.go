@@ -162,7 +162,7 @@ func (x *User) GetUpdatedAt() string {
 	return ""
 }
 
-type CreateUserRequest struct {
+type CreateUserData struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -172,10 +172,71 @@ type CreateUserRequest struct {
 	Password string `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
 }
 
+func (x *CreateUserData) Reset() {
+	*x = CreateUserData{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_src_infrastructure_grpc_proto_index_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateUserData) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateUserData) ProtoMessage() {}
+
+func (x *CreateUserData) ProtoReflect() protoreflect.Message {
+	mi := &file_src_infrastructure_grpc_proto_index_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateUserData.ProtoReflect.Descriptor instead.
+func (*CreateUserData) Descriptor() ([]byte, []int) {
+	return file_src_infrastructure_grpc_proto_index_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *CreateUserData) GetUsername() string {
+	if x != nil {
+		return x.Username
+	}
+	return ""
+}
+
+func (x *CreateUserData) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *CreateUserData) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+type CreateUserRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Data *CreateUserData `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+}
+
 func (x *CreateUserRequest) Reset() {
 	*x = CreateUserRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_src_infrastructure_grpc_proto_index_proto_msgTypes[2]
+		mi := &file_src_infrastructure_grpc_proto_index_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -188,7 +249,7 @@ func (x *CreateUserRequest) String() string {
 func (*CreateUserRequest) ProtoMessage() {}
 
 func (x *CreateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_src_infrastructure_grpc_proto_index_proto_msgTypes[2]
+	mi := &file_src_infrastructure_grpc_proto_index_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -201,28 +262,14 @@ func (x *CreateUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateUserRequest.ProtoReflect.Descriptor instead.
 func (*CreateUserRequest) Descriptor() ([]byte, []int) {
-	return file_src_infrastructure_grpc_proto_index_proto_rawDescGZIP(), []int{2}
+	return file_src_infrastructure_grpc_proto_index_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *CreateUserRequest) GetUsername() string {
+func (x *CreateUserRequest) GetData() *CreateUserData {
 	if x != nil {
-		return x.Username
+		return x.Data
 	}
-	return ""
-}
-
-func (x *CreateUserRequest) GetEmail() string {
-	if x != nil {
-		return x.Email
-	}
-	return ""
-}
-
-func (x *CreateUserRequest) GetPassword() string {
-	if x != nil {
-		return x.Password
-	}
-	return ""
+	return nil
 }
 
 type CreateUserResponse struct {
@@ -237,7 +284,7 @@ type CreateUserResponse struct {
 func (x *CreateUserResponse) Reset() {
 	*x = CreateUserResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_src_infrastructure_grpc_proto_index_proto_msgTypes[3]
+		mi := &file_src_infrastructure_grpc_proto_index_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -250,7 +297,7 @@ func (x *CreateUserResponse) String() string {
 func (*CreateUserResponse) ProtoMessage() {}
 
 func (x *CreateUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_src_infrastructure_grpc_proto_index_proto_msgTypes[3]
+	mi := &file_src_infrastructure_grpc_proto_index_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -263,7 +310,7 @@ func (x *CreateUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateUserResponse.ProtoReflect.Descriptor instead.
 func (*CreateUserResponse) Descriptor() ([]byte, []int) {
-	return file_src_infrastructure_grpc_proto_index_proto_rawDescGZIP(), []int{3}
+	return file_src_infrastructure_grpc_proto_index_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CreateUserResponse) GetData() *User {
@@ -299,13 +346,17 @@ var file_src_infrastructure_grpc_proto_index_proto_rawDesc = []byte{
 	0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
 	0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x12, 0x1c, 0x0a, 0x09, 0x75, 0x70, 0x64,
 	0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x75, 0x70,
-	0x64, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x22, 0x61, 0x0a, 0x11, 0x43, 0x72, 0x65, 0x61, 0x74,
-	0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08,
-	0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
-	0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69,
-	0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x1a,
-	0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x22, 0x5f, 0x0a, 0x12, 0x43, 0x72,
+	0x64, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x22, 0x5e, 0x0a, 0x0e, 0x43, 0x72, 0x65, 0x61, 0x74,
+	0x65, 0x55, 0x73, 0x65, 0x72, 0x44, 0x61, 0x74, 0x61, 0x12, 0x1a, 0x0a, 0x08, 0x75, 0x73, 0x65,
+	0x72, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75, 0x73, 0x65,
+	0x72, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x70,
+	0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70,
+	0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x22, 0x41, 0x0a, 0x11, 0x43, 0x72, 0x65, 0x61, 0x74,
+	0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x2c, 0x0a, 0x04,
+	0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72,
+	0x44, 0x61, 0x74, 0x61, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x5f, 0x0a, 0x12, 0x43, 0x72,
 	0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
 	0x12, 0x22, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x04,
@@ -337,23 +388,25 @@ func file_src_infrastructure_grpc_proto_index_proto_rawDescGZIP() []byte {
 	return file_src_infrastructure_grpc_proto_index_proto_rawDescData
 }
 
-var file_src_infrastructure_grpc_proto_index_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_src_infrastructure_grpc_proto_index_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_src_infrastructure_grpc_proto_index_proto_goTypes = []interface{}{
 	(*Error)(nil),              // 0: protobuf.Error
 	(*User)(nil),               // 1: protobuf.User
-	(*CreateUserRequest)(nil),  // 2: protobuf.CreateUserRequest
-	(*CreateUserResponse)(nil), // 3: protobuf.CreateUserResponse
+	(*CreateUserData)(nil),     // 2: protobuf.CreateUserData
+	(*CreateUserRequest)(nil),  // 3: protobuf.CreateUserRequest
+	(*CreateUserResponse)(nil), // 4: protobuf.CreateUserResponse
 }
 var file_src_infrastructure_grpc_proto_index_proto_depIdxs = []int32{
-	1, // 0: protobuf.CreateUserResponse.data:type_name -> protobuf.User
-	0, // 1: protobuf.CreateUserResponse.error:type_name -> protobuf.Error
-	2, // 2: protobuf.UsersService.CreateUser:input_type -> protobuf.CreateUserRequest
-	3, // 3: protobuf.UsersService.CreateUser:output_type -> protobuf.CreateUserResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 0: protobuf.CreateUserRequest.data:type_name -> protobuf.CreateUserData
+	1, // 1: protobuf.CreateUserResponse.data:type_name -> protobuf.User
+	0, // 2: protobuf.CreateUserResponse.error:type_name -> protobuf.Error
+	3, // 3: protobuf.UsersService.CreateUser:input_type -> protobuf.CreateUserRequest
+	4, // 4: protobuf.UsersService.CreateUser:output_type -> protobuf.CreateUserResponse
+	4, // [4:5] is the sub-list for method output_type
+	3, // [3:4] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_src_infrastructure_grpc_proto_index_proto_init() }
@@ -387,7 +440,7 @@ func file_src_infrastructure_grpc_proto_index_proto_init() {
 			}
 		}
 		file_src_infrastructure_grpc_proto_index_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateUserRequest); i {
+			switch v := v.(*CreateUserData); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -399,6 +452,18 @@ func file_src_infrastructure_grpc_proto_index_proto_init() {
 			}
 		}
 		file_src_infrastructure_grpc_proto_index_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateUserRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_src_infrastructure_grpc_proto_index_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateUserResponse); i {
 			case 0:
 				return &v.state
@@ -417,7 +482,7 @@ func file_src_infrastructure_grpc_proto_index_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_src_infrastructure_grpc_proto_index_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
