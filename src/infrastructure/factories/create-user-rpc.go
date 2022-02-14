@@ -5,11 +5,12 @@ import (
 	"github.com/AndreyArthur/oganessone/src/core/shared"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/adapters"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/database"
+	"github.com/AndreyArthur/oganessone/src/infrastructure/grpc/rpcs"
 	"github.com/AndreyArthur/oganessone/src/infrastructure/repositories"
 	"github.com/AndreyArthur/oganessone/src/presentation/presenters"
 )
 
-func MakeCreateUserPresenter() (*presenters.CreateUserPresenter, *shared.Error) {
+func MakeCreateUserRpc() (*rpcs.CreateUserRpc, *shared.Error) {
 	db, err := database.NewDatabase()
 	if err != nil {
 		return nil, err
@@ -34,5 +35,9 @@ func MakeCreateUserPresenter() (*presenters.CreateUserPresenter, *shared.Error) 
 	if err != nil {
 		return nil, err
 	}
-	return createUserPresenter, nil
+	createUserRpc, err := rpcs.NewCreateUserRpc(createUserPresenter)
+	if err != nil {
+		return nil, err
+	}
+	return createUserRpc, nil
 }

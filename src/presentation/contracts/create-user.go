@@ -1,6 +1,9 @@
 package contracts
 
-import "github.com/AndreyArthur/oganessone/src/presentation/views"
+import (
+	"github.com/AndreyArthur/oganessone/src/core/shared"
+	"github.com/AndreyArthur/oganessone/src/presentation/views"
+)
 
 type CreateUserPresenterRequestBody struct {
 	Username string
@@ -14,4 +17,8 @@ type CreateUserPresenterRequest struct {
 
 type CreateUserPresenterResponse struct {
 	Body *views.UserView
+}
+
+type CreateUserPresenterContract interface {
+	Handle(request *CreateUserPresenterRequest) (*CreateUserPresenterResponse, *shared.Error)
 }
