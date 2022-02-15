@@ -19,10 +19,10 @@ import (
 
 type CreateUserPresenterTest struct{}
 
-func (*CreateUserPresenterTest) setup(t *testing.T) (*presenters.CreateUserPresenter, *mock_definitions.MockCreateUser, *gomock.Controller) {
+func (*CreateUserPresenterTest) setup(t *testing.T) (*presenters.CreateAccountPresenter, *mock_definitions.MockCreateUser, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
 	useCase := mock_definitions.NewMockCreateUser(ctrl)
-	presenter, _ := presenters.NewCreateUserPresenter(useCase)
+	presenter, _ := presenters.NewCreateAccountPresenter(useCase)
 	return presenter, useCase, ctrl
 }
 
@@ -39,7 +39,7 @@ func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
 		now,
 		now
-	entity, _ := entities.NewUserEntity(&dtos.UserDTO{
+	entity, _ := entities.NewAccountEntity(&dtos.AccountDTO{
 		Id:        id,
 		Username:  username,
 		Email:     email,
@@ -48,15 +48,15 @@ func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 		UpdatedAt: updatedAt,
 	})
 	useCase.EXPECT().
-		Execute(&definitions.CreateUserDTO{
+		Execute(&definitions.CreateAccountDTO{
 			Username: username,
 			Email:    email,
 			Password: password,
 		}).
 		Return(entity, nil)
 	// act
-	result, err := presenter.Handle(&contracts.CreateUserPresenterRequest{
-		Body: &contracts.CreateUserPresenterRequestBody{
+	result, err := presenter.Handle(&contracts.CreateAccountPresenterRequest{
+		Body: &contracts.CreateAccountPresenterRequestBody{
 			Username: username,
 			Email:    email,
 			Password: password,
@@ -79,15 +79,15 @@ func TestCreateUserPresenter_FailureCase(t *testing.T) {
 		"user@email.com",
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	useCase.EXPECT().
-		Execute(&definitions.CreateUserDTO{
+		Execute(&definitions.CreateAccountDTO{
 			Username: username,
 			Email:    email,
 			Password: password,
 		}).
 		Return(nil, &shared.Error{})
 	// act
-	result, err := presenter.Handle(&contracts.CreateUserPresenterRequest{
-		Body: &contracts.CreateUserPresenterRequestBody{
+	result, err := presenter.Handle(&contracts.CreateAccountPresenterRequest{
+		Body: &contracts.CreateAccountPresenterRequestBody{
 			Username: username,
 			Email:    email,
 			Password: password,

@@ -6,66 +6,66 @@ const validation = "validation"
 const conflict = "conflict"
 const authentication = "authentication"
 
-func NewInvalidUserId() *shared.Error {
+func NewInvalidAccountId() *shared.Error {
 	return shared.NewError(
 		validation,
-		"InvalidUserId",
+		"InvalidAccountId",
 		"Invalid user id, must be an uuid.",
 	)
 }
 
-func NewInvalidUserUsername() *shared.Error {
+func NewInvalidAccountUsername() *shared.Error {
 	return shared.NewError(
 		validation,
-		"InvalidUserUsername",
+		"InvalidAccountUsername",
 		"Invalid user username, must have 4-16 characters and no whitespaces.",
 	)
 }
 
-func NewInvalidUserEmail() *shared.Error {
+func NewInvalidAccountEmail() *shared.Error {
 	return shared.NewError(
 		validation,
-		"InvalidUserEmail",
+		"InvalidAccountEmail",
 		"Invalid user email syntax.",
 	)
 }
 
-func NewInvalidUserPasswordHash() *shared.Error {
+func NewInvalidAccountPasswordHash() *shared.Error {
 	return shared.NewError(
 		validation,
-		"InvalidUserPasswordHash",
+		"InvalidAccountPasswordHash",
 		"Invalid user password hash, must be a bcrypt.",
 	)
 }
 
-func NewInvalidUserPassword() *shared.Error {
+func NewInvalidAccountPassword() *shared.Error {
 	return shared.NewError(
 		validation,
-		"InvalidUserPassword",
+		"InvalidAccountPassword",
 		"Invalid user password, must have ascii characters, numbers and 8-32 characters.",
 	)
 }
 
-func NewUserUsernameAlreadyInUse() *shared.Error {
+func NewAccountUsernameAlreadyInUse() *shared.Error {
 	return shared.NewError(
 		conflict,
-		"UserUsernameAlreadyInUse",
-		"User username is already in use.",
+		"AccountUsernameAlreadyInUse",
+		"Account username is already in use.",
 	)
 }
 
-func NewUserEmailAlreadyInUse() *shared.Error {
+func NewAccountEmailAlreadyInUse() *shared.Error {
 	return shared.NewError(
 		conflict,
-		"UserEmailAlreadyInUse",
-		"User email is already in use.",
+		"AccountEmailAlreadyInUse",
+		"Account email is already in use.",
 	)
 }
 
-func NewUserLoginFailed() *shared.Error {
+func NewAccountLoginFailed() *shared.Error {
 	return shared.NewError(
 		authentication,
-		"UserLoginFailed",
+		"AccountLoginFailed",
 		"Login failed, invalid login/password combination.",
 	)
 }

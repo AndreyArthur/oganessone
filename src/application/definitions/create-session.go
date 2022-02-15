@@ -11,7 +11,7 @@ type CreateSessionDTO struct {
 }
 
 type CreateSessionResult struct {
-	User       *entities.UserEntity
+	Account    *entities.AccountEntity
 	SessionKey string
 }
 

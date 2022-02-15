@@ -10,17 +10,17 @@ import (
 )
 
 type CreateSessionUseCase struct {
-	repository repositories.UsersRepository
+	repository repositories.AccountsRepository
 	encrypter  providers.EncrypterProvider
 	session    providers.SessionProvider
 	cache      providers.CacheProvider
 }
 
-func (createSessionUseCase *CreateSessionUseCase) findUser(
+func (createSessionUseCase *CreateSessionUseCase) findAccount(
 	login string,
-) (*entities.UserEntity, *entities.UserEntity, *shared.Error) {
-	foundByUsernameChannel, findByUsernameErrorChannel := make(chan *entities.UserEntity), make(chan *shared.Error)
-	foundByEmailChannel, findByEmailErrorChannel := make(chan *entities.UserEntity), make(chan *shared.Error)
+) (*entities.AccountEntity, *entities.AccountEntity, *shared.Error) {
+	foundByUsernameChannel, findByUsernameErrorChannel := make(chan *entities.AccountEntity), make(chan *shared.Error)
+	foundByEmailChannel, findByEmailErrorChannel := make(chan *entities.AccountEntity), make(chan *shared.Error)
 	go func() {
 		foundByUsername, err := createSessionUseCase.repository.FindByUsername(
 			login, true,
@@ -47,48 +47,48 @@ func (createSessionUseCase *CreateSessionUseCase) findUser(
 func (createSessionUseCase *CreateSessionUseCase) Execute(
 	data *definitions.CreateSessionDTO,
 ) (*definitions.CreateSessionResult, *shared.Error) {
-	foundByUsername, foundByEmail, err := createSessionUseCase.findUser(data.Login)
+	foundByUsername, foundByEmail, err := createSessionUseCase.findAccount(data.Login)
 	if err != nil {
 		return nil, err
 	}
 	if foundByUsername == nil && foundByEmail == nil {
-		return nil, exceptions.NewUserLoginFailed()
+		return nil, exceptions.NewAccountLoginFailed()
 	}
-	var user *entities.UserEntity
+	var account *entities.AccountEntity
 	if foundByEmail != nil {
-		user = foundByEmail
+		account = foundByEmail
 	}
 	if foundByUsername != nil {
-		user = foundByUsername
+		account = foundByUsername
 	}
 	passwordMatches, err := createSessionUseCase.encrypter.
-		Compare(data.Password, user.Password)
+		Compare(data.Password, account.Password)
 	if err != nil {
 		return nil, err
 	}
 	if !passwordMatches {
-		return nil, exceptions.NewUserLoginFailed()
+		return nil, exceptions.NewAccountLoginFailed()
 	}
-	sessionData, err := createSessionUseCase.session.Generate(user.Id)
+	sessionData, err := createSessionUseCase.session.Generate(account.Id)
 	if err != nil {
 		return nil, err
 	}
 	err = createSessionUseCase.cache.Set(
 		sessionData.Key,
-		sessionData.UserId,
+		sessionData.AccountId,
 		sessionData.ExpirationTimeInSeconds,
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &definitions.CreateSessionResult{
-		User:       user,
+		Account:    account,
 		SessionKey: sessionData.Key,
 	}, nil
 }
 
 func NewCreateSessionUseCase(
-	repository repositories.UsersRepository,
+	repository repositories.AccountsRepository,
 	encrypter providers.EncrypterProvider,
 	session providers.SessionProvider,
 	cache providers.CacheProvider,

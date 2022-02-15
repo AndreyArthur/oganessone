@@ -12,12 +12,12 @@ import (
 	"github.com/AndreyArthur/oganessone/src/core/shared"
 )
 
-type CreateUserUseCase struct {
-	repository repositories.UsersRepository
+type CreateAccountUseCase struct {
+	repository repositories.AccountsRepository
 	encrypter  providers.EncrypterProvider
 }
 
-func (createUserUseCase *CreateUserUseCase) sanitize(
+func (createAccountUseCase *CreateAccountUseCase) sanitize(
 	username *string, email *string, password *string,
 ) {
 	*username = strings.TrimSpace(*username)
@@ -25,20 +25,20 @@ func (createUserUseCase *CreateUserUseCase) sanitize(
 	*password = strings.TrimSpace(*password)
 }
 
-func (createUserUseCase *CreateUserUseCase) findUser(
+func (createAccountUseCase *CreateAccountUseCase) findAccount(
 	username string, email string,
-) (*entities.UserEntity, *entities.UserEntity, *shared.Error) {
-	foundByUsernameChannel, findByUsernameErrorChannel := make(chan *entities.UserEntity), make(chan *shared.Error)
-	foundByEmailChannel, findByEmailErrorChannel := make(chan *entities.UserEntity), make(chan *shared.Error)
+) (*entities.AccountEntity, *entities.AccountEntity, *shared.Error) {
+	foundByUsernameChannel, findByUsernameErrorChannel := make(chan *entities.AccountEntity), make(chan *shared.Error)
+	foundByEmailChannel, findByEmailErrorChannel := make(chan *entities.AccountEntity), make(chan *shared.Error)
 	go func() {
-		foundByUsername, err := createUserUseCase.repository.FindByUsername(
+		foundByUsername, err := createAccountUseCase.repository.FindByUsername(
 			username, false,
 		)
 		foundByUsernameChannel <- foundByUsername
 		findByUsernameErrorChannel <- err
 	}()
 	go func() {
-		foundByEmail, err := createUserUseCase.repository.FindByEmail(email)
+		foundByEmail, err := createAccountUseCase.repository.FindByEmail(email)
 		foundByEmailChannel <- foundByEmail
 		findByEmailErrorChannel <- err
 	}()
@@ -53,26 +53,26 @@ func (createUserUseCase *CreateUserUseCase) findUser(
 	return foundByUsername, foundByEmail, nil
 }
 
-func (createUserUseCase *CreateUserUseCase) Execute(
-	data *definitions.CreateUserDTO,
-) (*definitions.CreateUserResult, *shared.Error) {
-	createUserUseCase.sanitize(&data.Username, &data.Email, &data.Password)
-	foundByUsername, foundByEmail, err := createUserUseCase.
-		findUser(data.Username, data.Email)
+func (createAccountUseCase *CreateAccountUseCase) Execute(
+	data *definitions.CreateAccountDTO,
+) (*definitions.CreateAccountResult, *shared.Error) {
+	createAccountUseCase.sanitize(&data.Username, &data.Email, &data.Password)
+	foundByUsername, foundByEmail, err := createAccountUseCase.
+		findAccount(data.Username, data.Email)
 	if err != nil {
 		return nil, err
 	}
 	if foundByUsername != nil {
-		return nil, exceptions.NewUserUsernameAlreadyInUse()
+		return nil, exceptions.NewAccountUsernameAlreadyInUse()
 	}
 	if foundByEmail != nil {
-		return nil, exceptions.NewUserEmailAlreadyInUse()
+		return nil, exceptions.NewAccountEmailAlreadyInUse()
 	}
-	hashedPassword, err := createUserUseCase.encrypter.Hash(data.Password)
+	hashedPassword, err := createAccountUseCase.encrypter.Hash(data.Password)
 	if err != nil {
 		return nil, exceptions.NewInternalServerError()
 	}
-	user, err := createUserUseCase.repository.Create(&dtos.UserDTO{
+	account, err := createAccountUseCase.repository.Create(&dtos.AccountDTO{
 		Username: data.Username,
 		Email:    data.Email,
 		Password: hashedPassword,
@@ -80,24 +80,24 @@ func (createUserUseCase *CreateUserUseCase) Execute(
 	if err != nil {
 		return nil, err
 	}
-	err = user.IsPasswordValid(data.Password)
+	err = account.IsPasswordValid(data.Password)
 	if err != nil {
 		return nil, err
 	}
-	err = createUserUseCase.repository.Save(user)
+	err = createAccountUseCase.repository.Save(account)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return account, nil
 }
 
-func NewCreateUserUseCase(
-	repository repositories.UsersRepository,
+func NewCreateAccountUseCase(
+	repository repositories.AccountsRepository,
 	encrypter providers.EncrypterProvider,
-) (*CreateUserUseCase, *shared.Error) {
-	createUserUseCase := &CreateUserUseCase{
+) (*CreateAccountUseCase, *shared.Error) {
+	createAccountUseCase := &CreateAccountUseCase{
 		repository: repository,
 		encrypter:  encrypter,
 	}
-	return createUserUseCase, nil
+	return createAccountUseCase, nil
 }

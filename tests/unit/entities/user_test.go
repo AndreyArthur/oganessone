@@ -12,8 +12,8 @@ import (
 
 type UserEntityTest struct{}
 
-func (*UserEntityTest) setup() *entities.UserEntity {
-	user, _ := entities.NewUserEntity(&dtos.UserDTO{
+func (*UserEntityTest) setup() *entities.AccountEntity {
+	user, _ := entities.NewAccountEntity(&dtos.AccountDTO{
 		Id:        "cc58997a-2403-af1e-7836-f0b338edcd60",
 		Username:  "username",
 		Email:     "user@email.com",
@@ -37,7 +37,7 @@ func TestUserEntity_isIdValid(t *testing.T) {
 	// act
 	err = user.IsValid()
 	// assert
-	assert.Equal(t, err, exceptions.NewInvalidUserId())
+	assert.Equal(t, err, exceptions.NewInvalidAccountId())
 }
 
 func TestUserEntity_isUsernameValid(t *testing.T) {
@@ -53,21 +53,21 @@ func TestUserEntity_isUsernameValid(t *testing.T) {
 	// act
 	err = user.IsValid()
 	// assert
-	assert.Equal(t, err, exceptions.NewInvalidUserUsername())
+	assert.Equal(t, err, exceptions.NewInvalidAccountUsername())
 
 	// arrange
 	user.Username = "toooooooooooo_big" // more than 16 chars
 	// act
 	err = user.IsValid()
 	// assert
-	assert.Equal(t, err, exceptions.NewInvalidUserUsername())
+	assert.Equal(t, err, exceptions.NewInvalidAccountUsername())
 
 	// arrange
 	user.Username = "sml" // less than 4 chars
 	// act
 	err = user.IsValid()
 	// assert
-	assert.Equal(t, err, exceptions.NewInvalidUserUsername())
+	assert.Equal(t, err, exceptions.NewInvalidAccountUsername())
 }
 
 func TestUserEntity_isEmailValid(t *testing.T) {
@@ -83,7 +83,7 @@ func TestUserEntity_isEmailValid(t *testing.T) {
 	// act
 	err = user.IsValid()
 	// assert
-	assert.Equal(t, err, exceptions.NewInvalidUserEmail())
+	assert.Equal(t, err, exceptions.NewInvalidAccountEmail())
 }
 
 func TestUserEntity_isPasswordHashValid(t *testing.T) {
@@ -99,7 +99,7 @@ func TestUserEntity_isPasswordHashValid(t *testing.T) {
 	// act
 	err = user.IsValid()
 	// assert
-	assert.Equal(t, err, exceptions.NewInvalidUserPasswordHash())
+	assert.Equal(t, err, exceptions.NewInvalidAccountPasswordHash())
 }
 
 func TestUserEntity_IsPasswordValid(t *testing.T) {
@@ -117,7 +117,7 @@ func TestUserEntity_IsPasswordValid(t *testing.T) {
 	// act
 	err = user.IsPasswordValid(password)
 	// assert
-	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
+	assert.Equal(t, err, exceptions.NewInvalidAccountPassword())
 
 	// arrange
 	user = (&UserEntityTest{}).setup()
@@ -125,7 +125,7 @@ func TestUserEntity_IsPasswordValid(t *testing.T) {
 	// act
 	err = user.IsPasswordValid(password)
 	// assert
-	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
+	assert.Equal(t, err, exceptions.NewInvalidAccountPassword())
 
 	// arrange
 	user = (&UserEntityTest{}).setup()
@@ -133,7 +133,7 @@ func TestUserEntity_IsPasswordValid(t *testing.T) {
 	// act
 	err = user.IsPasswordValid(password)
 	// assert
-	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
+	assert.Equal(t, err, exceptions.NewInvalidAccountPassword())
 
 	// arrange
 	user = (&UserEntityTest{}).setup()
@@ -141,5 +141,5 @@ func TestUserEntity_IsPasswordValid(t *testing.T) {
 	// act
 	err = user.IsPasswordValid(password)
 	// assert
-	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
+	assert.Equal(t, err, exceptions.NewInvalidAccountPassword())
 }

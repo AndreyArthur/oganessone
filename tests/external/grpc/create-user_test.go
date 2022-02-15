@@ -106,7 +106,7 @@ func TestGrpcCreateUser_UsernameAlreadyInUse(t *testing.T) {
 	// assert
 	assert.Nil(t, goerr)
 	assert.Nil(t, response.Data)
-	assert.Equal(t, response.Error.Name, "UserUsernameAlreadyInUse")
+	assert.Equal(t, response.Error.Name, "AccountUsernameAlreadyInUse")
 }
 
 func TestGrpcCreateUser_EmailAlreadyInUse(t *testing.T) {
@@ -131,5 +131,5 @@ func TestGrpcCreateUser_EmailAlreadyInUse(t *testing.T) {
 	// assert
 	assert.Nil(t, goerr)
 	assert.Nil(t, response.Data)
-	assert.Equal(t, response.Error.Name, "UserEmailAlreadyInUse")
+	assert.Equal(t, response.Error.Name, "AccountEmailAlreadyInUse")
 }

@@ -11,14 +11,14 @@ import (
 type SessionAdapter struct{}
 
 func (*SessionAdapter) Generate(
-	userId string,
+	accountId string,
 ) (*providers.SessionData, *shared.Error) {
 	ONE_DAY_IN_SECONDS := int((time.Hour.Milliseconds() * 24) / 1000)
 	str, _ := helpers.NewString()
 	chars := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789(){}[]/~`!@#$%^&*;:?"
 	key := str.Random(chars, 32)
 	return &providers.SessionData{
-		UserId:                  userId,
+		AccountId:               accountId,
 		Key:                     key,
 		ExpirationTimeInSeconds: ONE_DAY_IN_SECONDS,
 	}, nil

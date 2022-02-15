@@ -39,7 +39,7 @@ func TestCreateSessionPresenter_SuccessCase(t *testing.T) {
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
 		now,
 		now
-	entity, _ := entities.NewUserEntity(&dtos.UserDTO{
+	entity, _ := entities.NewAccountEntity(&dtos.AccountDTO{
 		Id:        id,
 		Username:  username,
 		Email:     email,
@@ -53,7 +53,7 @@ func TestCreateSessionPresenter_SuccessCase(t *testing.T) {
 			Password: password,
 		}).
 		Return(&definitions.CreateSessionResult{
-			User:       entity,
+			Account:    entity,
 			SessionKey: "session_key",
 		}, nil)
 	// act
@@ -66,11 +66,11 @@ func TestCreateSessionPresenter_SuccessCase(t *testing.T) {
 	// assert
 	assert.Nil(t, err)
 	assert.Equal(t, result.Body.SessionKey, "session_key")
-	assert.True(t, verifier.IsUuid(result.Body.User.Id))
-	assert.True(t, verifier.IsUserUsername(result.Body.User.Username))
-	assert.True(t, verifier.IsEmail(result.Body.User.Email))
-	assert.True(t, verifier.IsISO8601(result.Body.User.CreatedAt))
-	assert.True(t, verifier.IsISO8601(result.Body.User.UpdatedAt))
+	assert.True(t, verifier.IsUuid(result.Body.Account.Id))
+	assert.True(t, verifier.IsUserUsername(result.Body.Account.Username))
+	assert.True(t, verifier.IsEmail(result.Body.Account.Email))
+	assert.True(t, verifier.IsISO8601(result.Body.Account.CreatedAt))
+	assert.True(t, verifier.IsISO8601(result.Body.Account.UpdatedAt))
 }
 
 func TestSessionUserPresenter_FailureCase(t *testing.T) {

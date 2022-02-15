@@ -19,7 +19,7 @@ func MakeCreateUserRpc() (*rpcs.CreateUserRpc, *shared.Error) {
 	if err != nil {
 		return nil, err
 	}
-	repo, err := repositories.NewUsersRepositoryPostgres(sql)
+	repo, err := repositories.NewAccountsRepositoryPostgres(sql)
 	if err != nil {
 		return nil, err
 	}
@@ -27,11 +27,11 @@ func MakeCreateUserRpc() (*rpcs.CreateUserRpc, *shared.Error) {
 	if err != nil {
 		return nil, err
 	}
-	createUser, err := usecases.NewCreateUserUseCase(repo, encrypter)
+	createUser, err := usecases.NewCreateAccountUseCase(repo, encrypter)
 	if err != nil {
 		return nil, err
 	}
-	createUserPresenter, err := presenters.NewCreateUserPresenter(createUser)
+	createUserPresenter, err := presenters.NewCreateAccountPresenter(createUser)
 	if err != nil {
 		return nil, err
 	}

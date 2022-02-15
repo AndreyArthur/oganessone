@@ -5,20 +5,20 @@ import (
 	"github.com/AndreyArthur/oganessone/src/presentation/views"
 )
 
-type CreateUserPresenterRequestBody struct {
+type CreateAccountPresenterRequestBody struct {
 	Username string
 	Email    string
 	Password string
 }
 
-type CreateUserPresenterRequest struct {
-	Body *CreateUserPresenterRequestBody
+type CreateAccountPresenterRequest struct {
+	Body *CreateAccountPresenterRequestBody
 }
 
-type CreateUserPresenterResponse struct {
-	Body *views.UserView
+type CreateAccountPresenterResponse struct {
+	Body *views.AccountView
 }
 
-type CreateUserPresenterContract interface {
-	Handle(request *CreateUserPresenterRequest) (*CreateUserPresenterResponse, *shared.Error)
+type CreateAccountPresenterContract interface {
+	Handle(request *CreateAccountPresenterRequest) (*CreateAccountPresenterResponse, *shared.Error)
 }

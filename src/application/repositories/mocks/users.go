@@ -37,10 +37,10 @@ func (m *MockUsersRepository) EXPECT() *MockUsersRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockUsersRepository) Create(data *dtos.UserDTO) (*entities.UserEntity, *shared.Error) {
+func (m *MockUsersRepository) Create(data *dtos.AccountDTO) (*entities.AccountEntity, *shared.Error) {
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "Create", data)
-        ret0, _ := ret[0].(*entities.UserEntity)
+        ret0, _ := ret[0].(*entities.AccountEntity)
         ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }
@@ -52,10 +52,10 @@ func (mr *MockUsersRepositoryMockRecorder) Create(data interface{}) *gomock.Call
 }
 
 // FindByEmail mocks base method.
-func (m *MockUsersRepository) FindByEmail(email string) (*entities.UserEntity, *shared.Error) {
+func (m *MockUsersRepository) FindByEmail(email string) (*entities.AccountEntity, *shared.Error) {
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "FindByEmail", email)
-        ret0, _ := ret[0].(*entities.UserEntity)
+        ret0, _ := ret[0].(*entities.AccountEntity)
         ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }
@@ -67,10 +67,10 @@ func (mr *MockUsersRepositoryMockRecorder) FindByEmail(email interface{}) *gomoc
 }
 
 // FindByUsername mocks base method.
-func (m *MockUsersRepository) FindByUsername(username string, caseSensitive bool) (*entities.UserEntity, *shared.Error) {
+func (m *MockUsersRepository) FindByUsername(username string, caseSensitive bool) (*entities.AccountEntity, *shared.Error) {
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "FindByUsername", username, caseSensitive)
-        ret0, _ := ret[0].(*entities.UserEntity)
+        ret0, _ := ret[0].(*entities.AccountEntity)
         ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }
@@ -82,7 +82,7 @@ func (mr *MockUsersRepositoryMockRecorder) FindByUsername(username, caseSensitiv
 }
 
 // Save mocks base method.
-func (m *MockUsersRepository) Save(arg0 *entities.UserEntity) *shared.Error {
+func (m *MockUsersRepository) Save(arg0 *entities.AccountEntity) *shared.Error {
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "Save", arg0)
         ret0, _ := ret[0].(*shared.Error)

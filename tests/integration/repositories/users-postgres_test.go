@@ -18,7 +18,7 @@ import (
 
 type UsersRepositoryPostgresTest struct{}
 
-func (*UsersRepositoryPostgresTest) setup() (*repositories.UsersRepositoryPostgres, *sql.DB) {
+func (*UsersRepositoryPostgresTest) setup() (*repositories.AccountsRepositoryPostgres, *sql.DB) {
 	env, err := helpers.NewEnv()
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +29,7 @@ func (*UsersRepositoryPostgresTest) setup() (*repositories.UsersRepositoryPostgr
 	}
 	db, _ := database.NewDatabase()
 	sql, _ := db.Connect()
-	repo, _ := repositories.NewUsersRepositoryPostgres(sql)
+	repo, _ := repositories.NewAccountsRepositoryPostgres(sql)
 	return repo, sql
 }
 
@@ -38,7 +38,7 @@ func TestUsersRepositoryPostgres_CreateWithNeededValues(t *testing.T) {
 	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
 	username, email, password := "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	// act
-	user, err := repo.Create(&dtos.UserDTO{
+	user, err := repo.Create(&dtos.AccountDTO{
 		Username: username,
 		Email:    email,
 		Password: password,
@@ -53,15 +53,15 @@ func TestUsersRepositoryPostgres_CreateWithoutNeededValues(t *testing.T) {
 	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
 	username, email, password := "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	// act
-	first, firstErr := repo.Create(&dtos.UserDTO{
+	first, firstErr := repo.Create(&dtos.AccountDTO{
 		Email:    email,
 		Password: password,
 	})
-	second, secondErr := repo.Create(&dtos.UserDTO{
+	second, secondErr := repo.Create(&dtos.AccountDTO{
 		Username: username,
 		Password: password,
 	})
-	third, thirdErr := repo.Create(&dtos.UserDTO{
+	third, thirdErr := repo.Create(&dtos.AccountDTO{
 		Username: username,
 		Email:    email,
 	})
@@ -87,7 +87,7 @@ func TestUsersRepositoryPostgres_CreateWithCustomValues(t *testing.T) {
 		now,
 		now
 	// act
-	user, err := repo.Create(&dtos.UserDTO{
+	user, err := repo.Create(&dtos.AccountDTO{
 		Id:        id,
 		Username:  username,
 		Email:     email,
@@ -231,7 +231,7 @@ func TestUsersRepositoryPostgres_Save(t *testing.T) {
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
 		time.Now().UTC(),
 		time.Now().UTC()
-	user, _ := entities.NewUserEntity(&dtos.UserDTO{
+	user, _ := entities.NewAccountEntity(&dtos.AccountDTO{
 		Id:        id,
 		Username:  username,
 		Email:     email,

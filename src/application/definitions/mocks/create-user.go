@@ -36,10 +36,10 @@ func (m *MockCreateUser) EXPECT() *MockCreateUserMockRecorder {
 }
 
 // Execute mocks base method.
-func (m *MockCreateUser) Execute(data *definitions.CreateUserDTO) (*definitions.CreateUserResult, *shared.Error) {
+func (m *MockCreateUser) Execute(data *definitions.CreateAccountDTO) (*definitions.CreateAccountResult, *shared.Error) {
         m.ctrl.T.Helper()
         ret := m.ctrl.Call(m, "Execute", data)
-        ret0, _ := ret[0].(*definitions.CreateUserResult)
+        ret0, _ := ret[0].(*definitions.CreateAccountResult)
         ret1, _ := ret[1].(*shared.Error)
         return ret0, ret1
 }

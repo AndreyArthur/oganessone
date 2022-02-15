@@ -9,15 +9,15 @@ import (
 	"github.com/AndreyArthur/oganessone/src/presentation/views"
 )
 
-type CreateUserPresenter struct {
-	createUser definitions.CreateUser
+type CreateAccountPresenter struct {
+	createAccount definitions.CreateAccount
 }
 
-func (createUserPresenter *CreateUserPresenter) Handle(
-	request *contracts.CreateUserPresenterRequest,
-) (*contracts.CreateUserPresenterResponse, *shared.Error) {
-	user, err := createUserPresenter.createUser.
-		Execute(&definitions.CreateUserDTO{
+func (createAccountPresenter *CreateAccountPresenter) Handle(
+	request *contracts.CreateAccountPresenterRequest,
+) (*contracts.CreateAccountPresenterResponse, *shared.Error) {
+	user, err := createAccountPresenter.createAccount.
+		Execute(&definitions.CreateAccountDTO{
 			Username: request.Body.Username,
 			Email:    request.Body.Email,
 			Password: request.Body.Password,
@@ -25,8 +25,8 @@ func (createUserPresenter *CreateUserPresenter) Handle(
 	if err != nil {
 		return nil, err
 	}
-	return &contracts.CreateUserPresenterResponse{
-		Body: &views.UserView{
+	return &contracts.CreateAccountPresenterResponse{
+		Body: &views.AccountView{
 			Id:        user.Id,
 			Username:  user.Username,
 			Email:     user.Email,
@@ -36,10 +36,10 @@ func (createUserPresenter *CreateUserPresenter) Handle(
 	}, nil
 }
 
-func NewCreateUserPresenter(
-	createUser definitions.CreateUser,
-) (*CreateUserPresenter, *shared.Error) {
-	return &CreateUserPresenter{
-		createUser: createUser,
+func NewCreateAccountPresenter(
+	createAccount definitions.CreateAccount,
+) (*CreateAccountPresenter, *shared.Error) {
+	return &CreateAccountPresenter{
+		createAccount: createAccount,
 	}, nil
 }

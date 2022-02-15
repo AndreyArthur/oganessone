@@ -15,7 +15,7 @@ type CreateSessionPresenterRequest struct {
 }
 
 type CreateSessionPresenterResponseBody struct {
-	User       *views.UserView
+	Account    *views.AccountView
 	SessionKey string
 }
 

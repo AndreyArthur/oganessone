@@ -34,7 +34,7 @@ func TestCreateSessionUseCase_SuccessCaseByUsername(t *testing.T) {
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.UserEntity{
+	repoUser := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -57,7 +57,7 @@ func TestCreateSessionUseCase_SuccessCaseByUsername(t *testing.T) {
 		Generate(repoUser.Id).
 		Return(&providers.SessionData{
 			Key:                     sessionKey,
-			UserId:                  repoUser.Id,
+			AccountId:               repoUser.Id,
 			ExpirationTimeInSeconds: ONE_DAY_IN_SECONDS,
 		}, nil)
 	cache.EXPECT().
@@ -70,7 +70,7 @@ func TestCreateSessionUseCase_SuccessCaseByUsername(t *testing.T) {
 	})
 	// assert
 	assert.Nil(t, err)
-	assert.Nil(t, result.User.IsValid())
+	assert.Nil(t, result.Account.IsValid())
 	assert.Equal(t, result.SessionKey, sessionKey)
 }
 
@@ -80,7 +80,7 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.UserEntity{
+	repoUser := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -103,7 +103,7 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 		Generate(repoUser.Id).
 		Return(&providers.SessionData{
 			Key:                     sessionKey,
-			UserId:                  repoUser.Id,
+			AccountId:               repoUser.Id,
 			ExpirationTimeInSeconds: ONE_DAY_IN_SECONDS,
 		}, nil)
 	cache.EXPECT().
@@ -116,7 +116,7 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 	})
 	// assert
 	assert.Nil(t, err)
-	assert.Nil(t, result.User.IsValid())
+	assert.Nil(t, result.Account.IsValid())
 	assert.Equal(t, result.SessionKey, sessionKey)
 }
 
@@ -180,7 +180,7 @@ func TestCreateSessionUseCase_UserNotFound(t *testing.T) {
 	})
 	// assert
 	assert.Nil(t, result)
-	assert.Equal(t, err, exceptions.NewUserLoginFailed())
+	assert.Equal(t, err, exceptions.NewAccountLoginFailed())
 }
 
 func TestCreateSessionUseCase_EncrypterCompareReturnError(t *testing.T) {
@@ -189,7 +189,7 @@ func TestCreateSessionUseCase_EncrypterCompareReturnError(t *testing.T) {
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.UserEntity{
+	repoUser := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -222,7 +222,7 @@ func TestCreateSessionUseCase_UserPasswordDoesNotMatch(t *testing.T) {
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.UserEntity{
+	repoUser := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -246,7 +246,7 @@ func TestCreateSessionUseCase_UserPasswordDoesNotMatch(t *testing.T) {
 	})
 	// assert
 	assert.Nil(t, result)
-	assert.Equal(t, err, exceptions.NewUserLoginFailed())
+	assert.Equal(t, err, exceptions.NewAccountLoginFailed())
 }
 
 func TestCreateSessionUseCase_SessionGenerateKeyReturnError(t *testing.T) {
@@ -255,7 +255,7 @@ func TestCreateSessionUseCase_SessionGenerateKeyReturnError(t *testing.T) {
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.UserEntity{
+	repoUser := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -290,7 +290,7 @@ func TestCreateSessionUseCase_FirstCacheSetReturnError(t *testing.T) {
 	defer ctrl.Finish()
 	username, email, password := "username", "user@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.UserEntity{
+	repoUser := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -313,7 +313,7 @@ func TestCreateSessionUseCase_FirstCacheSetReturnError(t *testing.T) {
 		Generate(repoUser.Id).
 		Return(&providers.SessionData{
 			Key:                     sessionKey,
-			UserId:                  repoUser.Id,
+			AccountId:               repoUser.Id,
 			ExpirationTimeInSeconds: ONE_DAY_IN_SECONDS,
 		}, nil)
 	cache.EXPECT().

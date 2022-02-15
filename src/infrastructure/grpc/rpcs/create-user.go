@@ -9,7 +9,7 @@ import (
 )
 
 type CreateUserRpc struct {
-	createUserPresenter contracts.CreateUserPresenterContract
+	createUserPresenter contracts.CreateAccountPresenterContract
 }
 
 func (createUserRpc *CreateUserRpc) Perform(
@@ -21,8 +21,8 @@ func (createUserRpc *CreateUserRpc) Perform(
 		data.GetEmail(),
 		data.GetPassword()
 	response, err := createUserRpc.createUserPresenter.
-		Handle(&contracts.CreateUserPresenterRequest{
-			Body: &contracts.CreateUserPresenterRequestBody{
+		Handle(&contracts.CreateAccountPresenterRequest{
+			Body: &contracts.CreateAccountPresenterRequestBody{
 				Username: username,
 				Email:    email,
 				Password: password,
@@ -51,7 +51,7 @@ func (createUserRpc *CreateUserRpc) Perform(
 }
 
 func NewCreateUserRpc(
-	presenter contracts.CreateUserPresenterContract,
+	presenter contracts.CreateAccountPresenterContract,
 ) (*CreateUserRpc, *shared.Error) {
 	return &CreateUserRpc{
 		createUserPresenter: presenter,

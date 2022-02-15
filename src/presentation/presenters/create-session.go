@@ -26,12 +26,12 @@ func (createSessionPresenter *CreateSessionPresenter) Handle(
 	}
 	return &contracts.CreateSessionPresenterResponse{
 		Body: &contracts.CreateSessionPresenterResponseBody{
-			User: &views.UserView{
-				Id:        result.User.Id,
-				Username:  result.User.Username,
-				Email:     result.User.Email,
-				CreatedAt: result.User.CreatedAt.Format(time.RFC3339),
-				UpdatedAt: result.User.UpdatedAt.Format(time.RFC3339),
+			Account: &views.AccountView{
+				Id:        result.Account.Id,
+				Username:  result.Account.Username,
+				Email:     result.Account.Email,
+				CreatedAt: result.Account.CreatedAt.Format(time.RFC3339),
+				UpdatedAt: result.Account.UpdatedAt.Format(time.RFC3339),
 			},
 			SessionKey: result.SessionKey,
 		},

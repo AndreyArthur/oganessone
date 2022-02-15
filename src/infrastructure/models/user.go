@@ -9,9 +9,9 @@ import (
 	"github.com/AndreyArthur/oganessone/src/core/shared"
 )
 
-type UserModel struct{}
+type AccountModel struct{}
 
-func (userModel *UserModel) Scan(rows *sql.Row) *entities.UserEntity {
+func (accountModel *AccountModel) Scan(rows *sql.Row) *entities.AccountEntity {
 	var id string
 	var username string
 	var email string
@@ -26,7 +26,7 @@ func (userModel *UserModel) Scan(rows *sql.Row) *entities.UserEntity {
 		&createdAt,
 		&updatedAt,
 	)
-	user, err := entities.NewUserEntity(&dtos.UserDTO{
+	account, err := entities.NewAccountEntity(&dtos.AccountDTO{
 		Id:        id,
 		Username:  username,
 		Email:     email,
@@ -37,9 +37,9 @@ func (userModel *UserModel) Scan(rows *sql.Row) *entities.UserEntity {
 	if err != nil {
 		return nil
 	}
-	return user
+	return account
 }
 
-func NewUserModel() (*UserModel, *shared.Error) {
-	return &UserModel{}, nil
+func NewAccountModel() (*AccountModel, *shared.Error) {
+	return &AccountModel{}, nil
 }
