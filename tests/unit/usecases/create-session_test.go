@@ -18,9 +18,9 @@ import (
 
 type CreateSessionUseCaseTest struct{}
 
-func (*CreateSessionUseCaseTest) setup(t *testing.T) (*usecases.CreateSessionUseCase, *mock_repositories.MockUsersRepository, *mock_providers.MockEncrypterProvider, *mock_providers.MockSessionProvider, *mock_providers.MockCacheProvider, *gomock.Controller) {
+func (*CreateSessionUseCaseTest) setup(t *testing.T) (*usecases.CreateSessionUseCase, *mock_repositories.MockAccountsRepository, *mock_providers.MockEncrypterProvider, *mock_providers.MockSessionProvider, *mock_providers.MockCacheProvider, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
-	repo := mock_repositories.NewMockUsersRepository(ctrl)
+	repo := mock_repositories.NewMockAccountsRepository(ctrl)
 	encrypter := mock_providers.NewMockEncrypterProvider(ctrl)
 	session := mock_providers.NewMockSessionProvider(ctrl)
 	cache := mock_providers.NewMockCacheProvider(ctrl)

@@ -5,47 +5,47 @@
 package mock_definitions
 
 import (
-        reflect "reflect"
+	reflect "reflect"
 
-        definitions "github.com/AndreyArthur/oganessone/src/application/definitions"
-        shared "github.com/AndreyArthur/oganessone/src/core/shared"
-        gomock "github.com/golang/mock/gomock"
+	definitions "github.com/AndreyArthur/oganessone/src/application/definitions"
+	shared "github.com/AndreyArthur/oganessone/src/core/shared"
+	gomock "github.com/golang/mock/gomock"
 )
 
-// MockCreateUser is a mock of CreateUser interface.
-type MockCreateUser struct {
-        ctrl     *gomock.Controller
-        recorder *MockCreateUserMockRecorder
+// MockCreateAccount is a mock of CreateAccount interface.
+type MockCreateAccount struct {
+	ctrl     *gomock.Controller
+	recorder *MockCreateAccountMockRecorder
 }
 
-// MockCreateUserMockRecorder is the mock recorder for MockCreateUser.
-type MockCreateUserMockRecorder struct {
-        mock *MockCreateUser
+// MockCreateAccountMockRecorder is the mock recorder for MockCreateAccount.
+type MockCreateAccountMockRecorder struct {
+	mock *MockCreateAccount
 }
 
-// NewMockCreateUser creates a new mock instance.
-func NewMockCreateUser(ctrl *gomock.Controller) *MockCreateUser {
-        mock := &MockCreateUser{ctrl: ctrl}
-        mock.recorder = &MockCreateUserMockRecorder{mock}
-        return mock
+// NewMockCreateAccount creates a new mock instance.
+func NewMockCreateAccount(ctrl *gomock.Controller) *MockCreateAccount {
+	mock := &MockCreateAccount{ctrl: ctrl}
+	mock.recorder = &MockCreateAccountMockRecorder{mock}
+	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockCreateUser) EXPECT() *MockCreateUserMockRecorder {
-        return m.recorder
+func (m *MockCreateAccount) EXPECT() *MockCreateAccountMockRecorder {
+	return m.recorder
 }
 
 // Execute mocks base method.
-func (m *MockCreateUser) Execute(data *definitions.CreateAccountDTO) (*definitions.CreateAccountResult, *shared.Error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Execute", data)
-        ret0, _ := ret[0].(*definitions.CreateAccountResult)
-        ret1, _ := ret[1].(*shared.Error)
-        return ret0, ret1
+func (m *MockCreateAccount) Execute(data *definitions.CreateAccountDTO) (*definitions.CreateAccountResult, *shared.Error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Execute", data)
+	ret0, _ := ret[0].(*definitions.CreateAccountResult)
+	ret1, _ := ret[1].(*shared.Error)
+	return ret0, ret1
 }
 
 // Execute indicates an expected call of Execute.
-func (mr *MockCreateUserMockRecorder) Execute(data interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockCreateUser)(nil).Execute), data)
+func (mr *MockCreateAccountMockRecorder) Execute(data interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockCreateAccount)(nil).Execute), data)
 }

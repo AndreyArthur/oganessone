@@ -17,9 +17,9 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type CreateUserGrpcTest struct{}
+type CreateAccountGrpcTest struct{}
 
-func (*CreateUserGrpcTest) setup() (protobuf.UsersServiceClient, func(), *sql.DB) {
+func (*CreateAccountGrpcTest) setup() (protobuf.AccountsServiceClient, func(), *sql.DB) {
 	env, err := helpers.NewEnv()
 	if err != nil {
 		log.Fatal(err)
@@ -52,7 +52,7 @@ func (*CreateUserGrpcTest) setup() (protobuf.UsersServiceClient, func(), *sql.DB
 	if goerr != nil {
 		log.Fatal(goerr)
 	}
-	client := protobuf.NewUsersServiceClient(connection)
+	client := protobuf.NewAccountsServiceClient(connection)
 	closeConnections := func() {
 		connection.Close()
 		googleGrpcServer.Stop()
@@ -60,15 +60,15 @@ func (*CreateUserGrpcTest) setup() (protobuf.UsersServiceClient, func(), *sql.DB
 	return client, closeConnections, sql
 }
 
-func TestGrpcCreateUser_Success(t *testing.T) {
+func TestGrpcCreateAccount_Success(t *testing.T) {
 	// arrange
-	client, closeConnections, sql := (&CreateUserGrpcTest{}).setup()
+	client, closeConnections, sql := (&CreateAccountGrpcTest{}).setup()
 	defer closeConnections()
 	defer sql.Query("DELETE FROM users;")
 	username, email, password := "username", "user@email.com", "p4ssword"
 	// act
-	response, goerr := client.CreateUser(context.Background(), &protobuf.CreateUserRequest{
-		Data: &protobuf.CreateUserData{
+	response, goerr := client.CreateAccount(context.Background(), &protobuf.CreateAccountRequest{
+		Data: &protobuf.CreateAccountData{
 			Username: username,
 			Email:    email,
 			Password: password,
@@ -78,15 +78,15 @@ func TestGrpcCreateUser_Success(t *testing.T) {
 	assert.Nil(t, goerr)
 	assert.Nil(t, response.Error)
 	assert.True(t, verifier.IsUuid(response.Data.Id))
-	assert.True(t, verifier.IsUserUsername(response.Data.Username))
+	assert.True(t, verifier.IsAccountUsername(response.Data.Username))
 	assert.True(t, verifier.IsEmail(response.Data.Email))
 	assert.True(t, verifier.IsISO8601(response.Data.CreatedAt))
 	assert.True(t, verifier.IsISO8601(response.Data.UpdatedAt))
 }
 
-func TestGrpcCreateUser_UsernameAlreadyInUse(t *testing.T) {
+func TestGrpcCreateAccount_UsernameAlreadyInUse(t *testing.T) {
 	// arrange
-	client, closeConnections, sql := (&CreateUserGrpcTest{}).setup()
+	client, closeConnections, sql := (&CreateAccountGrpcTest{}).setup()
 	defer closeConnections()
 	defer sql.Query("DELETE FROM users;")
 	username, email, password := "username", "user@email.com", "p4ssword"
@@ -96,8 +96,8 @@ func TestGrpcCreateUser_UsernameAlreadyInUse(t *testing.T) {
 		) VALUES ( $1, $2, $3 );
 	`, username, "other@email.com", "$2y$10$hRAVNUr.t6UpY1J0bQKmhO5x/K9rZPOGAPdx3HICkCrOUHR/3eyxW")
 	// act
-	response, goerr := client.CreateUser(context.Background(), &protobuf.CreateUserRequest{
-		Data: &protobuf.CreateUserData{
+	response, goerr := client.CreateAccount(context.Background(), &protobuf.CreateAccountRequest{
+		Data: &protobuf.CreateAccountData{
 			Username: username,
 			Email:    email,
 			Password: password,
@@ -109,9 +109,9 @@ func TestGrpcCreateUser_UsernameAlreadyInUse(t *testing.T) {
 	assert.Equal(t, response.Error.Name, "AccountUsernameAlreadyInUse")
 }
 
-func TestGrpcCreateUser_EmailAlreadyInUse(t *testing.T) {
+func TestGrpcCreateAccount_EmailAlreadyInUse(t *testing.T) {
 	// arrange
-	client, closeConnections, sql := (&CreateUserGrpcTest{}).setup()
+	client, closeConnections, sql := (&CreateAccountGrpcTest{}).setup()
 	defer closeConnections()
 	defer sql.Query("DELETE FROM users;")
 	username, email, password := "username", "user@email.com", "p4ssword"
@@ -121,8 +121,8 @@ func TestGrpcCreateUser_EmailAlreadyInUse(t *testing.T) {
 		) VALUES ( $1, $2, $3 );
 	`, "other_username", email, "$2y$10$hRAVNUr.t6UpY1J0bQKmhO5x/K9rZPOGAPdx3HICkCrOUHR/3eyxW")
 	// act
-	response, goerr := client.CreateUser(context.Background(), &protobuf.CreateUserRequest{
-		Data: &protobuf.CreateUserData{
+	response, goerr := client.CreateAccount(context.Background(), &protobuf.CreateAccountRequest{
+		Data: &protobuf.CreateAccountData{
 			Username: username,
 			Email:    email,
 			Password: password,

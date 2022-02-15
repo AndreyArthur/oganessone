@@ -12,15 +12,15 @@ import (
 )
 
 type server struct {
-	protobuf.UnimplementedUsersServiceServer
+	protobuf.UnimplementedAccountsServiceServer
 }
 
-func (*server) CreateUser(
-	ctx context.Context, request *protobuf.CreateUserRequest,
-) (*protobuf.CreateUserResponse, error) {
-	rpc, err := factories.MakeCreateUserRpc()
+func (*server) CreateAccount(
+	ctx context.Context, request *protobuf.CreateAccountRequest,
+) (*protobuf.CreateAccountResponse, error) {
+	rpc, err := factories.MakeCreateAccountRpc()
 	if err != nil {
-		return &protobuf.CreateUserResponse{
+		return &protobuf.CreateAccountResponse{
 			Error: &protobuf.Error{
 				Type:    err.Type,
 				Name:    err.Name,
@@ -34,11 +34,11 @@ func (*server) CreateUser(
 
 type GrpcServer struct {
 	googleGrpcServer *grpc.Server
-	protoServer      protobuf.UsersServiceServer
+	protoServer      protobuf.AccountsServiceServer
 }
 
 func (gs *GrpcServer) Start(lis net.Listener) {
-	protobuf.RegisterUsersServiceServer(gs.googleGrpcServer, gs.protoServer)
+	protobuf.RegisterAccountsServiceServer(gs.googleGrpcServer, gs.protoServer)
 	err := gs.googleGrpcServer.Serve(lis)
 	gs.googleGrpcServer.Stop()
 	if err != nil {

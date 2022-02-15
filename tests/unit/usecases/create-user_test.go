@@ -19,9 +19,9 @@ import (
 
 type CreateUserUseCaseTest struct{}
 
-func (*CreateUserUseCaseTest) setup(t *testing.T) (*usecases.CreateAccountUseCase, *mock_repositories.MockUsersRepository, *mock_providers.MockEncrypterProvider, *gomock.Controller) {
+func (*CreateUserUseCaseTest) setup(t *testing.T) (*usecases.CreateAccountUseCase, *mock_repositories.MockAccountsRepository, *mock_providers.MockEncrypterProvider, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
-	repo := mock_repositories.NewMockUsersRepository(ctrl)
+	repo := mock_repositories.NewMockAccountsRepository(ctrl)
 	encrypter := mock_providers.NewMockEncrypterProvider(ctrl)
 	createUserUseCase, _ := usecases.NewCreateAccountUseCase(repo, encrypter)
 	return createUserUseCase, repo, encrypter, ctrl

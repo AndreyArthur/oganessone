@@ -5,92 +5,92 @@
 package mock_repositories
 
 import (
-        reflect "reflect"
+	reflect "reflect"
 
-        dtos "github.com/AndreyArthur/oganessone/src/core/dtos"
-        entities "github.com/AndreyArthur/oganessone/src/core/entities"
-        shared "github.com/AndreyArthur/oganessone/src/core/shared"
-        gomock "github.com/golang/mock/gomock"
+	dtos "github.com/AndreyArthur/oganessone/src/core/dtos"
+	entities "github.com/AndreyArthur/oganessone/src/core/entities"
+	shared "github.com/AndreyArthur/oganessone/src/core/shared"
+	gomock "github.com/golang/mock/gomock"
 )
 
-// MockUsersRepository is a mock of UsersRepository interface.
-type MockUsersRepository struct {
-        ctrl     *gomock.Controller
-        recorder *MockUsersRepositoryMockRecorder
+// MockAccountsRepository is a mock of AccountsRepository interface.
+type MockAccountsRepository struct {
+	ctrl     *gomock.Controller
+	recorder *MockAccountsRepositoryMockRecorder
 }
 
-// MockUsersRepositoryMockRecorder is the mock recorder for MockUsersRepository.
-type MockUsersRepositoryMockRecorder struct {
-        mock *MockUsersRepository
+// MockAccountsRepositoryMockRecorder is the mock recorder for MockAccountsRepository.
+type MockAccountsRepositoryMockRecorder struct {
+	mock *MockAccountsRepository
 }
 
-// NewMockUsersRepository creates a new mock instance.
-func NewMockUsersRepository(ctrl *gomock.Controller) *MockUsersRepository {
-        mock := &MockUsersRepository{ctrl: ctrl}
-        mock.recorder = &MockUsersRepositoryMockRecorder{mock}
-        return mock
+// NewMockAccountsRepository creates a new mock instance.
+func NewMockAccountsRepository(ctrl *gomock.Controller) *MockAccountsRepository {
+	mock := &MockAccountsRepository{ctrl: ctrl}
+	mock.recorder = &MockAccountsRepositoryMockRecorder{mock}
+	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUsersRepository) EXPECT() *MockUsersRepositoryMockRecorder {
-        return m.recorder
+func (m *MockAccountsRepository) EXPECT() *MockAccountsRepositoryMockRecorder {
+	return m.recorder
 }
 
 // Create mocks base method.
-func (m *MockUsersRepository) Create(data *dtos.AccountDTO) (*entities.AccountEntity, *shared.Error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Create", data)
-        ret0, _ := ret[0].(*entities.AccountEntity)
-        ret1, _ := ret[1].(*shared.Error)
-        return ret0, ret1
+func (m *MockAccountsRepository) Create(data *dtos.AccountDTO) (*entities.AccountEntity, *shared.Error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", data)
+	ret0, _ := ret[0].(*entities.AccountEntity)
+	ret1, _ := ret[1].(*shared.Error)
+	return ret0, ret1
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockUsersRepositoryMockRecorder) Create(data interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockUsersRepository)(nil).Create), data)
+func (mr *MockAccountsRepositoryMockRecorder) Create(data interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockAccountsRepository)(nil).Create), data)
 }
 
 // FindByEmail mocks base method.
-func (m *MockUsersRepository) FindByEmail(email string) (*entities.AccountEntity, *shared.Error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "FindByEmail", email)
-        ret0, _ := ret[0].(*entities.AccountEntity)
-        ret1, _ := ret[1].(*shared.Error)
-        return ret0, ret1
+func (m *MockAccountsRepository) FindByEmail(email string) (*entities.AccountEntity, *shared.Error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByEmail", email)
+	ret0, _ := ret[0].(*entities.AccountEntity)
+	ret1, _ := ret[1].(*shared.Error)
+	return ret0, ret1
 }
 
 // FindByEmail indicates an expected call of FindByEmail.
-func (mr *MockUsersRepositoryMockRecorder) FindByEmail(email interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmail", reflect.TypeOf((*MockUsersRepository)(nil).FindByEmail), email)
+func (mr *MockAccountsRepositoryMockRecorder) FindByEmail(email interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmail", reflect.TypeOf((*MockAccountsRepository)(nil).FindByEmail), email)
 }
 
 // FindByUsername mocks base method.
-func (m *MockUsersRepository) FindByUsername(username string, caseSensitive bool) (*entities.AccountEntity, *shared.Error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "FindByUsername", username, caseSensitive)
-        ret0, _ := ret[0].(*entities.AccountEntity)
-        ret1, _ := ret[1].(*shared.Error)
-        return ret0, ret1
+func (m *MockAccountsRepository) FindByUsername(username string, caseSensitive bool) (*entities.AccountEntity, *shared.Error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByUsername", username, caseSensitive)
+	ret0, _ := ret[0].(*entities.AccountEntity)
+	ret1, _ := ret[1].(*shared.Error)
+	return ret0, ret1
 }
 
 // FindByUsername indicates an expected call of FindByUsername.
-func (mr *MockUsersRepositoryMockRecorder) FindByUsername(username, caseSensitive interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByUsername", reflect.TypeOf((*MockUsersRepository)(nil).FindByUsername), username, caseSensitive)
+func (mr *MockAccountsRepositoryMockRecorder) FindByUsername(username, caseSensitive interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByUsername", reflect.TypeOf((*MockAccountsRepository)(nil).FindByUsername), username, caseSensitive)
 }
 
 // Save mocks base method.
-func (m *MockUsersRepository) Save(arg0 *entities.AccountEntity) *shared.Error {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Save", arg0)
-        ret0, _ := ret[0].(*shared.Error)
-        return ret0
+func (m *MockAccountsRepository) Save(arg0 *entities.AccountEntity) *shared.Error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Save", arg0)
+	ret0, _ := ret[0].(*shared.Error)
+	return ret0
 }
 
 // Save indicates an expected call of Save.
-func (mr *MockUsersRepositoryMockRecorder) Save(arg0 interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockUsersRepository)(nil).Save), arg0)
+func (mr *MockAccountsRepositoryMockRecorder) Save(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockAccountsRepository)(nil).Save), arg0)
 }

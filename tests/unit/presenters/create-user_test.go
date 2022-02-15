@@ -19,9 +19,9 @@ import (
 
 type CreateUserPresenterTest struct{}
 
-func (*CreateUserPresenterTest) setup(t *testing.T) (*presenters.CreateAccountPresenter, *mock_definitions.MockCreateUser, *gomock.Controller) {
+func (*CreateUserPresenterTest) setup(t *testing.T) (*presenters.CreateAccountPresenter, *mock_definitions.MockCreateAccount, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
-	useCase := mock_definitions.NewMockCreateUser(ctrl)
+	useCase := mock_definitions.NewMockCreateAccount(ctrl)
 	presenter, _ := presenters.NewCreateAccountPresenter(useCase)
 	return presenter, useCase, ctrl
 }
@@ -65,7 +65,7 @@ func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 	// assert
 	assert.Nil(t, err)
 	assert.True(t, verifier.IsUuid(result.Body.Id))
-	assert.True(t, verifier.IsUserUsername(result.Body.Username))
+	assert.True(t, verifier.IsAccountUsername(result.Body.Username))
 	assert.True(t, verifier.IsEmail(result.Body.Email))
 	assert.True(t, verifier.IsISO8601(result.Body.CreatedAt))
 	assert.True(t, verifier.IsISO8601(result.Body.UpdatedAt))

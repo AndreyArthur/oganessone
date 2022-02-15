@@ -67,7 +67,7 @@ func TestCreateSessionPresenter_SuccessCase(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, result.Body.SessionKey, "session_key")
 	assert.True(t, verifier.IsUuid(result.Body.Account.Id))
-	assert.True(t, verifier.IsUserUsername(result.Body.Account.Username))
+	assert.True(t, verifier.IsAccountUsername(result.Body.Account.Username))
 	assert.True(t, verifier.IsEmail(result.Body.Account.Email))
 	assert.True(t, verifier.IsISO8601(result.Body.Account.CreatedAt))
 	assert.True(t, verifier.IsISO8601(result.Body.Account.UpdatedAt))

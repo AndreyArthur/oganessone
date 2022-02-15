@@ -8,19 +8,19 @@ import (
 	"github.com/AndreyArthur/oganessone/src/presentation/contracts"
 )
 
-type CreateUserRpc struct {
-	createUserPresenter contracts.CreateAccountPresenterContract
+type CreateAccountRpc struct {
+	createAccountPresenter contracts.CreateAccountPresenterContract
 }
 
-func (createUserRpc *CreateUserRpc) Perform(
-	ctx context.Context, request *protobuf.CreateUserRequest,
-) (*protobuf.CreateUserResponse, error) {
+func (createAccountRpc *CreateAccountRpc) Perform(
+	ctx context.Context, request *protobuf.CreateAccountRequest,
+) (*protobuf.CreateAccountResponse, error) {
 	data := request.GetData()
 	username, email, password :=
 		data.GetUsername(),
 		data.GetEmail(),
 		data.GetPassword()
-	response, err := createUserRpc.createUserPresenter.
+	response, err := createAccountRpc.createAccountPresenter.
 		Handle(&contracts.CreateAccountPresenterRequest{
 			Body: &contracts.CreateAccountPresenterRequestBody{
 				Username: username,
@@ -29,7 +29,7 @@ func (createUserRpc *CreateUserRpc) Perform(
 			},
 		})
 	if err != nil {
-		return &protobuf.CreateUserResponse{
+		return &protobuf.CreateAccountResponse{
 			Error: &protobuf.Error{
 				Type:    err.Type,
 				Name:    err.Name,
@@ -38,8 +38,8 @@ func (createUserRpc *CreateUserRpc) Perform(
 			Data: nil,
 		}, nil
 	}
-	return &protobuf.CreateUserResponse{
-		Data: &protobuf.User{
+	return &protobuf.CreateAccountResponse{
+		Data: &protobuf.Account{
 			Id:        response.Body.Id,
 			Username:  response.Body.Username,
 			Email:     response.Body.Email,
@@ -50,10 +50,10 @@ func (createUserRpc *CreateUserRpc) Perform(
 	}, nil
 }
 
-func NewCreateUserRpc(
+func NewCreateAccountRpc(
 	presenter contracts.CreateAccountPresenterContract,
-) (*CreateUserRpc, *shared.Error) {
-	return &CreateUserRpc{
-		createUserPresenter: presenter,
+) (*CreateAccountRpc, *shared.Error) {
+	return &CreateAccountRpc{
+		createAccountPresenter: presenter,
 	}, nil
 }

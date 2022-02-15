@@ -5,47 +5,47 @@
 package mock_providers
 
 import (
-        reflect "reflect"
+	reflect "reflect"
 
-        providers "github.com/AndreyArthur/oganessone/src/application/providers"
-        shared "github.com/AndreyArthur/oganessone/src/core/shared"
-        gomock "github.com/golang/mock/gomock"
+	providers "github.com/AndreyArthur/oganessone/src/application/providers"
+	shared "github.com/AndreyArthur/oganessone/src/core/shared"
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockSessionProvider is a mock of SessionProvider interface.
 type MockSessionProvider struct {
-        ctrl     *gomock.Controller
-        recorder *MockSessionProviderMockRecorder
+	ctrl     *gomock.Controller
+	recorder *MockSessionProviderMockRecorder
 }
 
 // MockSessionProviderMockRecorder is the mock recorder for MockSessionProvider.
 type MockSessionProviderMockRecorder struct {
-        mock *MockSessionProvider
+	mock *MockSessionProvider
 }
 
 // NewMockSessionProvider creates a new mock instance.
 func NewMockSessionProvider(ctrl *gomock.Controller) *MockSessionProvider {
-        mock := &MockSessionProvider{ctrl: ctrl}
-        mock.recorder = &MockSessionProviderMockRecorder{mock}
-        return mock
+	mock := &MockSessionProvider{ctrl: ctrl}
+	mock.recorder = &MockSessionProviderMockRecorder{mock}
+	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockSessionProvider) EXPECT() *MockSessionProviderMockRecorder {
-        return m.recorder
+	return m.recorder
 }
 
 // Generate mocks base method.
-func (m *MockSessionProvider) Generate(userId string) (*providers.SessionData, *shared.Error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Generate", userId)
-        ret0, _ := ret[0].(*providers.SessionData)
-        ret1, _ := ret[1].(*shared.Error)
-        return ret0, ret1
+func (m *MockSessionProvider) Generate(accountId string) (*providers.SessionData, *shared.Error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Generate", accountId)
+	ret0, _ := ret[0].(*providers.SessionData)
+	ret1, _ := ret[1].(*shared.Error)
+	return ret0, ret1
 }
 
 // Generate indicates an expected call of Generate.
-func (mr *MockSessionProviderMockRecorder) Generate(userId interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Generate", reflect.TypeOf((*MockSessionProvider)(nil).Generate), userId)
+func (mr *MockSessionProviderMockRecorder) Generate(accountId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Generate", reflect.TypeOf((*MockSessionProvider)(nil).Generate), accountId)
 }
