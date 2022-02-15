@@ -10,7 +10,7 @@ func NewInvalidAccountId() *shared.Error {
 	return shared.NewError(
 		validation,
 		"InvalidAccountId",
-		"Invalid user id, must be an uuid.",
+		"Invalid account id, must be an uuid.",
 	)
 }
 
@@ -18,7 +18,7 @@ func NewInvalidAccountUsername() *shared.Error {
 	return shared.NewError(
 		validation,
 		"InvalidAccountUsername",
-		"Invalid user username, must have 4-16 characters and no whitespaces.",
+		"Invalid account username, must have 4-16 characters and no whitespaces.",
 	)
 }
 
@@ -26,7 +26,7 @@ func NewInvalidAccountEmail() *shared.Error {
 	return shared.NewError(
 		validation,
 		"InvalidAccountEmail",
-		"Invalid user email syntax.",
+		"Invalid account email syntax.",
 	)
 }
 
@@ -34,7 +34,7 @@ func NewInvalidAccountPasswordHash() *shared.Error {
 	return shared.NewError(
 		validation,
 		"InvalidAccountPasswordHash",
-		"Invalid user password hash, must be a bcrypt.",
+		"Invalid account password hash, must be a bcrypt.",
 	)
 }
 
@@ -42,7 +42,7 @@ func NewInvalidAccountPassword() *shared.Error {
 	return shared.NewError(
 		validation,
 		"InvalidAccountPassword",
-		"Invalid user password, must have ascii characters, numbers and 8-32 characters.",
+		"Invalid account password, must have ascii characters, numbers and 8-32 characters.",
 	)
 }
 
