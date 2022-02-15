@@ -16,7 +16,7 @@ type CreateAccountPresenter struct {
 func (createAccountPresenter *CreateAccountPresenter) Handle(
 	request *contracts.CreateAccountPresenterRequest,
 ) (*contracts.CreateAccountPresenterResponse, *shared.Error) {
-	user, err := createAccountPresenter.createAccount.
+	account, err := createAccountPresenter.createAccount.
 		Execute(&definitions.CreateAccountDTO{
 			Username: request.Body.Username,
 			Email:    request.Body.Email,
@@ -27,11 +27,11 @@ func (createAccountPresenter *CreateAccountPresenter) Handle(
 	}
 	return &contracts.CreateAccountPresenterResponse{
 		Body: &views.AccountView{
-			Id:        user.Id,
-			Username:  user.Username,
-			Email:     user.Email,
-			CreatedAt: user.CreatedAt.Format(time.RFC3339),
-			UpdatedAt: user.UpdatedAt.Format(time.RFC3339),
+			Id:        account.Id,
+			Username:  account.Username,
+			Email:     account.Email,
+			CreatedAt: account.CreatedAt.Format(time.RFC3339),
+			UpdatedAt: account.UpdatedAt.Format(time.RFC3339),
 		},
 	}, nil
 }
