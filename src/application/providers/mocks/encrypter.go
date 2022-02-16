@@ -5,61 +5,61 @@
 package mock_providers
 
 import (
-        reflect "reflect"
+	reflect "reflect"
 
-        shared "github.com/AndreyArthur/oganessone/src/core/shared"
-        gomock "github.com/golang/mock/gomock"
+	shared "github.com/AndreyArthur/oganessone/src/core/shared"
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockEncrypterProvider is a mock of EncrypterProvider interface.
 type MockEncrypterProvider struct {
-        ctrl     *gomock.Controller
-        recorder *MockEncrypterProviderMockRecorder
+	ctrl     *gomock.Controller
+	recorder *MockEncrypterProviderMockRecorder
 }
 
 // MockEncrypterProviderMockRecorder is the mock recorder for MockEncrypterProvider.
 type MockEncrypterProviderMockRecorder struct {
-        mock *MockEncrypterProvider
+	mock *MockEncrypterProvider
 }
 
 // NewMockEncrypterProvider creates a new mock instance.
 func NewMockEncrypterProvider(ctrl *gomock.Controller) *MockEncrypterProvider {
-        mock := &MockEncrypterProvider{ctrl: ctrl}
-        mock.recorder = &MockEncrypterProviderMockRecorder{mock}
-        return mock
+	mock := &MockEncrypterProvider{ctrl: ctrl}
+	mock.recorder = &MockEncrypterProviderMockRecorder{mock}
+	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockEncrypterProvider) EXPECT() *MockEncrypterProviderMockRecorder {
-        return m.recorder
+	return m.recorder
 }
 
 // Compare mocks base method.
 func (m *MockEncrypterProvider) Compare(text, hash string) (bool, *shared.Error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Compare", text, hash)
-        ret0, _ := ret[0].(bool)
-        ret1, _ := ret[1].(*shared.Error)
-        return ret0, ret1
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Compare", text, hash)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(*shared.Error)
+	return ret0, ret1
 }
 
 // Compare indicates an expected call of Compare.
 func (mr *MockEncrypterProviderMockRecorder) Compare(text, hash interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Compare", reflect.TypeOf((*MockEncrypterProvider)(nil).Compare), text, hash)
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Compare", reflect.TypeOf((*MockEncrypterProvider)(nil).Compare), text, hash)
 }
 
 // Hash mocks base method.
 func (m *MockEncrypterProvider) Hash(text string) (string, *shared.Error) {
-        m.ctrl.T.Helper()
-        ret := m.ctrl.Call(m, "Hash", text)
-        ret0, _ := ret[0].(string)
-        ret1, _ := ret[1].(*shared.Error)
-        return ret0, ret1
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Hash", text)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(*shared.Error)
+	return ret0, ret1
 }
 
 // Hash indicates an expected call of Hash.
 func (mr *MockEncrypterProviderMockRecorder) Hash(text interface{}) *gomock.Call {
-        mr.mock.ctrl.T.Helper()
-        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Hash", reflect.TypeOf((*MockEncrypterProvider)(nil).Hash), text)
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Hash", reflect.TypeOf((*MockEncrypterProvider)(nil).Hash), text)
 }

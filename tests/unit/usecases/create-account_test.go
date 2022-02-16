@@ -17,23 +17,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type CreateUserUseCaseTest struct{}
+type CreateAccountUseCaseTest struct{}
 
-func (*CreateUserUseCaseTest) setup(t *testing.T) (*usecases.CreateUserUseCase, *mock_repositories.MockUsersRepository, *mock_providers.MockEncrypterProvider, *gomock.Controller) {
+func (*CreateAccountUseCaseTest) setup(t *testing.T) (*usecases.CreateAccountUseCase, *mock_repositories.MockAccountsRepository, *mock_providers.MockEncrypterProvider, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
-	repo := mock_repositories.NewMockUsersRepository(ctrl)
+	repo := mock_repositories.NewMockAccountsRepository(ctrl)
 	encrypter := mock_providers.NewMockEncrypterProvider(ctrl)
-	createUserUseCase, _ := usecases.NewCreateUserUseCase(repo, encrypter)
-	return createUserUseCase, repo, encrypter, ctrl
+	createAccountUseCase, _ := usecases.NewCreateAccountUseCase(repo, encrypter)
+	return createAccountUseCase, repo, encrypter, ctrl
 }
 
-func TestCreateUserUseCase_SuccessCase(t *testing.T) {
+func TestCreateAccountUseCase_SuccessCase(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateAccountUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.UserEntity{
+	repoAccount := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -51,29 +51,29 @@ func TestCreateUserUseCase_SuccessCase(t *testing.T) {
 		Hash(password).
 		Return(fakeBcryptHash, nil)
 	repo.EXPECT().
-		Create(&dtos.UserDTO{Username: username, Email: email, Password: fakeBcryptHash}).
-		Return(repoUser, nil)
+		Create(&dtos.AccountDTO{Username: username, Email: email, Password: fakeBcryptHash}).
+		Return(repoAccount, nil)
 	repo.EXPECT().
-		Save(repoUser).
+		Save(repoAccount).
 		Return(nil)
 	// act
-	user, err := useCase.Execute(&definitions.CreateUserDTO{
+	account, err := useCase.Execute(&definitions.CreateAccountDTO{
 		Username: username,
 		Email:    email,
 		Password: password,
 	})
 	// assert
 	assert.Nil(t, err)
-	assert.Nil(t, user.IsValid())
+	assert.Nil(t, account.IsValid())
 }
 
-func TestCreateUserUseCase_SanitizeValues(t *testing.T) {
+func TestCreateAccountUseCase_SanitizeValues(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateAccountUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "  username ", "  user@email.com ", " p4ssword  "
+	username, email, password := "  username ", "  account@email.com ", " p4ssword  "
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.UserEntity{
+	repoAccount := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  strings.TrimSpace(username),
 		Email:     strings.TrimSpace(email),
@@ -91,100 +91,100 @@ func TestCreateUserUseCase_SanitizeValues(t *testing.T) {
 		Hash(strings.TrimSpace(password)).
 		Return(fakeBcryptHash, nil)
 	repo.EXPECT().
-		Create(&dtos.UserDTO{
+		Create(&dtos.AccountDTO{
 			Username: strings.TrimSpace(username),
 			Email:    strings.TrimSpace(email),
 			Password: fakeBcryptHash,
 		}).
-		Return(repoUser, nil)
+		Return(repoAccount, nil)
 	repo.EXPECT().
-		Save(repoUser).
+		Save(repoAccount).
 		Return(nil)
 	// act
-	user, err := useCase.Execute(&definitions.CreateUserDTO{
+	account, err := useCase.Execute(&definitions.CreateAccountDTO{
 		Username: username,
 		Email:    email,
 		Password: password,
 	})
 	// assert
 	assert.Nil(t, err)
-	assert.NotEqual(t, user.Username, username)
-	assert.Equal(t, user.Username, strings.TrimSpace(username))
-	assert.NotEqual(t, user.Email, email)
-	assert.Equal(t, user.Email, strings.TrimSpace(email))
+	assert.NotEqual(t, account.Username, username)
+	assert.Equal(t, account.Username, strings.TrimSpace(username))
+	assert.NotEqual(t, account.Email, email)
+	assert.Equal(t, account.Email, strings.TrimSpace(email))
 }
 
-func TestCreateUserUseCase_FoundByUsername(t *testing.T) {
+func TestCreateAccountUseCase_FoundByUsername(t *testing.T) {
 	// arrange
-	useCase, repo, _, ctrl := (&CreateUserUseCaseTest{}).setup(t)
+	useCase, repo, _, ctrl := (&CreateAccountUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	repo.EXPECT().
 		FindByUsername(username, false).
-		Return(&entities.UserEntity{}, nil)
+		Return(&entities.AccountEntity{}, nil)
 	repo.EXPECT().
 		FindByEmail(email).
 		Return(nil, nil)
 	// act
-	user, err := useCase.Execute(&definitions.CreateUserDTO{
+	account, err := useCase.Execute(&definitions.CreateAccountDTO{
 		Username: username,
 		Email:    email,
 		Password: password,
 	})
 	// assert
-	assert.Equal(t, err, exceptions.NewUserUsernameAlreadyInUse())
-	assert.Nil(t, user)
+	assert.Equal(t, err, exceptions.NewAccountUsernameAlreadyInUse())
+	assert.Nil(t, account)
 }
 
-func TestCreateUserUseCase_FindByUsernameReturnError(t *testing.T) {
+func TestCreateAccountUseCase_FindByUsernameReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, _, ctrl := (&CreateUserUseCaseTest{}).setup(t)
+	useCase, repo, _, ctrl := (&CreateAccountUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	repo.EXPECT().
 		FindByUsername(username, false).
 		Return(nil, &shared.Error{})
 	repo.EXPECT().
 		FindByEmail(email).
-		Return(&entities.UserEntity{}, nil)
+		Return(&entities.AccountEntity{}, nil)
 	// act
-	user, err := useCase.Execute(&definitions.CreateUserDTO{
+	account, err := useCase.Execute(&definitions.CreateAccountDTO{
 		Username: username,
 		Email:    email,
 		Password: password,
 	})
 	// assert
 	assert.Equal(t, err, &shared.Error{})
-	assert.Nil(t, user)
+	assert.Nil(t, account)
 }
 
-func TestCreateUserUseCase_FoundByEmail(t *testing.T) {
+func TestCreateAccountUseCase_FoundByEmail(t *testing.T) {
 	// arrange
-	useCase, repo, _, ctrl := (&CreateUserUseCaseTest{}).setup(t)
+	useCase, repo, _, ctrl := (&CreateAccountUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	repo.EXPECT().
 		FindByUsername(username, false).
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByEmail(email).
-		Return(&entities.UserEntity{}, nil)
+		Return(&entities.AccountEntity{}, nil)
 	// act
-	user, err := useCase.Execute(&definitions.CreateUserDTO{
+	account, err := useCase.Execute(&definitions.CreateAccountDTO{
 		Username: username,
 		Email:    email,
 		Password: password,
 	})
 	// assert
-	assert.Nil(t, user)
-	assert.Equal(t, err, exceptions.NewUserEmailAlreadyInUse())
+	assert.Nil(t, account)
+	assert.Equal(t, err, exceptions.NewAccountEmailAlreadyInUse())
 }
 
-func TestCreateUserUseCase_FindByEmailReturnError(t *testing.T) {
+func TestCreateAccountUseCase_FindByEmailReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, _, ctrl := (&CreateUserUseCaseTest{}).setup(t)
+	useCase, repo, _, ctrl := (&CreateAccountUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	repo.EXPECT().
 		FindByUsername(username, false).
 		Return(nil, nil)
@@ -192,21 +192,21 @@ func TestCreateUserUseCase_FindByEmailReturnError(t *testing.T) {
 		FindByEmail(email).
 		Return(nil, &shared.Error{})
 	// act
-	user, err := useCase.Execute(&definitions.CreateUserDTO{
+	account, err := useCase.Execute(&definitions.CreateAccountDTO{
 		Username: username,
 		Email:    email,
 		Password: password,
 	})
 	// assert
 	assert.Equal(t, err, &shared.Error{})
-	assert.Nil(t, user)
+	assert.Nil(t, account)
 }
 
-func TestCreateUserUseCase_EncrypterHashReturnError(t *testing.T) {
+func TestCreateAccountUseCase_EncrypterHashReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateAccountUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	repo.EXPECT().
 		FindByUsername(username, false).
 		Return(nil, nil)
@@ -217,21 +217,21 @@ func TestCreateUserUseCase_EncrypterHashReturnError(t *testing.T) {
 		Hash(password).
 		Return("", &shared.Error{})
 	// act
-	user, err := useCase.Execute(&definitions.CreateUserDTO{
+	account, err := useCase.Execute(&definitions.CreateAccountDTO{
 		Username: username,
 		Email:    email,
 		Password: password,
 	})
 	// assert
 	assert.Equal(t, err, exceptions.NewInternalServerError())
-	assert.Nil(t, user)
+	assert.Nil(t, account)
 }
 
-func TestCreateUserUseCase_CreateReturnError(t *testing.T) {
+func TestCreateAccountUseCase_CreateReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateAccountUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	repo.EXPECT().
 		FindByUsername(username, false).
@@ -243,26 +243,26 @@ func TestCreateUserUseCase_CreateReturnError(t *testing.T) {
 		Hash(password).
 		Return(fakeBcryptHash, nil)
 	repo.EXPECT().
-		Create(&dtos.UserDTO{Username: username, Email: email, Password: fakeBcryptHash}).
+		Create(&dtos.AccountDTO{Username: username, Email: email, Password: fakeBcryptHash}).
 		Return(nil, &shared.Error{})
 	// act
-	user, err := useCase.Execute(&definitions.CreateUserDTO{
+	account, err := useCase.Execute(&definitions.CreateAccountDTO{
 		Username: username,
 		Email:    email,
 		Password: password,
 	})
 	// assert
 	assert.Equal(t, err, &shared.Error{})
-	assert.Nil(t, user)
+	assert.Nil(t, account)
 }
 
-func TestCreateUserUseCase_PasswordValidationReturnError(t *testing.T) {
+func TestCreateAccountUseCase_PasswordValidationReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateAccountUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, invalidPassword := "username", "user@email.com", "invalid password"
+	username, email, invalidPassword := "username", "account@email.com", "invalid password"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.UserEntity{
+	repoAccount := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -280,26 +280,26 @@ func TestCreateUserUseCase_PasswordValidationReturnError(t *testing.T) {
 		Hash(invalidPassword).
 		Return(fakeBcryptHash, nil)
 	repo.EXPECT().
-		Create(&dtos.UserDTO{Username: username, Email: email, Password: fakeBcryptHash}).
-		Return(repoUser, nil)
+		Create(&dtos.AccountDTO{Username: username, Email: email, Password: fakeBcryptHash}).
+		Return(repoAccount, nil)
 	// act
-	user, err := useCase.Execute(&definitions.CreateUserDTO{
+	account, err := useCase.Execute(&definitions.CreateAccountDTO{
 		Username: username,
 		Email:    email,
 		Password: invalidPassword,
 	})
 	// assert
-	assert.Nil(t, user)
-	assert.Equal(t, err, exceptions.NewInvalidUserPassword())
+	assert.Nil(t, account)
+	assert.Equal(t, err, exceptions.NewInvalidAccountPassword())
 }
 
-func TestCreateUserUseCase_SaveReturnError(t *testing.T) {
+func TestCreateAccountUseCase_SaveReturnError(t *testing.T) {
 	// arrange
-	useCase, repo, encrypter, ctrl := (&CreateUserUseCaseTest{}).setup(t)
+	useCase, repo, encrypter, ctrl := (&CreateAccountUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.UserEntity{
+	repoAccount := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -317,18 +317,18 @@ func TestCreateUserUseCase_SaveReturnError(t *testing.T) {
 		Hash(password).
 		Return(fakeBcryptHash, nil)
 	repo.EXPECT().
-		Create(&dtos.UserDTO{Username: username, Email: email, Password: fakeBcryptHash}).
-		Return(repoUser, nil)
+		Create(&dtos.AccountDTO{Username: username, Email: email, Password: fakeBcryptHash}).
+		Return(repoAccount, nil)
 	repo.EXPECT().
-		Save(repoUser).
+		Save(repoAccount).
 		Return(&shared.Error{})
 	// act
-	user, err := useCase.Execute(&definitions.CreateUserDTO{
+	account, err := useCase.Execute(&definitions.CreateAccountDTO{
 		Username: username,
 		Email:    email,
 		Password: password,
 	})
 	// assert
-	assert.Nil(t, user)
+	assert.Nil(t, account)
 	assert.Equal(t, err, &shared.Error{})
 }

@@ -15,16 +15,16 @@ import (
 	"github.com/AndreyArthur/oganessone/src/infrastructure/models"
 )
 
-type UsersRepositoryPostgres struct {
+type AccountsRepositoryPostgres struct {
 	db *sql.DB
 }
 
-func (usersRepository *UsersRepositoryPostgres) Create(
-	data *dtos.UserDTO,
-) (*entities.UserEntity, *shared.Error) {
+func (accountsRepository *AccountsRepositoryPostgres) Create(
+	data *dtos.AccountDTO,
+) (*entities.AccountEntity, *shared.Error) {
 	generateNeededValues := func(
-		values *dtos.UserDTO,
-	) (*dtos.UserDTO, *shared.Error) {
+		values *dtos.AccountDTO,
+	) (*dtos.AccountDTO, *shared.Error) {
 		if values.Username == "" || values.Email == "" || values.Password == "" {
 			log.Println(errors.New("username email and password fields are required"))
 			return nil, exceptions.NewInternalServerError()
@@ -54,7 +54,7 @@ func (usersRepository *UsersRepositoryPostgres) Create(
 		} else {
 			updatedAt = values.UpdatedAt
 		}
-		return &dtos.UserDTO{
+		return &dtos.AccountDTO{
 			Id:        id,
 			Username:  username,
 			Email:     email,
@@ -67,16 +67,16 @@ func (usersRepository *UsersRepositoryPostgres) Create(
 	if err != nil {
 		return nil, err
 	}
-	user, err := entities.NewUserEntity(dto)
+	account, err := entities.NewAccountEntity(dto)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return account, nil
 }
 
-func (usersRepository *UsersRepositoryPostgres) FindByUsername(
+func (accountsRepository *AccountsRepositoryPostgres) FindByUsername(
 	username string, caseSensitive bool,
-) (*entities.UserEntity, *shared.Error) {
+) (*entities.AccountEntity, *shared.Error) {
 	generateQuery := func(caseSensitive bool) string {
 		var field string
 		if caseSensitive {
@@ -88,7 +88,7 @@ func (usersRepository *UsersRepositoryPostgres) FindByUsername(
 			`SELECT 
 				id, username, email, password, created_at, updated_at
 			FROM
-				users
+				accounts
 			WHERE `,
 			field,
 			" = $1",
@@ -96,7 +96,7 @@ func (usersRepository *UsersRepositoryPostgres) FindByUsername(
 		return query
 	}
 	query := generateQuery(caseSensitive)
-	stmt, goerr := usersRepository.db.Prepare(query)
+	stmt, goerr := accountsRepository.db.Prepare(query)
 	if goerr != nil {
 		log.Println(goerr)
 		return nil, exceptions.NewInternalServerError()
@@ -107,21 +107,21 @@ func (usersRepository *UsersRepositoryPostgres) FindByUsername(
 	} else {
 		queryUsername = username
 	}
-	userModel, err := models.NewUserModel()
+	accountModel, err := models.NewAccountModel()
 	if err != nil {
 		return nil, err
 	}
 	rows := stmt.QueryRow(queryUsername)
-	user := userModel.Scan(rows)
-	return user, nil
+	account := accountModel.Scan(rows)
+	return account, nil
 }
 
-func (usersRepository *UsersRepositoryPostgres) FindByEmail(email string) (*entities.UserEntity, *shared.Error) {
-	stmt, goerr := usersRepository.db.Prepare(`
+func (accountsRepository *AccountsRepositoryPostgres) FindByEmail(email string) (*entities.AccountEntity, *shared.Error) {
+	stmt, goerr := accountsRepository.db.Prepare(`
 		SELECT 
 			id, username, email, password, created_at, updated_at
 		FROM
-			users
+			accounts
 		WHERE 
 			email = $1
 	`)
@@ -129,18 +129,18 @@ func (usersRepository *UsersRepositoryPostgres) FindByEmail(email string) (*enti
 		log.Println(goerr)
 		return nil, exceptions.NewInternalServerError()
 	}
-	userModel, err := models.NewUserModel()
+	accountModel, err := models.NewAccountModel()
 	if err != nil {
 		return nil, err
 	}
 	rows := stmt.QueryRow(email)
-	user := userModel.Scan(rows)
-	return user, nil
+	acount := accountModel.Scan(rows)
+	return acount, nil
 }
 
-func (usersRepository *UsersRepositoryPostgres) Save(user *entities.UserEntity) *shared.Error {
-	stmt, goerr := usersRepository.db.Prepare(`
-		INSERT INTO users	
+func (accountRepository *AccountsRepositoryPostgres) Save(account *entities.AccountEntity) *shared.Error {
+	stmt, goerr := accountRepository.db.Prepare(`
+		INSERT INTO accounts	
 			( id, username, email, password, created_at, updated_at )
 		VALUES ( $1, $2, $3, $4, $5, $6 )
 	`)
@@ -149,12 +149,12 @@ func (usersRepository *UsersRepositoryPostgres) Save(user *entities.UserEntity) 
 		return exceptions.NewInternalServerError()
 	}
 	_, goerr = stmt.Exec(
-		user.Id,
-		user.Username,
-		user.Email,
-		user.Password,
-		user.CreatedAt,
-		user.UpdatedAt,
+		account.Id,
+		account.Username,
+		account.Email,
+		account.Password,
+		account.CreatedAt,
+		account.UpdatedAt,
 	)
 	if goerr != nil {
 		log.Println(goerr)
@@ -163,8 +163,8 @@ func (usersRepository *UsersRepositoryPostgres) Save(user *entities.UserEntity) 
 	return nil
 }
 
-func NewUsersRepositoryPostgres(db *sql.DB) (*UsersRepositoryPostgres, *shared.Error) {
-	return &UsersRepositoryPostgres{
+func NewAccountsRepositoryPostgres(db *sql.DB) (*AccountsRepositoryPostgres, *shared.Error) {
+	return &AccountsRepositoryPostgres{
 		db: db,
 	}, nil
 }

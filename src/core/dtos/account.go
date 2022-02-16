@@ -2,7 +2,7 @@ package dtos
 
 import "time"
 
-type UserDTO struct {
+type AccountDTO struct {
 	Id        string
 	Username  string
 	Email     string

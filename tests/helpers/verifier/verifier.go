@@ -11,7 +11,7 @@ func IsUuid(uuid string) bool {
 	return matches
 }
 
-func IsUserUsername(username string) bool {
+func IsAccountUsername(username string) bool {
 	var isValid bool
 	isValid = !(len(username) < 4 || len(username) > 16)
 	if !isValid {

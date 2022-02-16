@@ -17,29 +17,29 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type CreateUserPresenterTest struct{}
+type CreateAccountPresenterTest struct{}
 
-func (*CreateUserPresenterTest) setup(t *testing.T) (*presenters.CreateUserPresenter, *mock_definitions.MockCreateUser, *gomock.Controller) {
+func (*CreateAccountPresenterTest) setup(t *testing.T) (*presenters.CreateAccountPresenter, *mock_definitions.MockCreateAccount, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
-	useCase := mock_definitions.NewMockCreateUser(ctrl)
-	presenter, _ := presenters.NewCreateUserPresenter(useCase)
+	useCase := mock_definitions.NewMockCreateAccount(ctrl)
+	presenter, _ := presenters.NewCreateAccountPresenter(useCase)
 	return presenter, useCase, ctrl
 }
 
-func TestCreateUserPresenter_SuccessCase(t *testing.T) {
+func TestCreateAccountPresenter_SuccessCase(t *testing.T) {
 	// arrange
-	presenter, useCase, ctrl := (&CreateUserPresenterTest{}).setup(t)
+	presenter, useCase, ctrl := (&CreateAccountPresenterTest{}).setup(t)
 	defer ctrl.Finish()
 	uuid, _ := helpers.NewUuid()
 	now := time.Now().UTC()
 	id, username, email, password, createdAt, updatedAt :=
 		uuid.Generate(),
 		"username",
-		"user@email.com",
+		"account@email.com",
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
 		now,
 		now
-	entity, _ := entities.NewUserEntity(&dtos.UserDTO{
+	entity, _ := entities.NewAccountEntity(&dtos.AccountDTO{
 		Id:        id,
 		Username:  username,
 		Email:     email,
@@ -48,15 +48,15 @@ func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 		UpdatedAt: updatedAt,
 	})
 	useCase.EXPECT().
-		Execute(&definitions.CreateUserDTO{
+		Execute(&definitions.CreateAccountDTO{
 			Username: username,
 			Email:    email,
 			Password: password,
 		}).
 		Return(entity, nil)
 	// act
-	result, err := presenter.Handle(&contracts.CreateUserPresenterRequest{
-		Body: &contracts.CreateUserPresenterRequestBody{
+	result, err := presenter.Handle(&contracts.CreateAccountPresenterRequest{
+		Body: &contracts.CreateAccountPresenterRequestBody{
 			Username: username,
 			Email:    email,
 			Password: password,
@@ -65,29 +65,29 @@ func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 	// assert
 	assert.Nil(t, err)
 	assert.True(t, verifier.IsUuid(result.Body.Id))
-	assert.True(t, verifier.IsUserUsername(result.Body.Username))
+	assert.True(t, verifier.IsAccountUsername(result.Body.Username))
 	assert.True(t, verifier.IsEmail(result.Body.Email))
 	assert.True(t, verifier.IsISO8601(result.Body.CreatedAt))
 	assert.True(t, verifier.IsISO8601(result.Body.UpdatedAt))
 }
 
-func TestCreateUserPresenter_FailureCase(t *testing.T) {
-	presenter, useCase, ctrl := (&CreateUserPresenterTest{}).setup(t)
+func TestCreateAccountPresenter_FailureCase(t *testing.T) {
+	presenter, useCase, ctrl := (&CreateAccountPresenterTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password :=
 		"username",
-		"user@email.com",
+		"account@email.com",
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	useCase.EXPECT().
-		Execute(&definitions.CreateUserDTO{
+		Execute(&definitions.CreateAccountDTO{
 			Username: username,
 			Email:    email,
 			Password: password,
 		}).
 		Return(nil, &shared.Error{})
 	// act
-	result, err := presenter.Handle(&contracts.CreateUserPresenterRequest{
-		Body: &contracts.CreateUserPresenterRequestBody{
+	result, err := presenter.Handle(&contracts.CreateAccountPresenterRequest{
+		Body: &contracts.CreateAccountPresenterRequestBody{
 			Username: username,
 			Email:    email,
 			Password: password,

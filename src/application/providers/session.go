@@ -4,10 +4,10 @@ import "github.com/AndreyArthur/oganessone/src/core/shared"
 
 type SessionData struct {
 	Key                     string
-	UserId                  string
+	AccountId               string
 	ExpirationTimeInSeconds int
 }
 
 type SessionProvider interface {
-	Generate(userId string) (*SessionData, *shared.Error)
+	Generate(accountId string) (*SessionData, *shared.Error)
 }

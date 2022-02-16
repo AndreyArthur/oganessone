@@ -21,7 +21,7 @@ func TestSessionAdapter_Genarate(t *testing.T) {
 	sessionData, err := session.Generate(id)
 	// assert
 	assert.Nil(t, err)
-	assert.Equal(t, sessionData.UserId, id)
+	assert.Equal(t, sessionData.AccountId, id)
 	assert.Equal(t, len(sessionData.Key), 32)
 	assert.Equal(t, reflect.TypeOf(sessionData.ExpirationTimeInSeconds).String(), "int")
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/AndreyArthur/oganessone/src/presentation/presenters"
 )
 
-func MakeCreateUserRpc() (*rpcs.CreateUserRpc, *shared.Error) {
+func MakeCreateAccountRpc() (*rpcs.CreateAccountRpc, *shared.Error) {
 	db, err := database.NewDatabase()
 	if err != nil {
 		return nil, err
@@ -19,7 +19,7 @@ func MakeCreateUserRpc() (*rpcs.CreateUserRpc, *shared.Error) {
 	if err != nil {
 		return nil, err
 	}
-	repo, err := repositories.NewUsersRepositoryPostgres(sql)
+	repo, err := repositories.NewAccountsRepositoryPostgres(sql)
 	if err != nil {
 		return nil, err
 	}
@@ -27,17 +27,17 @@ func MakeCreateUserRpc() (*rpcs.CreateUserRpc, *shared.Error) {
 	if err != nil {
 		return nil, err
 	}
-	createUser, err := usecases.NewCreateUserUseCase(repo, encrypter)
+	createAccount, err := usecases.NewCreateAccountUseCase(repo, encrypter)
 	if err != nil {
 		return nil, err
 	}
-	createUserPresenter, err := presenters.NewCreateUserPresenter(createUser)
+	createAccountPresenter, err := presenters.NewCreateAccountPresenter(createAccount)
 	if err != nil {
 		return nil, err
 	}
-	createUserRpc, err := rpcs.NewCreateUserRpc(createUserPresenter)
+	createAccountRpc, err := rpcs.NewCreateAccountRpc(createAccountPresenter)
 	if err != nil {
 		return nil, err
 	}
-	return createUserRpc, nil
+	return createAccountRpc, nil
 }

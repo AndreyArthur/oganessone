@@ -1,0 +1,98 @@
+package test_presenters
+
+import (
+	"testing"
+	"time"
+
+	"github.com/AndreyArthur/oganessone/src/application/definitions"
+	mock_definitions "github.com/AndreyArthur/oganessone/src/application/definitions/mocks"
+	"github.com/AndreyArthur/oganessone/src/core/dtos"
+	"github.com/AndreyArthur/oganessone/src/core/entities"
+	"github.com/AndreyArthur/oganessone/src/core/shared"
+	"github.com/AndreyArthur/oganessone/src/infrastructure/helpers"
+	"github.com/AndreyArthur/oganessone/src/presentation/contracts"
+	"github.com/AndreyArthur/oganessone/src/presentation/presenters"
+	"github.com/AndreyArthur/oganessone/tests/helpers/verifier"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
+)
+
+type CreateSessionPresenterTest struct{}
+
+func (*CreateSessionPresenterTest) setup(t *testing.T) (*presenters.CreateSessionPresenter, *mock_definitions.MockCreateSession, *gomock.Controller) {
+	ctrl := gomock.NewController(t)
+	useCase := mock_definitions.NewMockCreateSession(ctrl)
+	presenter, _ := presenters.NewCreateSessionPresenter(useCase)
+	return presenter, useCase, ctrl
+}
+
+func TestCreateSessionPresenter_SuccessCase(t *testing.T) {
+	// arrange
+	presenter, useCase, ctrl := (&CreateSessionPresenterTest{}).setup(t)
+	defer ctrl.Finish()
+	uuid, _ := helpers.NewUuid()
+	now := time.Now().UTC()
+	id, username, email, password, createdAt, updatedAt :=
+		uuid.Generate(),
+		"username",
+		"account@email.com",
+		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
+		now,
+		now
+	entity, _ := entities.NewAccountEntity(&dtos.AccountDTO{
+		Id:        id,
+		Username:  username,
+		Email:     email,
+		Password:  password,
+		CreatedAt: createdAt,
+		UpdatedAt: updatedAt,
+	})
+	useCase.EXPECT().
+		Execute(&definitions.CreateSessionDTO{
+			Login:    username,
+			Password: password,
+		}).
+		Return(&definitions.CreateSessionResult{
+			Account:    entity,
+			SessionKey: "session_key",
+		}, nil)
+	// act
+	result, err := presenter.Handle(&contracts.CreateSessionPresenterRequest{
+		Body: &contracts.CreateSessionPresenterRequestBody{
+			Login:    username,
+			Password: password,
+		},
+	})
+	// assert
+	assert.Nil(t, err)
+	assert.Equal(t, result.Body.SessionKey, "session_key")
+	assert.True(t, verifier.IsUuid(result.Body.Account.Id))
+	assert.True(t, verifier.IsAccountUsername(result.Body.Account.Username))
+	assert.True(t, verifier.IsEmail(result.Body.Account.Email))
+	assert.True(t, verifier.IsISO8601(result.Body.Account.CreatedAt))
+	assert.True(t, verifier.IsISO8601(result.Body.Account.UpdatedAt))
+}
+
+func TestCreateSessionPresenter_FailureCase(t *testing.T) {
+	presenter, useCase, ctrl := (&CreateSessionPresenterTest{}).setup(t)
+	defer ctrl.Finish()
+	username, password :=
+		"username",
+		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	useCase.EXPECT().
+		Execute(&definitions.CreateSessionDTO{
+			Login:    username,
+			Password: password,
+		}).
+		Return(nil, &shared.Error{})
+	// act
+	result, err := presenter.Handle(&contracts.CreateSessionPresenterRequest{
+		Body: &contracts.CreateSessionPresenterRequestBody{
+			Login:    username,
+			Password: password,
+		},
+	})
+	// assert
+	assert.Nil(t, result)
+	assert.Equal(t, err, &shared.Error{})
+}
