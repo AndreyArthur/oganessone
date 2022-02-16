@@ -33,12 +33,32 @@ func (migrator *Migrator) Up() {
 		log.Fatal(goerr)
 		return
 	}
+	_, goerr = db.Query(`
+		ALTER TABLE IF EXISTS
+			users
+		RENAME TO
+			accounts;
+	`)
+	if goerr != nil {
+		log.Fatal(goerr)
+		return
+	}
 }
 
 func (migrator *Migrator) Down() {
 	db := migrator.db
 	defer db.Close()
-	_, goerr := db.Query("DROP TABLE IF EXISTS users;")
+	_, goerr := db.Query(`
+		ALTER TABLE IF EXISTS
+			accounts
+		RENAME TO
+			users;
+	`)
+	if goerr != nil {
+		log.Fatal(goerr)
+		return
+	}
+	_, goerr = db.Query("DROP TABLE IF EXISTS users;")
 	if goerr != nil {
 		log.Fatal(goerr)
 		return

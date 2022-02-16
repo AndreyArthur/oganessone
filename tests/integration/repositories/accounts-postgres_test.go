@@ -16,9 +16,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type UsersRepositoryPostgresTest struct{}
+type AccountsRepositoryPostgresTest struct{}
 
-func (*UsersRepositoryPostgresTest) setup() (*repositories.AccountsRepositoryPostgres, *sql.DB) {
+func (*AccountsRepositoryPostgresTest) setup() (*repositories.AccountsRepositoryPostgres, *sql.DB) {
 	env, err := helpers.NewEnv()
 	if err != nil {
 		log.Fatal(err)
@@ -33,9 +33,9 @@ func (*UsersRepositoryPostgresTest) setup() (*repositories.AccountsRepositoryPos
 	return repo, sql
 }
 
-func TestUsersRepositoryPostgres_CreateWithNeededValues(t *testing.T) {
+func TestAccountsRepositoryPostgres_CreateWithNeededValues(t *testing.T) {
 	// arrange
-	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
+	repo, _ := (&AccountsRepositoryPostgresTest{}).setup()
 	username, email, password := "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	// act
 	user, err := repo.Create(&dtos.AccountDTO{
@@ -48,9 +48,9 @@ func TestUsersRepositoryPostgres_CreateWithNeededValues(t *testing.T) {
 	assert.Nil(t, user.IsValid())
 }
 
-func TestUsersRepositoryPostgres_CreateWithoutNeededValues(t *testing.T) {
+func TestAccountsRepositoryPostgres_CreateWithoutNeededValues(t *testing.T) {
 	// arrange
-	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
+	repo, _ := (&AccountsRepositoryPostgresTest{}).setup()
 	username, email, password := "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	// act
 	first, firstErr := repo.Create(&dtos.AccountDTO{
@@ -74,9 +74,9 @@ func TestUsersRepositoryPostgres_CreateWithoutNeededValues(t *testing.T) {
 	assert.Equal(t, thirdErr, exceptions.NewInternalServerError())
 }
 
-func TestUsersRepositoryPostgres_CreateWithCustomValues(t *testing.T) {
+func TestAccountsRepositoryPostgres_CreateWithCustomValues(t *testing.T) {
 	// arrange
-	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
+	repo, _ := (&AccountsRepositoryPostgresTest{}).setup()
 	uuid, _ := helpers.NewUuid()
 	now := time.Now().UTC()
 	id, username, email, password, createdAt, updatedAt :=
@@ -102,22 +102,22 @@ func TestUsersRepositoryPostgres_CreateWithCustomValues(t *testing.T) {
 	assert.Equal(t, user.UpdatedAt, updatedAt)
 }
 
-func TestUsersRepositoryPostgres_FindByUsernameCaseSensitive(t *testing.T) {
+func TestAccountsRepositoryPostgres_FindByUsernameCaseSensitive(t *testing.T) {
 	// arrange
-	repo, sql := (&UsersRepositoryPostgresTest{}).setup()
+	repo, sql := (&AccountsRepositoryPostgresTest{}).setup()
+	defer sql.Query("DELETE FROM accounts;")
 	uuid, _ := helpers.NewUuid()
 	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	stmt, goerr := sql.Prepare(`
-		INSERT INTO users (
+		INSERT INTO accounts (
 			id,
 			username,
 			email,
 			password,
 			created_at,
-			updated_at	
+			updated_at
 		) VALUES ( $1, $2, $3, $4, $5, $6 );
 	`)
-	defer sql.Query("DELETE FROM users;")
 	if goerr != nil {
 		log.Fatal(goerr)
 		return
@@ -134,22 +134,22 @@ func TestUsersRepositoryPostgres_FindByUsernameCaseSensitive(t *testing.T) {
 	assert.Nil(t, user.IsValid())
 }
 
-func TestUsersRepositoryPostgres_FindByUsernameCaseInsensitive(t *testing.T) {
+func TestAccountsRepositoryPostgres_FindByUsernameCaseInsensitive(t *testing.T) {
 	// arrange
-	repo, sql := (&UsersRepositoryPostgresTest{}).setup()
+	repo, sql := (&AccountsRepositoryPostgresTest{}).setup()
 	uuid, _ := helpers.NewUuid()
 	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	stmt, goerr := sql.Prepare(`
-		INSERT INTO users (
+		INSERT INTO accounts (
 			id,
 			username,
 			email,
 			password,
 			created_at,
-			updated_at	
+			updated_at
 		) VALUES ( $1, $2, $3, $4, $5, $6 );
 	`)
-	defer sql.Query("DELETE FROM users;")
+	defer sql.Query("DELETE FROM accounts;")
 	if goerr != nil {
 		log.Fatal(goerr)
 		return
@@ -166,9 +166,9 @@ func TestUsersRepositoryPostgres_FindByUsernameCaseInsensitive(t *testing.T) {
 	assert.Nil(t, user.IsValid())
 }
 
-func TestUsersRepositoryPostgres_FindByUsernameReturnNil(t *testing.T) {
+func TestAccountsRepositoryPostgres_FindByUsernameReturnNil(t *testing.T) {
 	// arrange
-	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
+	repo, _ := (&AccountsRepositoryPostgresTest{}).setup()
 	username := "username"
 	// act
 	user, err := repo.FindByUsername(username, true)
@@ -177,22 +177,22 @@ func TestUsersRepositoryPostgres_FindByUsernameReturnNil(t *testing.T) {
 	assert.Nil(t, user)
 }
 
-func TestUsersRepositoryPostgres_FindByEmail(t *testing.T) {
+func TestAccountsRepositoryPostgres_FindByEmail(t *testing.T) {
 	// arrange
-	repo, sql := (&UsersRepositoryPostgresTest{}).setup()
+	repo, sql := (&AccountsRepositoryPostgresTest{}).setup()
 	uuid, _ := helpers.NewUuid()
 	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	stmt, goerr := sql.Prepare(`
-		INSERT INTO users (
+		INSERT INTO accounts (
 			id,
 			username,
 			email,
 			password,
 			created_at,
-			updated_at	
+			updated_at
 		) VALUES ( $1, $2, $3, $4, $5, $6 );
 	`)
-	defer sql.Query("DELETE FROM users;")
+	defer sql.Query("DELETE FROM accounts;")
 	if goerr != nil {
 		log.Fatal(goerr)
 		return
@@ -209,9 +209,9 @@ func TestUsersRepositoryPostgres_FindByEmail(t *testing.T) {
 	assert.Nil(t, user.IsValid())
 }
 
-func TestUsersRepositoryPostgres_FindByEmailReturnNil(t *testing.T) {
+func TestAccountsRepositoryPostgres_FindByEmailReturnNil(t *testing.T) {
 	// arrange
-	repo, _ := (&UsersRepositoryPostgresTest{}).setup()
+	repo, _ := (&AccountsRepositoryPostgresTest{}).setup()
 	email := "user@email.com"
 	// act
 	user, err := repo.FindByEmail(email)
@@ -220,9 +220,9 @@ func TestUsersRepositoryPostgres_FindByEmailReturnNil(t *testing.T) {
 	assert.Nil(t, user)
 }
 
-func TestUsersRepositoryPostgres_Save(t *testing.T) {
+func TestAccountsRepositoryPostgres_Save(t *testing.T) {
 	// arrange
-	repo, sql := (&UsersRepositoryPostgresTest{}).setup()
+	repo, sql := (&AccountsRepositoryPostgresTest{}).setup()
 	uuid, _ := helpers.NewUuid()
 	id, username, email, password, createdAt, updatedAt :=
 		uuid.Generate(),
@@ -250,10 +250,10 @@ func TestUsersRepositoryPostgres_Save(t *testing.T) {
 	// act
 	err := repo.Save(user)
 	stmt, goerr := sql.Prepare(`
-		SELECT 
+		SELECT
 			id, username, email, password, created_at, updated_at
 		FROM
-			users
+			accounts
 		WHERE
 			id = $1;
 	`)
@@ -269,7 +269,7 @@ func TestUsersRepositoryPostgres_Save(t *testing.T) {
 		&data.createdAt,
 		&data.updatedAt,
 	)
-	defer sql.Query("DELETE FROM users;")
+	defer sql.Query("DELETE FROM accounts;")
 	//log.Fatal("\n", data.createdAt, "\n", user.CreatedAt)
 	// assert
 	assert.Nil(t, err)

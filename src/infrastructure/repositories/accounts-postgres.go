@@ -88,7 +88,7 @@ func (accountsRepository *AccountsRepositoryPostgres) FindByUsername(
 			`SELECT 
 				id, username, email, password, created_at, updated_at
 			FROM
-				users
+				accounts
 			WHERE `,
 			field,
 			" = $1",
@@ -121,7 +121,7 @@ func (accountsRepository *AccountsRepositoryPostgres) FindByEmail(email string) 
 		SELECT 
 			id, username, email, password, created_at, updated_at
 		FROM
-			users
+			accounts
 		WHERE 
 			email = $1
 	`)
@@ -140,7 +140,7 @@ func (accountsRepository *AccountsRepositoryPostgres) FindByEmail(email string) 
 
 func (accountRepository *AccountsRepositoryPostgres) Save(account *entities.AccountEntity) *shared.Error {
 	stmt, goerr := accountRepository.db.Prepare(`
-		INSERT INTO users	
+		INSERT INTO accounts	
 			( id, username, email, password, created_at, updated_at )
 		VALUES ( $1, $2, $3, $4, $5, $6 )
 	`)
