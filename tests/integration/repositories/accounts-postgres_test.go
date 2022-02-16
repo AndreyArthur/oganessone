@@ -36,22 +36,22 @@ func (*AccountsRepositoryPostgresTest) setup() (*repositories.AccountsRepository
 func TestAccountsRepositoryPostgres_CreateWithNeededValues(t *testing.T) {
 	// arrange
 	repo, _ := (&AccountsRepositoryPostgresTest{}).setup()
-	username, email, password := "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	username, email, password := "username", "account@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	// act
-	user, err := repo.Create(&dtos.AccountDTO{
+	account, err := repo.Create(&dtos.AccountDTO{
 		Username: username,
 		Email:    email,
 		Password: password,
 	})
 	// assert
 	assert.Nil(t, err)
-	assert.Nil(t, user.IsValid())
+	assert.Nil(t, account.IsValid())
 }
 
 func TestAccountsRepositoryPostgres_CreateWithoutNeededValues(t *testing.T) {
 	// arrange
 	repo, _ := (&AccountsRepositoryPostgresTest{}).setup()
-	username, email, password := "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	username, email, password := "username", "account@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	// act
 	first, firstErr := repo.Create(&dtos.AccountDTO{
 		Email:    email,
@@ -82,12 +82,12 @@ func TestAccountsRepositoryPostgres_CreateWithCustomValues(t *testing.T) {
 	id, username, email, password, createdAt, updatedAt :=
 		uuid.Generate(),
 		"username",
-		"user@email.com",
+		"account@email.com",
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
 		now,
 		now
 	// act
-	user, err := repo.Create(&dtos.AccountDTO{
+	account, err := repo.Create(&dtos.AccountDTO{
 		Id:        id,
 		Username:  username,
 		Email:     email,
@@ -97,9 +97,9 @@ func TestAccountsRepositoryPostgres_CreateWithCustomValues(t *testing.T) {
 	})
 	// assert
 	assert.Nil(t, err)
-	assert.Equal(t, user.Id, id)
-	assert.Equal(t, user.CreatedAt, createdAt)
-	assert.Equal(t, user.UpdatedAt, updatedAt)
+	assert.Equal(t, account.Id, id)
+	assert.Equal(t, account.CreatedAt, createdAt)
+	assert.Equal(t, account.UpdatedAt, updatedAt)
 }
 
 func TestAccountsRepositoryPostgres_FindByUsernameCaseSensitive(t *testing.T) {
@@ -107,7 +107,7 @@ func TestAccountsRepositoryPostgres_FindByUsernameCaseSensitive(t *testing.T) {
 	repo, sql := (&AccountsRepositoryPostgresTest{}).setup()
 	defer sql.Query("DELETE FROM accounts;")
 	uuid, _ := helpers.NewUuid()
-	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	id, username, email, password := uuid.Generate(), "username", "account@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	stmt, goerr := sql.Prepare(`
 		INSERT INTO accounts (
 			id,
@@ -128,17 +128,17 @@ func TestAccountsRepositoryPostgres_FindByUsernameCaseSensitive(t *testing.T) {
 		return
 	}
 	// act
-	user, err := repo.FindByUsername(username, true)
+	account, err := repo.FindByUsername(username, true)
 	// assert
 	assert.Nil(t, err)
-	assert.Nil(t, user.IsValid())
+	assert.Nil(t, account.IsValid())
 }
 
 func TestAccountsRepositoryPostgres_FindByUsernameCaseInsensitive(t *testing.T) {
 	// arrange
 	repo, sql := (&AccountsRepositoryPostgresTest{}).setup()
 	uuid, _ := helpers.NewUuid()
-	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	id, username, email, password := uuid.Generate(), "username", "account@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	stmt, goerr := sql.Prepare(`
 		INSERT INTO accounts (
 			id,
@@ -160,10 +160,10 @@ func TestAccountsRepositoryPostgres_FindByUsernameCaseInsensitive(t *testing.T) 
 		return
 	}
 	// act
-	user, err := repo.FindByUsername(strings.ToUpper(username), false)
+	account, err := repo.FindByUsername(strings.ToUpper(username), false)
 	// assert
 	assert.Nil(t, err)
-	assert.Nil(t, user.IsValid())
+	assert.Nil(t, account.IsValid())
 }
 
 func TestAccountsRepositoryPostgres_FindByUsernameReturnNil(t *testing.T) {
@@ -171,17 +171,17 @@ func TestAccountsRepositoryPostgres_FindByUsernameReturnNil(t *testing.T) {
 	repo, _ := (&AccountsRepositoryPostgresTest{}).setup()
 	username := "username"
 	// act
-	user, err := repo.FindByUsername(username, true)
+	account, err := repo.FindByUsername(username, true)
 	// assert
 	assert.Nil(t, err)
-	assert.Nil(t, user)
+	assert.Nil(t, account)
 }
 
 func TestAccountsRepositoryPostgres_FindByEmail(t *testing.T) {
 	// arrange
 	repo, sql := (&AccountsRepositoryPostgresTest{}).setup()
 	uuid, _ := helpers.NewUuid()
-	id, username, email, password := uuid.Generate(), "username", "user@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	id, username, email, password := uuid.Generate(), "username", "account@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	stmt, goerr := sql.Prepare(`
 		INSERT INTO accounts (
 			id,
@@ -203,21 +203,21 @@ func TestAccountsRepositoryPostgres_FindByEmail(t *testing.T) {
 		return
 	}
 	// act
-	user, err := repo.FindByEmail(email)
+	account, err := repo.FindByEmail(email)
 	// assert
 	assert.Nil(t, err)
-	assert.Nil(t, user.IsValid())
+	assert.Nil(t, account.IsValid())
 }
 
 func TestAccountsRepositoryPostgres_FindByEmailReturnNil(t *testing.T) {
 	// arrange
 	repo, _ := (&AccountsRepositoryPostgresTest{}).setup()
-	email := "user@email.com"
+	email := "account@email.com"
 	// act
-	user, err := repo.FindByEmail(email)
+	account, err := repo.FindByEmail(email)
 	// assert
 	assert.Nil(t, err)
-	assert.Nil(t, user)
+	assert.Nil(t, account)
 }
 
 func TestAccountsRepositoryPostgres_Save(t *testing.T) {
@@ -227,11 +227,11 @@ func TestAccountsRepositoryPostgres_Save(t *testing.T) {
 	id, username, email, password, createdAt, updatedAt :=
 		uuid.Generate(),
 		"username",
-		"user@email.com",
+		"account@email.com",
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
 		time.Now().UTC(),
 		time.Now().UTC()
-	user, _ := entities.NewAccountEntity(&dtos.AccountDTO{
+	account, _ := entities.NewAccountEntity(&dtos.AccountDTO{
 		Id:        id,
 		Username:  username,
 		Email:     email,
@@ -248,7 +248,7 @@ func TestAccountsRepositoryPostgres_Save(t *testing.T) {
 		updatedAt time.Time
 	}{}
 	// act
-	err := repo.Save(user)
+	err := repo.Save(account)
 	stmt, goerr := sql.Prepare(`
 		SELECT
 			id, username, email, password, created_at, updated_at
@@ -261,7 +261,7 @@ func TestAccountsRepositoryPostgres_Save(t *testing.T) {
 		log.Fatal(goerr)
 		return
 	}
-	stmt.QueryRow(user.Id).Scan(
+	stmt.QueryRow(account.Id).Scan(
 		&data.id,
 		&data.username,
 		&data.email,
@@ -270,13 +270,12 @@ func TestAccountsRepositoryPostgres_Save(t *testing.T) {
 		&data.updatedAt,
 	)
 	defer sql.Query("DELETE FROM accounts;")
-	//log.Fatal("\n", data.createdAt, "\n", user.CreatedAt)
 	// assert
 	assert.Nil(t, err)
-	assert.Equal(t, user.Id, data.id)
-	assert.Equal(t, user.Username, data.username)
-	assert.Equal(t, user.Email, data.email)
-	assert.Equal(t, user.Password, data.password)
-	assert.Equal(t, user.CreatedAt.Format(time.RFC3339), data.createdAt.Format(time.RFC3339))
-	assert.Equal(t, user.UpdatedAt.Format(time.RFC3339), data.updatedAt.Format(time.RFC3339))
+	assert.Equal(t, account.Id, data.id)
+	assert.Equal(t, account.Username, data.username)
+	assert.Equal(t, account.Email, data.email)
+	assert.Equal(t, account.Password, data.password)
+	assert.Equal(t, account.CreatedAt.Format(time.RFC3339), data.createdAt.Format(time.RFC3339))
+	assert.Equal(t, account.UpdatedAt.Format(time.RFC3339), data.updatedAt.Format(time.RFC3339))
 }

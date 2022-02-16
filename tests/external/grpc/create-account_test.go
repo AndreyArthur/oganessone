@@ -65,7 +65,7 @@ func TestGrpcCreateAccount_Success(t *testing.T) {
 	client, closeConnections, sql := (&CreateAccountGrpcTest{}).setup()
 	defer closeConnections()
 	defer sql.Query("DELETE FROM accounts;")
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	// act
 	response, goerr := client.CreateAccount(context.Background(), &protobuf.CreateAccountRequest{
 		Data: &protobuf.CreateAccountData{
@@ -89,7 +89,7 @@ func TestGrpcCreateAccount_UsernameAlreadyInUse(t *testing.T) {
 	client, closeConnections, sql := (&CreateAccountGrpcTest{}).setup()
 	defer closeConnections()
 	defer sql.Query("DELETE FROM accounts;")
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	sql.Query(`
 		INSERT INTO accounts (
 			username, email, password
@@ -114,7 +114,7 @@ func TestGrpcCreateAccount_EmailAlreadyInUse(t *testing.T) {
 	client, closeConnections, sql := (&CreateAccountGrpcTest{}).setup()
 	defer closeConnections()
 	defer sql.Query("DELETE FROM accounts;")
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	sql.Query(`
 		INSERT INTO accounts (
 			username, email, password

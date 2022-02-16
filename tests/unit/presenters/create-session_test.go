@@ -35,7 +35,7 @@ func TestCreateSessionPresenter_SuccessCase(t *testing.T) {
 	id, username, email, password, createdAt, updatedAt :=
 		uuid.Generate(),
 		"username",
-		"user@email.com",
+		"account@email.com",
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
 		now,
 		now
@@ -73,7 +73,7 @@ func TestCreateSessionPresenter_SuccessCase(t *testing.T) {
 	assert.True(t, verifier.IsISO8601(result.Body.Account.UpdatedAt))
 }
 
-func TestSessionUserPresenter_FailureCase(t *testing.T) {
+func TestCreateSessionPresenter_FailureCase(t *testing.T) {
 	presenter, useCase, ctrl := (&CreateSessionPresenterTest{}).setup(t)
 	defer ctrl.Finish()
 	username, password :=

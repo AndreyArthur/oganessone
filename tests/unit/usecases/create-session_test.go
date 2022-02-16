@@ -32,9 +32,9 @@ func TestCreateSessionUseCase_SuccessCaseByUsername(t *testing.T) {
 	// arrange
 	useCase, repo, encrypter, session, cache, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.AccountEntity{
+	repoAccount := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -49,19 +49,19 @@ func TestCreateSessionUseCase_SuccessCaseByUsername(t *testing.T) {
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByUsername(username, true).
-		Return(repoUser, nil)
+		Return(repoAccount, nil)
 	encrypter.EXPECT().
 		Compare(password, fakeBcryptHash).
 		Return(true, nil)
 	session.EXPECT().
-		Generate(repoUser.Id).
+		Generate(repoAccount.Id).
 		Return(&providers.SessionData{
 			Key:                     sessionKey,
-			AccountId:               repoUser.Id,
+			AccountId:               repoAccount.Id,
 			ExpirationTimeInSeconds: ONE_DAY_IN_SECONDS,
 		}, nil)
 	cache.EXPECT().
-		Set(sessionKey, repoUser.Id, ONE_DAY_IN_SECONDS).
+		Set(sessionKey, repoAccount.Id, ONE_DAY_IN_SECONDS).
 		Return(nil)
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
@@ -78,9 +78,9 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 	// arrange
 	useCase, repo, encrypter, session, cache, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.AccountEntity{
+	repoAccount := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -92,7 +92,7 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 	ONE_DAY_IN_SECONDS := int((time.Hour.Milliseconds() * 24) / 1000)
 	repo.EXPECT().
 		FindByEmail(email).
-		Return(repoUser, nil)
+		Return(repoAccount, nil)
 	repo.EXPECT().
 		FindByUsername(email, true).
 		Return(nil, nil)
@@ -100,14 +100,14 @@ func TestCreateSessionUseCase_SuccessCaseByEmail(t *testing.T) {
 		Compare(password, fakeBcryptHash).
 		Return(true, nil)
 	session.EXPECT().
-		Generate(repoUser.Id).
+		Generate(repoAccount.Id).
 		Return(&providers.SessionData{
 			Key:                     sessionKey,
-			AccountId:               repoUser.Id,
+			AccountId:               repoAccount.Id,
 			ExpirationTimeInSeconds: ONE_DAY_IN_SECONDS,
 		}, nil)
 	cache.EXPECT().
-		Set(sessionKey, repoUser.Id, ONE_DAY_IN_SECONDS).
+		Set(sessionKey, repoAccount.Id, ONE_DAY_IN_SECONDS).
 		Return(nil)
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
@@ -162,7 +162,7 @@ func TestCreateSessionUseCase_FindByEmailReturnError(t *testing.T) {
 	assert.Equal(t, err, &shared.Error{})
 }
 
-func TestCreateSessionUseCase_UserNotFound(t *testing.T) {
+func TestCreateSessionUseCase_AccountNotFound(t *testing.T) {
 	// arrange
 	useCase, repo, _, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
@@ -187,9 +187,9 @@ func TestCreateSessionUseCase_EncrypterCompareReturnError(t *testing.T) {
 	// arrange
 	useCase, repo, encrypter, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.AccountEntity{
+	repoAccount := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -202,7 +202,7 @@ func TestCreateSessionUseCase_EncrypterCompareReturnError(t *testing.T) {
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByUsername(username, true).
-		Return(repoUser, nil)
+		Return(repoAccount, nil)
 	encrypter.EXPECT().
 		Compare(password, fakeBcryptHash).
 		Return(true, &shared.Error{})
@@ -216,13 +216,13 @@ func TestCreateSessionUseCase_EncrypterCompareReturnError(t *testing.T) {
 	assert.Equal(t, err, &shared.Error{})
 }
 
-func TestCreateSessionUseCase_UserPasswordDoesNotMatch(t *testing.T) {
+func TestCreateSessionUseCase_AccountPasswordDoesNotMatch(t *testing.T) {
 	// arrange
 	useCase, repo, encrypter, _, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.AccountEntity{
+	repoAccount := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -235,7 +235,7 @@ func TestCreateSessionUseCase_UserPasswordDoesNotMatch(t *testing.T) {
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByUsername(username, true).
-		Return(repoUser, nil)
+		Return(repoAccount, nil)
 	encrypter.EXPECT().
 		Compare(password, fakeBcryptHash).
 		Return(false, nil)
@@ -253,9 +253,9 @@ func TestCreateSessionUseCase_SessionGenerateKeyReturnError(t *testing.T) {
 	// arrange
 	useCase, repo, encrypter, session, _, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.AccountEntity{
+	repoAccount := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -267,12 +267,12 @@ func TestCreateSessionUseCase_SessionGenerateKeyReturnError(t *testing.T) {
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByUsername(username, true).
-		Return(repoUser, nil)
+		Return(repoAccount, nil)
 	encrypter.EXPECT().
 		Compare(password, fakeBcryptHash).
 		Return(true, nil)
 	session.EXPECT().
-		Generate(repoUser.Id).
+		Generate(repoAccount.Id).
 		Return(nil, &shared.Error{})
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{
@@ -288,9 +288,9 @@ func TestCreateSessionUseCase_FirstCacheSetReturnError(t *testing.T) {
 	// arrange
 	useCase, repo, encrypter, session, cache, ctrl := (&CreateSessionUseCaseTest{}).setup(t)
 	defer ctrl.Finish()
-	username, email, password := "username", "user@email.com", "p4ssword"
+	username, email, password := "username", "account@email.com", "p4ssword"
 	fakeBcryptHash := "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
-	repoUser := &entities.AccountEntity{
+	repoAccount := &entities.AccountEntity{
 		Id:        "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
 		Username:  username,
 		Email:     email,
@@ -305,19 +305,19 @@ func TestCreateSessionUseCase_FirstCacheSetReturnError(t *testing.T) {
 		Return(nil, nil)
 	repo.EXPECT().
 		FindByUsername(username, true).
-		Return(repoUser, nil)
+		Return(repoAccount, nil)
 	encrypter.EXPECT().
 		Compare(password, fakeBcryptHash).
 		Return(true, nil)
 	session.EXPECT().
-		Generate(repoUser.Id).
+		Generate(repoAccount.Id).
 		Return(&providers.SessionData{
 			Key:                     sessionKey,
-			AccountId:               repoUser.Id,
+			AccountId:               repoAccount.Id,
 			ExpirationTimeInSeconds: ONE_DAY_IN_SECONDS,
 		}, nil)
 	cache.EXPECT().
-		Set(sessionKey, repoUser.Id, ONE_DAY_IN_SECONDS).
+		Set(sessionKey, repoAccount.Id, ONE_DAY_IN_SECONDS).
 		Return(&shared.Error{})
 	// act
 	result, err := useCase.Execute(&definitions.CreateSessionDTO{

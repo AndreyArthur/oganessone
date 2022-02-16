@@ -17,25 +17,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type CreateUserPresenterTest struct{}
+type CreateAccountPresenterTest struct{}
 
-func (*CreateUserPresenterTest) setup(t *testing.T) (*presenters.CreateAccountPresenter, *mock_definitions.MockCreateAccount, *gomock.Controller) {
+func (*CreateAccountPresenterTest) setup(t *testing.T) (*presenters.CreateAccountPresenter, *mock_definitions.MockCreateAccount, *gomock.Controller) {
 	ctrl := gomock.NewController(t)
 	useCase := mock_definitions.NewMockCreateAccount(ctrl)
 	presenter, _ := presenters.NewCreateAccountPresenter(useCase)
 	return presenter, useCase, ctrl
 }
 
-func TestCreateUserPresenter_SuccessCase(t *testing.T) {
+func TestCreateAccountPresenter_SuccessCase(t *testing.T) {
 	// arrange
-	presenter, useCase, ctrl := (&CreateUserPresenterTest{}).setup(t)
+	presenter, useCase, ctrl := (&CreateAccountPresenterTest{}).setup(t)
 	defer ctrl.Finish()
 	uuid, _ := helpers.NewUuid()
 	now := time.Now().UTC()
 	id, username, email, password, createdAt, updatedAt :=
 		uuid.Generate(),
 		"username",
-		"user@email.com",
+		"account@email.com",
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW",
 		now,
 		now
@@ -71,12 +71,12 @@ func TestCreateUserPresenter_SuccessCase(t *testing.T) {
 	assert.True(t, verifier.IsISO8601(result.Body.UpdatedAt))
 }
 
-func TestCreateUserPresenter_FailureCase(t *testing.T) {
-	presenter, useCase, ctrl := (&CreateUserPresenterTest{}).setup(t)
+func TestCreateAccountPresenter_FailureCase(t *testing.T) {
+	presenter, useCase, ctrl := (&CreateAccountPresenterTest{}).setup(t)
 	defer ctrl.Finish()
 	username, email, password :=
 		"username",
-		"user@email.com",
+		"account@email.com",
 		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
 	useCase.EXPECT().
 		Execute(&definitions.CreateAccountDTO{
