@@ -6,6 +6,7 @@ package protobuf;
 
 service AccountsService {
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {};
+  rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {};
 }
 
 message Error {
@@ -34,5 +35,24 @@ message CreateAccountRequest {
 
 message CreateAccountResponse {
   Account data = 1;
+  Error error = 2;
+}
+
+message CreateSessionRequestData {
+  string login = 1;
+  string password = 2;
+}
+
+message CreateSessionRequest {
+  CreateSessionRequestData data = 1;
+}
+
+message CreateSessionResponseData {
+  Account account = 1;
+  string sessionKey = 2;
+}
+
+message CreateSessionResponse {
+  CreateSessionResponseData data = 1;
   Error error = 2;
 }

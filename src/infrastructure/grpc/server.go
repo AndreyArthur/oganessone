@@ -15,18 +15,35 @@ type server struct {
 	protobuf.UnimplementedAccountsServiceServer
 }
 
-func (*server) CreateAccount(
+func (*server) error(err *shared.Error) *protobuf.Error {
+	return &protobuf.Error{
+		Type:    err.Type,
+		Name:    err.Name,
+		Message: err.Message,
+	}
+}
+
+func (srvr *server) CreateAccount(
 	ctx context.Context, request *protobuf.CreateAccountRequest,
 ) (*protobuf.CreateAccountResponse, error) {
 	rpc, err := factories.MakeCreateAccountRpc()
 	if err != nil {
 		return &protobuf.CreateAccountResponse{
-			Error: &protobuf.Error{
-				Type:    err.Type,
-				Name:    err.Name,
-				Message: err.Message,
-			},
-			Data: nil,
+			Error: srvr.error(err),
+			Data:  nil,
+		}, nil
+	}
+	return rpc.Perform(ctx, request)
+}
+
+func (srvr *server) CreateSession(
+	ctx context.Context, request *protobuf.CreateSessionRequest,
+) (*protobuf.CreateSessionResponse, error) {
+	rpc, err := factories.MakeCreateSessionRpc()
+	if err != nil {
+		return &protobuf.CreateSessionResponse{
+			Error: srvr.error(err),
+			Data:  nil,
 		}, nil
 	}
 	return rpc.Perform(ctx, request)
