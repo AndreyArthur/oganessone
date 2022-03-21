@@ -39,12 +39,14 @@ func (createAccountRpc *CreateAccountRpc) Perform(
 		}, nil
 	}
 	return &protobuf.CreateAccountResponse{
-		Data: &protobuf.Account{
-			Id:        response.Body.Id,
-			Username:  response.Body.Username,
-			Email:     response.Body.Email,
-			CreatedAt: response.Body.CreatedAt,
-			UpdatedAt: response.Body.UpdatedAt,
+		Data: &protobuf.CreateAccountResponseData{
+			Account: &protobuf.Account{
+				Id:        response.Body.Id,
+				Username:  response.Body.Username,
+				Email:     response.Body.Email,
+				CreatedAt: response.Body.CreatedAt,
+				UpdatedAt: response.Body.UpdatedAt,
+			},
 		},
 		Error: nil,
 	}, nil

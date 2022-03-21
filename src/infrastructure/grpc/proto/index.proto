@@ -4,10 +4,14 @@ option go_package = "github.com/AndreyArthur/oganessone/src/infrastructure/grpc/
 
 package protobuf;
 
+// Service
+
 service AccountsService {
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {};
   rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {};
 }
+
+// Type Def's
 
 message Error {
   string type = 1;
@@ -23,6 +27,8 @@ message Account {
   string updatedAt = 5;
 }
 
+// Create Account
+
 message CreateAccountData {
   string username = 1;
   string email = 2;
@@ -33,10 +39,16 @@ message CreateAccountRequest {
   CreateAccountData data = 1;
 }
 
+message CreateAccountResponseData {
+  Account account = 1;
+}
+
 message CreateAccountResponse {
-  Account data = 1;
+  CreateAccountResponseData data = 1;
   Error error = 2;
 }
+
+// Create Session
 
 message CreateSessionRequestData {
   string login = 1;

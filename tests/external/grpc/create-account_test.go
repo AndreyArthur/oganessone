@@ -77,11 +77,11 @@ func TestGrpcCreateAccount_Success(t *testing.T) {
 	// assert
 	assert.Nil(t, goerr)
 	assert.Nil(t, response.Error)
-	assert.True(t, verifier.IsUuid(response.Data.Id))
-	assert.True(t, verifier.IsAccountUsername(response.Data.Username))
-	assert.True(t, verifier.IsEmail(response.Data.Email))
-	assert.True(t, verifier.IsISO8601(response.Data.CreatedAt))
-	assert.True(t, verifier.IsISO8601(response.Data.UpdatedAt))
+	assert.True(t, verifier.IsUuid(response.Data.Account.Id))
+	assert.True(t, verifier.IsAccountUsername(response.Data.Account.Username))
+	assert.True(t, verifier.IsEmail(response.Data.Account.Email))
+	assert.True(t, verifier.IsISO8601(response.Data.Account.CreatedAt))
+	assert.True(t, verifier.IsISO8601(response.Data.Account.UpdatedAt))
 }
 
 func TestGrpcCreateAccount_UsernameAlreadyInUse(t *testing.T) {
