@@ -66,6 +66,21 @@ func (mr *MockAccountsRepositoryMockRecorder) FindByEmail(email interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByEmail", reflect.TypeOf((*MockAccountsRepository)(nil).FindByEmail), email)
 }
 
+// FindById mocks base method.
+func (m *MockAccountsRepository) FindById(id string) (*entities.AccountEntity, *shared.Error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindById", id)
+	ret0, _ := ret[0].(*entities.AccountEntity)
+	ret1, _ := ret[1].(*shared.Error)
+	return ret0, ret1
+}
+
+// FindById indicates an expected call of FindById.
+func (mr *MockAccountsRepositoryMockRecorder) FindById(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindById", reflect.TypeOf((*MockAccountsRepository)(nil).FindById), id)
+}
+
 // FindByUsername mocks base method.
 func (m *MockAccountsRepository) FindByUsername(username string, caseSensitive bool) (*entities.AccountEntity, *shared.Error) {
 	m.ctrl.T.Helper()
