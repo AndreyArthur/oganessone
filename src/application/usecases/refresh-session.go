@@ -16,9 +16,18 @@ type RefreshSessionUseCase struct {
 func (refreshSessionUseCase *RefreshSessionUseCase) Execute(
 	data *definitions.RefreshSessionDTO,
 ) (*definitions.RefreshSessionResult, *shared.Error) {
-	accountId, _ := refreshSessionUseCase.cache.Get(data.SessionKey)
-	account, _ := refreshSessionUseCase.repository.FindById(accountId)
-	sessionData, _ := refreshSessionUseCase.session.Generate(account.Id)
+	accountId, err := refreshSessionUseCase.cache.Get(data.SessionKey)
+	if err != nil {
+		return nil, err
+	}
+	account, err := refreshSessionUseCase.repository.FindById(accountId)
+	if err != nil {
+		return nil, err
+	}
+	sessionData, err := refreshSessionUseCase.session.Generate(account.Id)
+	if err != nil {
+		return nil, err
+	}
 	return &definitions.RefreshSessionResult{
 		Account:    account,
 		SessionKey: sessionData.Key,
