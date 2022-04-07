@@ -10,6 +10,7 @@ import (
 	mock_repositories "github.com/AndreyArthur/oganessone/src/application/repositories/mocks"
 	"github.com/AndreyArthur/oganessone/src/application/usecases"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
+	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -64,4 +65,21 @@ func TestRefreshSessionUseCase_SuccessCase(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Nil(t, result.Account.IsValid())
 	assert.NotEqual(t, result.SessionKey, sessionKey)
+}
+
+func TestRefreshSessionUseCase_SessionNotFound(t *testing.T) {
+	// arrange
+	useCase, _, cache, _, ctrl := (&RefreshSessionUseCaseTest{}).setup(t)
+	defer ctrl.Finish()
+	sessionKey := "kAYWq$jq^Z^c/$D9$f~iLPD?*7F!w9(w"
+	cache.EXPECT().
+		Get(sessionKey).
+		Return("", exceptions.NewSessionNotFound())
+	// act
+	result, err := useCase.Execute(&definitions.RefreshSessionDTO{
+		SessionKey: sessionKey,
+	})
+	// assert
+	assert.Nil(t, result)
+	assert.Equal(t, err, exceptions.NewSessionNotFound())
 }

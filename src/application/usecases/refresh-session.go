@@ -4,6 +4,7 @@ import (
 	"github.com/AndreyArthur/oganessone/src/application/definitions"
 	"github.com/AndreyArthur/oganessone/src/application/providers"
 	"github.com/AndreyArthur/oganessone/src/application/repositories"
+	"github.com/AndreyArthur/oganessone/src/core/exceptions"
 	"github.com/AndreyArthur/oganessone/src/core/shared"
 )
 
@@ -19,6 +20,9 @@ func (refreshSessionUseCase *RefreshSessionUseCase) Execute(
 	accountId, err := refreshSessionUseCase.cache.Get(data.SessionKey)
 	if err != nil {
 		return nil, err
+	}
+	if accountId == "" {
+		return nil, exceptions.NewSessionNotFound()
 	}
 	account, err := refreshSessionUseCase.repository.FindById(accountId)
 	if err != nil {

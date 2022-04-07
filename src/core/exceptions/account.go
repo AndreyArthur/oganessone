@@ -69,3 +69,11 @@ func NewAccountLoginFailed() *shared.Error {
 		"Login failed, invalid login/password combination.",
 	)
 }
+
+func NewSessionNotFound() *shared.Error {
+	return shared.NewError(
+		authentication,
+		"SessionNotFound",
+		"Session not found, make sure the key is valid.",
+	)
+}
