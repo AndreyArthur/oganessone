@@ -145,3 +145,38 @@ func TestRefreshSessionUseCase_RepositoryFindByIdReturnError(t *testing.T) {
 	assert.Nil(t, result)
 	assert.Equal(t, err, &shared.Error{})
 }
+
+func TestRefreshSessionUseCase_SessionGenerateReturnError(t *testing.T) {
+	// arrange
+	useCase, repo, cache, session, ctrl := (&RefreshSessionUseCaseTest{}).setup(t)
+	defer ctrl.Finish()
+	sessionKey := "kAYWq$jq^Z^c/$D9$f~iLPD?*7F!w9(w"
+	id, username, email, fakeBcryptHash := "9b157773-fbb4-d04c-9de6-d086cf37d7c7",
+		"username",
+		"account@email.com",
+		"$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	repoAccount := &entities.AccountEntity{
+		Id:        id,
+		Username:  username,
+		Email:     email,
+		Password:  fakeBcryptHash,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	cache.EXPECT().
+		Get(sessionKey).
+		Return(id, nil)
+	repo.EXPECT().
+		FindById(id).
+		Return(repoAccount, nil)
+	session.EXPECT().
+		Generate(id).
+		Return(nil, &shared.Error{})
+	// act
+	result, err := useCase.Execute(&definitions.RefreshSessionDTO{
+		SessionKey: sessionKey,
+	})
+	// assert
+	assert.Nil(t, result)
+	assert.Equal(t, err, &shared.Error{})
+}
