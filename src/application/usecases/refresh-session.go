@@ -28,6 +28,9 @@ func (refreshSessionUseCase *RefreshSessionUseCase) Execute(
 	if err != nil {
 		return nil, err
 	}
+	if account == nil {
+		return nil, exceptions.NewAccountNotFound()
+	}
 	sessionData, err := refreshSessionUseCase.session.Generate(account.Id)
 	if err != nil {
 		return nil, err

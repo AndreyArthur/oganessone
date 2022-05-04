@@ -11,6 +11,7 @@ import (
 	"github.com/AndreyArthur/oganessone/src/application/usecases"
 	"github.com/AndreyArthur/oganessone/src/core/entities"
 	"github.com/AndreyArthur/oganessone/src/core/exceptions"
+	"github.com/AndreyArthur/oganessone/src/core/shared"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
@@ -74,7 +75,7 @@ func TestRefreshSessionUseCase_SessionNotFound(t *testing.T) {
 	sessionKey := "kAYWq$jq^Z^c/$D9$f~iLPD?*7F!w9(w"
 	cache.EXPECT().
 		Get(sessionKey).
-		Return("", exceptions.NewSessionNotFound())
+		Return("", nil)
 	// act
 	result, err := useCase.Execute(&definitions.RefreshSessionDTO{
 		SessionKey: sessionKey,
@@ -82,4 +83,65 @@ func TestRefreshSessionUseCase_SessionNotFound(t *testing.T) {
 	// assert
 	assert.Nil(t, result)
 	assert.Equal(t, err, exceptions.NewSessionNotFound())
+}
+
+func TestRefreshSessionUseCase_CacheGetReturnError(t *testing.T) {
+	// arrange
+	useCase, _, cache, _, ctrl := (&RefreshSessionUseCaseTest{}).setup(t)
+	defer ctrl.Finish()
+	sessionKey := "kAYWq$jq^Z^c/$D9$f~iLPD?*7F!w9(w"
+	cache.EXPECT().
+		Get(sessionKey).
+		Return("", &shared.Error{})
+	// act
+	result, err := useCase.Execute(&definitions.RefreshSessionDTO{
+		SessionKey: sessionKey,
+	})
+	// assert
+	assert.Nil(t, result)
+	assert.Equal(t, err, &shared.Error{})
+}
+
+func TestRefreshSessionUseCase_AccountNotFound(t *testing.T) {
+	// arrange
+	useCase, repo, cache, _, ctrl := (&RefreshSessionUseCaseTest{}).setup(t)
+	defer ctrl.Finish()
+	sessionKey, accountId :=
+		"kAYWq$jq^Z^c/$D9$f~iLPD?*7F!w9(w",
+		"9b157773-fbb4-d04c-9de6-d086cf37d7c7"
+	cache.EXPECT().
+		Get(sessionKey).
+		Return(accountId, nil)
+	repo.EXPECT().
+		FindById(accountId).
+		Return(nil, nil)
+	// act
+	result, err := useCase.Execute(&definitions.RefreshSessionDTO{
+		SessionKey: sessionKey,
+	})
+	// assert
+	assert.Nil(t, result)
+	assert.Equal(t, err, exceptions.NewAccountNotFound())
+}
+
+func TestRefreshSessionUseCase_RepositoryFindByIdReturnError(t *testing.T) {
+	// arrange
+	useCase, repo, cache, _, ctrl := (&RefreshSessionUseCaseTest{}).setup(t)
+	defer ctrl.Finish()
+	sessionKey, accountId :=
+		"kAYWq$jq^Z^c/$D9$f~iLPD?*7F!w9(w",
+		"9b157773-fbb4-d04c-9de6-d086cf37d7c7"
+	cache.EXPECT().
+		Get(sessionKey).
+		Return(accountId, nil)
+	repo.EXPECT().
+		FindById(accountId).
+		Return(nil, &shared.Error{})
+	// act
+	result, err := useCase.Execute(&definitions.RefreshSessionDTO{
+		SessionKey: sessionKey,
+	})
+	// assert
+	assert.Nil(t, result)
+	assert.Equal(t, err, &shared.Error{})
 }

@@ -77,3 +77,11 @@ func NewSessionNotFound() *shared.Error {
 		"Session not found, make sure the key is valid.",
 	)
 }
+
+func NewAccountNotFound() *shared.Error {
+	return shared.NewError(
+		conflict,
+		"AccountNotFound",
+		"Account does not exist or has already been deleted.",
+	)
+}
