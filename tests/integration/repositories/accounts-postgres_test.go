@@ -220,6 +220,50 @@ func TestAccountsRepositoryPostgres_FindByEmailReturnNil(t *testing.T) {
 	assert.Nil(t, account)
 }
 
+func TestAccountsRepositoryPostgres_FindById(t *testing.T) {
+	// arrange
+	repo, sql := (&AccountsRepositoryPostgresTest{}).setup()
+	uuid, _ := helpers.NewUuid()
+	id, username, email, password := uuid.Generate(), "username", "account@email.com", "$2a$10$KtwHGGRiKWRDEq/g/2RAguaqIqU7iJNM11aFeqcwzDhuv9jDY35uW"
+	stmt, goerr := sql.Prepare(`
+		INSERT INTO accounts (
+			id,
+			username,
+			email,
+			password,
+			created_at,
+			updated_at
+		) VALUES ( $1, $2, $3, $4, $5, $6 );
+	`)
+	defer sql.Query("DELETE FROM accounts;")
+	if goerr != nil {
+		log.Fatal(goerr)
+		return
+	}
+	_, goerr = stmt.Exec(id, username, email, password, time.Now(), time.Now())
+	if goerr != nil {
+		log.Fatal(goerr)
+		return
+	}
+	// act
+	account, err := repo.FindById(id)
+	// assert
+	assert.Nil(t, err)
+	assert.Nil(t, account.IsValid())
+}
+
+func TestAccountsRepositoryPostgres_FindByIdReturnNil(t *testing.T) {
+	// arrange
+	repo, _ := (&AccountsRepositoryPostgresTest{}).setup()
+	uuid, _ := helpers.NewUuid()
+	id := uuid.Generate()
+	// act
+	account, err := repo.FindById(id)
+	// assert
+	assert.Nil(t, err)
+	assert.Nil(t, account)
+}
+
 func TestAccountsRepositoryPostgres_Save(t *testing.T) {
 	// arrange
 	repo, sql := (&AccountsRepositoryPostgresTest{}).setup()

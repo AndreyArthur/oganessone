@@ -134,8 +134,30 @@ func (accountsRepository *AccountsRepositoryPostgres) FindByEmail(email string) 
 		return nil, err
 	}
 	rows := stmt.QueryRow(email)
-	acount := accountModel.Scan(rows)
-	return acount, nil
+	account := accountModel.Scan(rows)
+	return account, nil
+}
+
+func (accountsRepository *AccountsRepositoryPostgres) FindById(id string) (*entities.AccountEntity, *shared.Error) {
+	stmt, goerr := accountsRepository.db.Prepare(`
+		SELECT 
+			id, username, email, password, created_at, updated_at
+		FROM
+			accounts
+		WHERE 
+			id = $1
+	`)
+	if goerr != nil {
+		log.Println(goerr)
+		return nil, exceptions.NewInternalServerError()
+	}
+	accountModel, err := models.NewAccountModel()
+	if err != nil {
+		return nil, err
+	}
+	rows := stmt.QueryRow(id)
+	account := accountModel.Scan(rows)
+	return account, nil
 }
 
 func (accountRepository *AccountsRepositoryPostgres) Save(account *entities.AccountEntity) *shared.Error {
