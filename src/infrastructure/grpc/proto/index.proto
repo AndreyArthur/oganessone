@@ -9,6 +9,7 @@ package protobuf;
 service AccountsService {
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {};
   rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse) {};
+  rpc RefreshSession(RefreshSessionRequest) returns (RefreshSessionResponse) {};
 }
 
 // Type Def's
@@ -66,5 +67,25 @@ message CreateSessionResponseData {
 
 message CreateSessionResponse {
   CreateSessionResponseData data = 1;
+  Error error = 2;
+}
+
+// Refresh Session
+
+message RefreshSessionRequestData {
+  string sessionKey = 1;
+}
+
+message RefreshSessionRequest {
+  RefreshSessionRequestData data = 1;
+}
+
+message RefreshSessionResponseData {
+  Account account = 1;
+  string sessionKey = 2;
+}
+
+message RefreshSessionResponse {
+  RefreshSessionResponseData data = 1;
   Error error = 2;
 }

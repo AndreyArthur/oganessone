@@ -49,6 +49,19 @@ func (srvr *server) CreateSession(
 	return rpc.Perform(ctx, request)
 }
 
+func (srvr *server) RefreshSession(
+	ctx context.Context, request *protobuf.RefreshSessionRequest,
+) (*protobuf.RefreshSessionResponse, error) {
+	rpc, err := factories.MakeRefreshSessionRpc()
+	if err != nil {
+		return &protobuf.RefreshSessionResponse{
+			Error: srvr.error(err),
+			Data:  nil,
+		}, nil
+	}
+	return rpc.Perform(ctx, request)
+}
+
 type GrpcServer struct {
 	googleGrpcServer *grpc.Server
 	protoServer      protobuf.AccountsServiceServer
